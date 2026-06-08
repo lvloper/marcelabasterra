@@ -33,7 +33,6 @@ class ModalTemplate
                 ->editAction(
                     fn (Action $action) => $action->closeModalByClickingAway(false)
                 )
-                ->view('filament-forms::components.editor')
                 ->collapsible(),
         ];
     }

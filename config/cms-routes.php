@@ -5,4 +5,12 @@ return [
     ],
     'blog_index' => 'blog',
     'news_parent_id' => null,
+
+    // IDs de rutas padre para recursos del CMS
+    'publicaciones_parent_id' => 8,
+    'prensa_parent_id' => 9,
+    'agenda_parent_id' => 10,
+    'programas_parent_id' => 11,
+    'docencia_parent_id' => 12,
+    'trayectoria_parent_id' => 13,
 ];

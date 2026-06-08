@@ -48,8 +48,7 @@ class DefaultTemplate
                 ->cloneable()
                 ->editAction(
                     fn(Action $action) => $action->closeModalByClickingAway(false)
-                )
-                ->view('filament-forms::components.editor'),
+                ),
             
             // Hidden input for paste functionality
             \Filament\Forms\Components\Hidden::make('blocks_pastable')
