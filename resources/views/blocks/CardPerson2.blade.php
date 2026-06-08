@@ -5,8 +5,8 @@
         </div>
         <div class="flex flex-col justify-center">
             <div class="leading-normal">
-                <div class="text-lg font-heavy md:font-bold text-primary">{{ $title ?? '' }}</div>
-                <div class="text-base mb-2 font-bold text-secondary font-poppins">{{ $work ?? '' }}</div>
+                <div class="text-lg font-bold md:font-bold text-primary">{{ $title ?? '' }}</div>
+                <div class="text-base mb-2 font-bold text-secondary font-source">{{ $work ?? '' }}</div>
             </div>
             <div class="leading-normal text-sm">
                 {!! $text !!}

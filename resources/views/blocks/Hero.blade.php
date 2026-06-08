@@ -22,7 +22,7 @@
             {{ $estilos == '1' ? 'text-white bg-primary' : ' bg-white' }}">
             <div class="container">
                 @isset($description)
-                <div class="md:w-[90%] xl:w-[70%] 2xl:w-[65%] description2-normal mb-2 futura-light 
+                <div class="md:w-[90%] xl:w-[70%] 2xl:w-[65%] description2-normal mb-2 font-normal 
                 description-animate">
                     {!! $description !!}
                 </div>

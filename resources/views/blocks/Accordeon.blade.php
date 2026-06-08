@@ -38,7 +38,7 @@
                     <div class="pb-4 normal-text leading-tight lg:pb-2 ">
                         {!! $description ?? '' !!}
                     </div>
-                    <div class="pb-4 leading-normal normal-text font-poppins hasStrongRed-sm">
+                    <div class="pb-4 leading-normal normal-text font-source hasStrongRed-sm">
                         {!! $description2 ?? '' !!}
                     </div>
                 </div>
@@ -77,7 +77,7 @@
                             <div class="pb-4 pt-12 !px-4 lg:pb-8 text-lg text-primary leading-tight font-bold">
                                 {{ $item['title'] ?? '' }}
                             </div>
-                            <div class="px-4 pb-4  leading-snug text-normal font-poppins tick-in-li">
+                            <div class="px-4 pb-4  leading-snug text-normal font-source tick-in-li">
                                 {!! $item['description'] ?? '' !!}
                             </div>
 
@@ -118,7 +118,7 @@
                         <div class="pb-4 pt-6 !px-8 text-lg text-primary leading-tight font-bold">
                             {{ $item['title'] ?? '' }}
                         </div>
-                        <div class="px-6 pb-4  leading-snug text-normal font-poppins tick-in-li">
+                        <div class="px-6 pb-4  leading-snug text-normal font-source tick-in-li">
                             {!! $item['description'] ?? '' !!}
                         </div>
 

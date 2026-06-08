@@ -2,6 +2,14 @@
 return [
     'custom_controllers' => [
         'App\Models\Blog' => 'App\Http\Controllers\BlogController',
+        'App\Models\Libro' => 'App\Http\Controllers\LibroController',
+        'App\Models\ArticuloAcademico' => 'App\Http\Controllers\ArticuloAcademicoController',
+        'App\Models\Entrevista' => 'App\Http\Controllers\EntrevistaController',
+        'App\Models\Evento' => 'App\Http\Controllers\EventoController',
+        'App\Models\ProgramaAcademico' => 'App\Http\Controllers\ProgramaAcademicoController',
+        'App\Models\CargoInstitucional' => 'App\Http\Controllers\CargoInstitucionalController',
+        'App\Models\Docencia' => 'App\Http\Controllers\DocenciaController',
+        'App\Models\DossierPrensa' => 'App\Http\Controllers\DossierPrensaController',
     ],
     'blog_index' => 'blog',
     'news_parent_id' => null,

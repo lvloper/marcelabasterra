@@ -2,17 +2,17 @@
 .text-wysiwyg {
 
     p, p span, span, ol, ul li {
-        font-family: 'Poppins', sans-serif !important;
+        font-family: 'Source Serif 4', serif !important;
         @apply text-base;
     }
 
     h1 {
-        @apply font-heavy text-pretty leading-tight mb-4 !important;
+        @apply font-bold text-pretty leading-tight mb-4 !important;
         font-size: 5rem !important;
     }
 
     h2 {
-        @apply font-heavy text-pretty leading-tight text-3xl mb-4 !important;
+        @apply font-bold text-pretty leading-tight text-3xl mb-4 !important;
         color: var(--color-primary) !important;
         font-weight: bold !important;
     }
@@ -55,7 +55,7 @@
         position: absolute;
         top: -0.5rem;
         left: 0.5rem;
-        font-family: 'Futura Std', sans-serif;
+        font-family: 'Bellota Text', sans-serif;
     } */
 
     blockquote p {
@@ -114,7 +114,7 @@
             line-height: 1.25 !important;
         }
         p, span {
-            font-family: 'Poppins', sans-serif !important;
+            font-family: 'Source Serif 4', serif !important;
         }
 
         blockquote {
@@ -137,11 +137,11 @@
 @layer components {
 
     .font-sans {
-        font-family: 'Manrope', sans-serif !important;
+        font-family: 'Bellota Text', sans-serif !important;
     }
 
-    .font-poppins {
-        font-family: 'Poppins', sans-serif;
+    .font-source {
+        font-family: 'Source Serif 4', serif;
     }
 
     .text-primary {

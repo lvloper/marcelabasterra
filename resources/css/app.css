@@ -1,6 +1,5 @@
-@import "futura.css";
+@import "fonts.css";
 @import "./components/embla.css";
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap');
 @import "./components/line-title.css";
 @import "./components/text-wysiwyg.css";
 @import "./components/gallery.css";
@@ -9,17 +8,19 @@
 @import "./view-transition.css";
 
 :root {
-  --color-primary: #334155;
-  --color-primary-hover: #1e293b;
-  --color-secondary: #64748b;
-  --color-secondary-hover: #475569;
-  --color-secondary-light: #94a3b8;
+  --color-primary: #2a3461;
+  --color-primary-hover: #1f2748;
+  --color-secondary: #9499b0;
+  --color-secondary-hover: #7a80a0;
+  --color-secondary-light: #c4c7d4;
+  --color-accent: #45bfe3;
+  --color-accent-hover: #3aaed2;
 
   --color-black: #000000;
   --color-white: #FFFFFF;
-  --color-gray: #707070;
-  --color-gray-2: #E7E7E7;
-  --color-gray-3: #F2F2F2;
+  --color-gray: #5c6b73;
+  --color-gray-2: #bec4c7;
+  --color-gray-3: #f3f4f4;
   --scrollbar-color: var(--color-secondary);
   --header-height: 80px;
   --side-bar-width: 260px;
@@ -271,7 +272,7 @@ html {
 
 .text-normal,
 .normal-text {
-  @apply text-base font-poppins ;
+  @apply text-base font-sans ;
 }
 
 .sm-text {
@@ -279,19 +280,19 @@ html {
 }
 
 .text-question {
-  @apply text-[7rem] sm:text-[10rem] md:text-[15rem] lg:text-[20rem] xl:text-[20rem] 2xl:text-[20rem] mt-12 text-[#FFFFFF80] bg-transparent flex justify-center futura-bold
+  @apply text-[7rem] sm:text-[10rem] md:text-[15rem] lg:text-[20rem] xl:text-[20rem] 2xl:text-[20rem] mt-12 text-[#FFFFFF80] bg-transparent flex justify-center font-bold
 }
 
 .title-normal {
-  @apply text-xl lg:text-2xl font-bold font-poppins;
+  @apply text-xl lg:text-2xl font-bold font-sans;
   line-height: 1.15;
 }
 .description-normal {
-  @apply leading-snug font-poppins text-base;
+  @apply leading-snug font-source text-base;
 }
 
 .description2-normal {
-  @apply font-poppins leading-snug text-base;
+  @apply font-source leading-snug text-base;
 }
 
 .block-Hero {
@@ -336,7 +337,7 @@ html {
 
 .block-Hero, .block-Hero2 {
   strong {
-    @apply font-heavy;
+    @apply font-bold;
   }
 
 
@@ -347,12 +348,12 @@ html {
     @apply text-2xl leading-tight 2xl:text-3xl;
 
     strong {
-      @apply font-heavy;
+      @apply font-bold;
     }
   }
 
   .richEvents h3 {
-    @apply hidden md:block text-xl font-poppins  pt-8;
+    @apply hidden md:block text-xl font-source  pt-8;
   }
 }
 
@@ -366,12 +367,12 @@ html {
   }
 
   p {
-    @apply pb-8 text-md md:text-xl xl:text-lg font-poppins;
+    @apply pb-8 text-md md:text-xl xl:text-lg font-source;
   }
 }
 
 .hasStrongPurple {
-  @apply w-full text-xl md:text-2xl md:leading-tight pb-4 xl:pb-8 font-sans;
+  @apply w-full text-xl md:text-2xl md:leading-tight pb-4 xl:pb-8 font-source;
 
   strong {
     @apply font-bold text-secondary;
@@ -379,7 +380,7 @@ html {
 }
 
 .hasStrongBlack {
-  @apply w-full !text-xl md:!text-2xl md:leading-tight pb-4 xl:pb-8 2xl:w-4/5 font-sans;
+  @apply w-full !text-xl md:!text-2xl md:leading-tight pb-4 xl:pb-8 2xl:w-4/5 font-source;
 
   strong {
     @apply font-bold;
@@ -709,4 +710,30 @@ lite-youtube > iframe {
   top: 0;
   left: 0;
   border: 0;
+}
+
+/* ========== Patrones estéticos ========== */
+
+.bg-grid {
+  background-size: 80px 80px;
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
+  mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+@keyframes scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-scroll {
+  animation: scroll 40s linear infinite;
 }

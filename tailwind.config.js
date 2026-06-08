@@ -26,37 +26,28 @@ export default {
       'md': '768px',
       'lg': '1024px',
       'xl': '1080px',
-      '2xl': '1280px', // Scaled down by 0.85 from 1536px
-      '3xl': '1340px', // Scaled down by 0.85 from 1800px
+      '2xl': '1280px',
+      '3xl': '1340px',
       '4xl': '1640px',
       '5xl': '1920px',
     },
     extend: {
       container: {
         center: true,
-        padding: {
-          // DEFAULT: '1rem',
-          // 'sm': '2rem',
-          // 'md': '3rem',
-          // 'lg': '4rem',
-          // 'xl': '5rem',
-          // '2xl': '6rem',
-          // '4xl': '12rem',
-        },
+        padding: {},
         screens: {
           'sm': '640px',
           'md': '768px',
           'lg': '1024px',
           'xl': '1280px',
-          '2xl': '1280px', // Scaled down by 0.85 from 1536px
-          '3xl': '1530px', // Scaled down by 0.85 from 1800px
-          '4xl': '1530px', // Scaled down by 0.85 from 2100px
+          '2xl': '1280px',
+          '3xl': '1530px',
+          '4xl': '1530px',
         }
       },
       fontFamily: {
-        sans: ['Manrope', 'sans-serif'],
-        pt: ['Manrope', 'sans-serif'],
-        poppins: ['Poppins', 'sans-serif'],
+        sans: ['Bellota Text', 'sans-serif'],
+        source: ['Source Serif 4', 'serif'],
       },
       fontSize: {
         'xs': '0.75rem',
@@ -87,6 +78,10 @@ export default {
         },
         secondarylight: {
           DEFAULT: 'var(--color-secondary-light)',
+        },
+        accent: {
+          DEFAULT: 'var(--color-accent)',
+          hover: 'var(--color-accent-hover)',
         },
         black: 'var(--color-black)',
         white: 'var(--color-white)',

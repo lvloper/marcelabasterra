@@ -68,6 +68,7 @@
             "@php artisan migrate --graceful --ansi"
         ],
         "dev": [
+            "@php artisan serve --port=8082 &",
             "npm run dev"
         ]
     },

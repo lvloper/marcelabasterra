@@ -17,7 +17,7 @@
                     <livewire:search-component :isFullPage="true" />
                 </div>
 
-                {{-- <div class="md:w-[90%] xl:w-[70%] 2xl:w-[65%] description2-normal mb-2 futura-light description-animate">
+                {{-- <div class="md:w-[90%] xl:w-[70%] 2xl:w-[65%] description2-normal mb-2 font-normal description-animate">
                     @if($searchTerm)
                         <p>Resultados para: <strong>"{{ $searchTerm }}"</strong></p>
                     @else

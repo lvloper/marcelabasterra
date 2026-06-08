@@ -19,7 +19,7 @@
                     </div>
 
                     <div x-cloak x-data
-                        class="overflow-hidden order-1 md:order-2 title-container text-xl md:text-5xl xl:text-5xl font-heavy md:leading-tight md:py-8">
+                        class="overflow-hidden order-1 md:order-2 title-container text-xl md:text-5xl xl:text-5xl font-bold md:leading-tight md:py-8">
                         <h1 class="title-animate mb-8 lg:mb-2  ">
                             {{ Str::of($blog->title)->trim() }}
                         </h1>
@@ -64,7 +64,7 @@
             <div class="flex justify-between mb-16 container-notice">
                 @if($previous = $blog->previous())
                 <a wire:navigate href="{{ $previous->url }}"
-                    class="flex gap-2 text-sm text-primary font-heavy max-w-[40%] place-items-center group">
+                    class="flex gap-2 text-sm text-primary font-bold max-w-[40%] place-items-center group">
                     <x-lucide-move-left class="w-5 transition-transform group-hover:-translate-x-1" />
                     <span>{{ $previous->title }}</span>
                 </a>
@@ -72,7 +72,7 @@
 
                 @if($next = $blog->next())
                 <a wire:navigate href="{{ $next->url }}"
-                    class="flex gap-2 text-sm text-right text-primary font-heavy max-w-[40%] place-items-center group">
+                    class="flex gap-2 text-sm text-right text-primary font-bold max-w-[40%] place-items-center group">
                     <span>{{ $next->title }}</span>
                     <x-lucide-move-right class="w-5 transition-transform group-hover:translate-x-1" />
                 </a>

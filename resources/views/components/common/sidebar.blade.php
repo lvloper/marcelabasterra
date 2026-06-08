@@ -49,7 +49,7 @@ $id = 'sidebar';
             class="hidden relative flex-col gap-y-6 justify-between content-around h-full 2xl:flex">
             <ul class="flex flex-col gap-3 sm:pt-10 sm:pb-0 sm:mx-8">
                 @foreach ($index as $item)
-                <li class="pb-2 transition-all text-sm xl:text-base futura-medium duration-400 group {{ $loop->last ? 'border-b-0' : 'border-b-2' }}"
+                <li class="pb-2 transition-all text-sm xl:text-base font-bold duration-400 group {{ $loop->last ? 'border-b-0' : 'border-b-2' }}"
                     :class="{
                         'text-primary border-b-primary': activeSection === '{{ $item['id'] }}',
                         'border-b-gray md:hover:text-primary md:hover:border-b-primary': activeSection !== '{{ $item['id'] }}'

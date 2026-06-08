@@ -16,7 +16,7 @@ $imagesPerStripMobile = $totalImages > 0 ? ceil($totalImages / $mobileStrips) : 
 
         @if ($description && strlen($description) >= 30)
         <div class="container">
-            <div class="normal-text py-4 font-poppins xl:w-[80%] 2xl:w-[70%]">
+            <div class="normal-text py-4 font-source xl:w-[80%] 2xl:w-[70%]">
                 {!! $description ?? '' !!}
             </div>
         </div>

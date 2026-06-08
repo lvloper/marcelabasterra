@@ -2,7 +2,7 @@
     <x-common.line-title title="{{ $title }}" size="xl" class="mb-0" />
     <div class="bg-gray-3">
 
-        <div class="font-poppins  py-6">
+        <div class="font-source  py-6">
             <div class="container gap-8 grid grid-cols-1 {{$image ? 'xl:grid-cols-3' : 'xl:grid-cols-1'}}  ">
                 <div class="col-span-1 ">
                     <x-image :image="$image" class="sticky top-40" />

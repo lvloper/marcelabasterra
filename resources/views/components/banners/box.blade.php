@@ -30,7 +30,7 @@
 
             <div class="px-4 py-4 md:py-6 flex min-h-[220px] flex-col">
                 <div
-                    class="text-lg leading-tight md:text-xl font-heavy"
+                    class="text-lg leading-tight md:text-xl font-bold"
                     style="height: 3.8rem; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;"
                 >
                     {{ $item['title'] }}
@@ -38,7 +38,7 @@
 
                 <div
                     x-ref="description"
-                    class="mt-0.5 text-sm lg:block font-poppins text-gray-700 leading-6"
+                    class="mt-0.5 text-sm lg:block font-source text-gray-700 leading-6"
                     :style="expanded
                         ? 'overflow: visible; display: block; height: auto;'
                         : 'height: 9rem; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6;'"

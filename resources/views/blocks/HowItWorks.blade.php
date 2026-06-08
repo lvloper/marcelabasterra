@@ -12,7 +12,7 @@
                     <x-image class="h-[50px] w-[50px] mb-4" :image="$item['icon']" />
                     <div class="border-b-4 border-primary mb-4 w-[70px] "></div>
                     <div class="text-base  font-bold text-primary text-balance mb-2">{{ $item['title'] ?? '' }}</div>
-                    <div class="font-poppins  text-base sm:text-base lg:text-base leading-tight text-balance ">{!!
+                    <div class="font-source  text-base sm:text-base lg:text-base leading-tight text-balance ">{!!
                         $item['description'] ?? '' !!}</div>
                 </div>
                 @endforeach
