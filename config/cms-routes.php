@@ -15,10 +15,10 @@ return [
     'news_parent_id' => null,
 
     // IDs de rutas padre para recursos del CMS
-    'publicaciones_parent_id' => 8,
-    'prensa_parent_id' => 9,
-    'agenda_parent_id' => 10,
-    'programas_parent_id' => 11,
-    'docencia_parent_id' => 12,
-    'trayectoria_parent_id' => 13,
+    'publicaciones_parent_id' => 6,
+    'prensa_parent_id' => 7,
+    'agenda_parent_id' => 8,
+    'programas_parent_id' => 9,
+    'docencia_parent_id' => 10,
+    'trayectoria_parent_id' => 11,
 ];

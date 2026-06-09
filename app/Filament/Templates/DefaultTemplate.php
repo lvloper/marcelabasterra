@@ -16,6 +16,17 @@ class DefaultTemplate
             \App\Filament\Blocks\MediaTextBlock::make(),
             \App\Filament\Blocks\CardsBlock::make(),
             \App\Filament\Blocks\SearchBlock::make(),
+            \App\Filament\Blocks\HeroBlock::make(),
+            \App\Filament\Blocks\CTABlock::make(),
+            \App\Filament\Blocks\TimelineBlock::make(),
+            \App\Filament\Blocks\CVDownloadBlock::make(),
+            \App\Filament\Blocks\BiographySummaryBlock::make(),
+            \App\Filament\Blocks\ContactFormBlock::make(),
+            \App\Filament\Blocks\FeaturedResourcesBlock::make(),
+            \App\Filament\Blocks\PublicationsHighlightBlock::make(),
+            \App\Filament\Blocks\InterviewsHighlightBlock::make(),
+            \App\Filament\Blocks\EventsHighlightBlock::make(),
+            \App\Filament\Blocks\RelatedResourcesBlock::make(),
         ];
 
         // foreach ($blocks as $block) {
