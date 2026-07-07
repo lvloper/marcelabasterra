@@ -2,6 +2,8 @@
     $layout = $layout ?? 'left';
     $mediaType = $media_type ?? 'image';
     $isLeft = $layout === 'left';
+    $image = is_array($image ?? null) ? ($image[0] ?? null) : $image;
+    $video_file = is_array($video_file ?? null) ? ($video_file[0] ?? null) : $video_file;
 
     $htmlContent = $content ?? '';
     if (is_array($htmlContent)) {

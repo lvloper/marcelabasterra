@@ -4,6 +4,7 @@ namespace App\Filament\Forms\Components;
 
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
@@ -60,6 +61,16 @@ class Field
     public static function route(string $name, string $label = 'Enlace'): RoutePicker
     {
         return RoutePicker::make($name)->label($label);
+    }
+
+    public static function select(string $name, ?string $label = null, array $options = []): Select
+    {
+        return Select::make($name)->label($label)->options($options);
+    }
+
+    public static function number(string $name, ?string $label = null): TextInput
+    {
+        return TextInput::make($name)->label($label)->numeric();
     }
 
     public static function toggleButtons(string $name, ?string $label = null, array $options = []): ToggleButtons

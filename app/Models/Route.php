@@ -40,11 +40,10 @@ class Route extends Model
 
     public function getDynamicSEOData(): SEOData
     {
-        // Override only the properties you want:
         return new SEOData(
             title: $this->title,
             description: $this->description,
-            image: $this->image ? Storage::url($this->image) : null,
+            image: $this->image ? Storage::url(is_array($this->image) ? ($this->image[0] ?? '') : $this->image) : null,
             locale: 'es_AR',
         );
     }

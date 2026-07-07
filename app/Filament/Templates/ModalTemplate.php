@@ -11,6 +11,7 @@ class ModalTemplate
     {
         // Copy here the blocks you want to use in the template
         $blocks = [
+            \App\Filament\Blocks\HeroBlock::make(),
             \App\Filament\Blocks\TextBlock::make(),
             \App\Filament\Blocks\MediaBlock::make(),
             \App\Filament\Blocks\MediaTextBlock::make(),
@@ -33,7 +34,7 @@ class ModalTemplate
                 ->editAction(
                     fn (Action $action) => $action->closeModalByClickingAway(false)
                 )
-                ->view('filament-forms::components.editor')
+                
                 ->collapsible(),
         ];
     }

@@ -24,7 +24,9 @@ trait HasThumb
         }
 
     // Para archivos guardados en el disco 'public', devolver URL pública (/storage/...)
-    return Storage::url($this->image);
+    $image = is_array($this->image) ? ($this->image[0] ?? null) : $this->image;
+    if (!$image) return null;
+    return Storage::url($image);
 
         // $thumbName = pathinfo($this->image, PATHINFO_FILENAME) . '.webp';
         // $this->thumbPath = Storage::url('public/thumbs/' . $thumbName);

@@ -44,12 +44,55 @@
         }
         $htmlDescription = $rendered;
     }
+
+    $plainDescription = strip_tags((string) $htmlDescription);
+    $words = preg_split('/\s+/u', $plainDescription, -1, PREG_SPLIT_NO_EMPTY);
+    if (count($words) > 300) {
+        $words = array_slice($words, 0, 300);
+        $htmlDescription = '<p>' . implode(' ', $words) . '...</p>';
+    }
+
+    $blogPosts = null;
+    $displayMode = $content_type ?? 'manual';
+    $maxItems = (int) ($max_items ?? 9);
+
+    if ($displayMode === 'latest') {
+        $blogPosts = \App\Models\Blog::orderBy('is_featured', 'desc')
+            ->orderBy('published_at', 'desc')
+            ->isPublished()
+            ->take($maxItems)
+            ->get();
+    } elseif ($displayMode === 'tags' && !empty($selected_tags ?? [])) {
+        $tagSlugs = [];
+        foreach ($selected_tags as $tag) {
+            if (is_string($tag)) {
+                $decoded = json_decode($tag, true);
+                if (json_last_error() === JSON_ERROR_NONE && isset($decoded['es'])) {
+                    $tagSlugs[] = $decoded['es'];
+                } else {
+                    $tagSlugs[] = $tag;
+                }
+            } else {
+                $tagSlugs[] = (string) $tag;
+            }
+        }
+        $tagSlugs = array_filter($tagSlugs);
+        if (!empty($tagSlugs)) {
+            $blogPosts = \App\Models\Blog::withAnyTags($tagSlugs)
+                ->orderBy('is_featured', 'desc')
+                ->orderBy('published_at', 'desc')
+                ->isPublished()
+                ->take($maxItems)
+                ->get();
+        }
+    }
 @endphp
 
 <x-block class="py-12 md:py-16">
     <div class="container mx-auto px-4">
+        <div class="mx-auto max-w-5xl">
         @if ($title ?? null)
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-center">{{ $title }}</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4 text-center">{{ $title }}</h2>
         @endif
 
         @if ($htmlDescription)
@@ -58,61 +101,205 @@
             </div>
         @endif
 
-        @if ($items ?? null)
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach ($items as $item)
+        @if ($blogPosts !== null && $blogPosts->isNotEmpty())
+            @php
+                $featured = $blogPosts->first();
+                $rest = $blogPosts->slice(1);
+            @endphp
+            <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
+                <div class="lg:w-9/12">
+                    <div class="sticky top-8">
+                        <a href="{{ $featured->url }}" class="block group">
+                            <div class="overflow-hidden bg-gray-100 aspect-[16/9]">
+                                <x-image :src="$featured->thumb" fit="cover"
+                                    class="w-full h-full group-hover:scale-105 transition-transform duration-300"
+                                    default="{{ asset('img/layout/default.webp') }}" />
+                            </div>
+                            <div class="mt-4 space-y-3">
+                                <span class="text-xs text-primary uppercase font-bold tracking-wider">
+                                    {{ $featured->published_at?->format('d/m/Y') ?? '' }}
+                                </span>
+                                <h3 class="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
+                                    {{ $featured->title }}
+                                </h3>
+                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                                    {{ $featured->short_description }}
+                                </p>
+                                <span class="inline-flex items-center text-sm font-medium text-primary">
+                                    Seguir Leyendo
+                                    <x-lucide-arrow-right class="ml-1 w-4 h-4" />
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                @if ($rest->isNotEmpty())
+                    <div class="lg:w-3/12 flex flex-col gap-6 lg:border-l lg:border-gray-200 lg:pl-6">
+                        @foreach ($rest as $item)
+                            <a href="{{ $item->url }}" class="flex gap-3 group">
+                                <div class="w-20 h-20 flex-shrink-0 overflow-hidden bg-gray-100">
+                                    <x-image :src="$item->thumb" fit="cover"
+                                        class="w-full h-full group-hover:scale-105 transition-transform duration-300"
+                                        default="{{ asset('img/layout/default.webp') }}" />
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <span class="text-xs text-primary uppercase font-bold tracking-wider">
+                                        {{ $item->published_at?->format('d/m/Y') ?? '' }}
+                                    </span>
+                                    <h4 class="text-sm font-semibold text-gray-900 leading-tight line-clamp-2 mt-1">
+                                        {{ $item->title }}
+                                    </h4>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        @elseif ($displayMode === 'manual' && ($items ?? null))
+            @php
+                $featuredItem = $items[0] ?? null;
+                $restItems = array_slice($items ?? [], 1);
+            @endphp
+
+            @if ($featuredItem)
+                <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
                     @php
-                        $cardUrl = '';
-                        $cardTarget = '';
-                        $cardRoute = $item['route'] ?? [];
-                        if (($cardRoute['route_id'] ?? null) === '0' && ($cardRoute['external_url'] ?? null)) {
-                            $cardUrl = $cardRoute['external_url'];
-                            $cardTarget = ($cardRoute['new_window'] ?? false) ? '_blank' : '';
-                        } elseif ($cardRoute['route_id'] ?? null) {
-                            $r = \App\Models\Route::find($cardRoute['route_id']);
+                        $fi = $featuredItem;
+                        $fiImage = $fi['image'] ?? null;
+                        $fiImage = is_array($fiImage) ? ($fiImage[0] ?? null) : $fiImage;
+                        $fiUrl = '';
+                        $fiTarget = '';
+                        $fiRoute = $fi['route'] ?? [];
+                        if (($fiRoute['route_id'] ?? null) === '0' && ($fiRoute['external_url'] ?? null)) {
+                            $fiUrl = $fiRoute['external_url'];
+                            $fiTarget = ($fiRoute['new_window'] ?? false) ? '_blank' : '';
+                        } elseif ($fiRoute['route_id'] ?? null) {
+                            $r = \App\Models\Route::find($fiRoute['route_id']);
                             if ($r) {
-                                $cardUrl = url($r->full_slug);
-                                $cardTarget = ($cardRoute['new_window'] ?? false) ? '_blank' : '';
-                                if ($cardRoute['anchor'] ?? null) {
-                                    $cardUrl .= '#' . $cardRoute['anchor'];
+                                $fiUrl = url($r->full_slug);
+                                $fiTarget = ($fiRoute['new_window'] ?? false) ? '_blank' : '';
+                                if ($fiRoute['anchor'] ?? null) {
+                                    $fiUrl .= '#' . $fiRoute['anchor'];
                                 }
                             }
                         }
                     @endphp
 
-                    <div class="group rounded-xl border border-gray-200 bg-white overflow-hidden hover:shadow-lg transition-shadow">
-                        @if ($item['image'] ?? null)
-                            <div class="aspect-[4/3] overflow-hidden bg-gray-100">
-                                <img
-                                    src="{{ \Illuminate\Support\Facades\Storage::url($item['image']) }}"
-                                    alt="{{ $item['title'] ?? '' }}"
-                                    class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                >
-                            </div>
-                        @endif
-
-                        <div class="p-5">
-                            @if ($item['title'] ?? null)
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $item['title'] }}</h3>
+                    <div class="lg:w-9/12">
+                        <div class="sticky top-8">
+                            @if ($fiUrl)
+                                <a href="{{ $fiUrl }}" @if ($fiTarget) target="{{ $fiTarget }}" rel="noopener noreferrer" @endif class="block group">
+                            @else
+                                <div class="group">
                             @endif
-
-                            @if ($item['description'] ?? null)
-                                <p class="text-sm text-gray-600">{{ $item['description'] }}</p>
-                            @endif
-
-                            @if ($cardUrl)
-                                <a
-                                    href="{{ $cardUrl }}"
-                                    @if ($cardTarget) target="{{ $cardTarget }}" rel="noopener noreferrer" @endif
-                                    class="inline-flex items-center mt-3 text-sm font-medium text-primary hover:underline"
-                                >
-                                    {{ $cardRoute['btn_label'] ?? 'Ver más' }}
+                                @if ($fiImage)
+                                    <div class="overflow-hidden bg-gray-100 aspect-[16/9]">
+                                        <img
+                                            src="{{ \Illuminate\Support\Facades\Storage::url($fiImage) }}"
+                                            alt="{{ $fi['title'] ?? '' }}"
+                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                        >
+                                    </div>
+                                @endif
+                                <div class="mt-4 space-y-3">
+                                    @if ($fi['label'] ?? null)
+                                        <span class="inline-block text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full">
+                                            {{ $fi['label'] }}
+                                        </span>
+                                    @endif
+                                    @if ($fi['title'] ?? null)
+                                        <h3 class="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
+                                            {{ $fi['title'] }}
+                                        </h3>
+                                    @endif
+                                    @if ($fi['description'] ?? null)
+                                        <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                                            {{ $fi['description'] }}
+                                        </p>
+                                    @endif
+                                    @if ($fiUrl)
+                                        <span class="inline-flex items-center text-sm font-medium text-primary">
+                                            {{ $fiRoute['btn_label'] ?? 'Ver más' }}
+                                            <x-lucide-arrow-right class="ml-1 w-4 h-4" />
+                                        </span>
+                                    @endif
+                                </div>
+                            @if ($fiUrl)
                                 </a>
+                            @else
+                                </div>
                             @endif
                         </div>
                     </div>
-                @endforeach
-            </div>
+
+                    @if (count($restItems) > 0)
+                        <div class="lg:w-3/12 flex flex-col gap-6 lg:border-l lg:border-gray-200 lg:pl-6">
+                            @foreach ($restItems as $item)
+                                @php
+                                    $siImage = $item['image'] ?? null;
+                                    $siImage = is_array($siImage) ? ($siImage[0] ?? null) : $siImage;
+                                    $siUrl = '';
+                                    $siTarget = '';
+                                    $siRoute = $item['route'] ?? [];
+                                    if (($siRoute['route_id'] ?? null) === '0' && ($siRoute['external_url'] ?? null)) {
+                                        $siUrl = $siRoute['external_url'];
+                                        $siTarget = ($siRoute['new_window'] ?? false) ? '_blank' : '';
+                                    } elseif ($siRoute['route_id'] ?? null) {
+                                        $r = \App\Models\Route::find($siRoute['route_id']);
+                                        if ($r) {
+                                            $siUrl = url($r->full_slug);
+                                            $siTarget = ($siRoute['new_window'] ?? false) ? '_blank' : '';
+                                            if ($siRoute['anchor'] ?? null) {
+                                                $siUrl .= '#' . $siRoute['anchor'];
+                                            }
+                                        }
+                                    }
+                                @endphp
+
+                                <div class="bg-gray-3 overflow-hidden">
+                                    @if ($siImage)
+                                        <div class="aspect-[4/3] overflow-hidden bg-gray-100">
+                                            <img
+                                                src="{{ \Illuminate\Support\Facades\Storage::url($siImage) }}"
+                                                alt="{{ $item['title'] ?? '' }}"
+                                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            >
+                                        </div>
+                                    @endif
+                                    <div class="p-4">
+                                        @if ($item['label'] ?? null)
+                                            <span class="inline-block text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full mb-1">
+                                                {{ $item['label'] }}
+                                            </span>
+                                        @endif
+                                        @if ($item['title'] ?? null)
+                                            <h4 class="text-base font-semibold text-gray-900 mb-1 line-clamp-2">
+                                                {{ $item['title'] }}
+                                            </h4>
+                                        @endif
+                                        @if ($item['description'] ?? null)
+                                            <p class="text-sm text-gray-600 line-clamp-2 mb-3">
+                                                {{ $item['description'] }}
+                                            </p>
+                                        @endif
+                                        @if ($siUrl)
+                                            <a
+                                                href="{{ $siUrl }}"
+                                                @if ($siTarget) target="{{ $siTarget }}" rel="noopener noreferrer" @endif
+                                                class="inline-flex items-center text-sm font-medium text-primary hover:underline"
+                                            >
+                                                {{ $siRoute['btn_label'] ?? 'Ver más' }}
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            @endif
         @endif
+        </div>
     </div>
 </x-block>

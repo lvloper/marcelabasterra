@@ -16,6 +16,11 @@ class CardsBlock extends PageBlock
             Field::text('title', 'Título'),
             Field::rich('description', 'Descripción'),
             Field::repeater('items', 'Cards', [
+                Field::select('label', 'Etiqueta', [
+                    'entrevista' => 'Entrevista',
+                    'articulo' => 'Artículo',
+                    'libro' => 'Libro',
+                ])->native(false)->placeholder('Sin etiqueta'),
                 Field::text('title', 'Título')->required(),
                 Field::textarea('description', 'Descripción')->rows(3),
                 Field::image('image', 'Imagen', '800', '600'),

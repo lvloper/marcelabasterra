@@ -28,13 +28,14 @@ class Blog extends Model
 
     public static bool $editDate = true;
 
-    protected $fillable = ['name', 'description', 'content', 'image', 'published_at'];
+    protected $fillable = ['name', 'description', 'content', 'image', 'published_at', 'is_featured'];
 
     protected $casts = [
         'blocks' => 'collection',
         'image' => 'string',
         'description' => 'string',
         'content' => 'string',
+        'is_featured' => 'boolean',
     ];
 
     /**

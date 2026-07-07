@@ -14,6 +14,8 @@ export default {
     'md:mb-6',
     'md:mb-12',
     'md:mb-24',
+    'font-bellota',
+    'font-heavy',
   ],
 
   theme: {
@@ -54,9 +56,11 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Manrope', 'sans-serif'],
-        pt: ['Manrope', 'sans-serif'],
-        poppins: ['Poppins', 'sans-serif'],
+        sans: ['Work Sans', 'sans-serif'],
+        pt: ['Work Sans', 'sans-serif'],
+        poppins: ['Work Sans', 'sans-serif'],
+        bellota: ['Bellota Text', 'cursive'],
+        heavy: ['Bellota Text', 'cursive'],
       },
       fontSize: {
         'xs': '0.75rem',

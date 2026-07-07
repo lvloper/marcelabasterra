@@ -167,7 +167,7 @@ class ConfigurationResource extends Resource
         return [
             'index' => Pages\ListConfigurations::route('/'),
             'create' => Pages\CreateConfiguration::route('/create'),
-            // 'edit' => Pages\EditConfiguration::route('/{record}/edit'),
+            'edit' => Pages\EditConfiguration::route('/{record}/edit'),
         ];
     }
 }

@@ -1,9 +1,19 @@
 @php
+    $id = $id ?? 'text-' . uniqid();
     $widthClass = match ($width ?? 'container') {
         'narrow' => 'max-w-3xl',
         'wide' => 'max-w-7xl',
         default => 'max-w-5xl',
     };
+
+    $imageUrl = null;
+    if (isset($image) && $image) {
+        $imgValue = is_array($image) ? ($image[0] ?? null) : $image;
+        if ($imgValue) {
+            $imageUrl = \Illuminate\Support\Facades\Storage::url($imgValue);
+        }
+    }
+    $hasImage = ! empty($imageUrl);
 
     $htmlContent = $content ?? '';
     if (is_array($htmlContent)) {
@@ -53,22 +63,119 @@
     }
 @endphp
 
-<x-block class="py-12 md:py-16">
+<x-block class="py-12 md:py-16" id="{{ $id }}">
     <div class="container mx-auto px-4">
-        <div class="mx-auto {{ $widthClass }}">
-            @if ($eyebrow ?? null)
-                <p class="text-sm font-semibold tracking-widest uppercase text-gray-500 mb-3">{{ $eyebrow }}</p>
-            @endif
-
-            @if ($title ?? null)
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">{{ $title }}</h2>
-            @endif
-
-            @if ($htmlContent)
-                <div class="prose prose-lg max-w-none text-gray-700 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_a]:text-primary [&_a]:underline [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1">
-                    {!! $htmlContent !!}
+        <div class="mx-auto {{ $widthClass }} {{ $hasImage ? 'flex flex-col md:flex-row gap-8 md:gap-12' : '' }}">
+            @if ($hasImage)
+                <div class="shrink-0 w-full md:w-2/5 lg:w-1/3 text-reveal-img">
+                    <img
+                        src="{{ $imageUrl }}"
+                        alt="{{ $title ?? '' }}"
+                        class="w-full h-auto object-cover"
+                    >
                 </div>
             @endif
+
+            <div class="{{ $hasImage ? 'flex-1' : '' }}">
+                @if ($eyebrow ?? null)
+                    <p class="text-sm font-semibold tracking-widest uppercase text-gray-500 mb-3 text-reveal">{{ $eyebrow }}</p>
+                @endif
+
+                @if ($title ?? null)
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-reveal">{{ $title }}</h2>
+                @endif
+
+                @if ($htmlContent)
+                    <div class="prose prose-lg max-w-none text-gray-700 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_a]:text-primary [&_a]:underline [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 text-reveal">
+                        {!! $htmlContent !!}
+                    </div>
+                @endif
+
+                @php
+                    $renderCta = function ($cta) {
+                        if (empty($cta)) return null;
+                        $url = '';
+                        $target = '';
+                        if (($cta['route_id'] ?? null) === '0' && ($cta['external_url'] ?? null)) {
+                            $url = $cta['external_url'];
+                            $target = ($cta['new_window'] ?? false) ? '_blank' : '';
+                        } elseif ($cta['route_id'] ?? null) {
+                            $ctaRoute = \App\Models\Route::find($cta['route_id']);
+                            if ($ctaRoute) {
+                                $url = url($ctaRoute->full_slug);
+                                $target = ($cta['new_window'] ?? false) ? '_blank' : '';
+                                if ($cta['anchor'] ?? null) {
+                                    $url .= '#' . $cta['anchor'];
+                                }
+                            }
+                        }
+                        return $url ? ['url' => $url, 'label' => $cta['btn_label'] ?? 'Ver más', 'target' => $target] : null;
+                    };
+                    $ctaPrimary = $renderCta($cta_primary ?? null);
+                    $ctaSecondary = $renderCta($cta_secondary ?? null);
+                @endphp
+
+                @if ($ctaPrimary || $ctaSecondary)
+                    <div class="flex flex-wrap items-center gap-4 mt-6 text-reveal-cta">
+                        @if ($ctaPrimary)
+                            <a
+                                href="{{ $ctaPrimary['url'] }}"
+                                @if ($ctaPrimary['target']) target="{{ $ctaPrimary['target'] }}" rel="noopener noreferrer" @endif
+                                class="inline-flex items-center px-6 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-hover transition-colors"
+                            >
+                                {{ $ctaPrimary['label'] }}
+                            </a>
+                        @endif
+
+                        @if ($ctaSecondary)
+                            <a
+                                href="{{ $ctaSecondary['url'] }}"
+                                @if ($ctaSecondary['target']) target="{{ $ctaSecondary['target'] }}" rel="noopener noreferrer" @endif
+                                class="inline-flex items-center px-6 py-3 rounded-lg border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+                            >
+                                {{ $ctaSecondary['label'] }}
+                            </a>
+                        @endif
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 </x-block>
+
+@pushOnce('scripts', 'block-text')
+<style>
+    #{{ $id }} .text-reveal-img {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+    #{{ $id }} .text-reveal {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    #{{ $id }} .text-reveal-cta {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+</style>
+<script>
+    document.addEventListener('livewire:navigated', function() {
+        const BLOCK = document.getElementById('{{ $id }}');
+        if (!BLOCK) return;
+        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: BLOCK,
+                start: 'top 80%',
+                toggleActions: 'play none none none',
+            },
+            defaults: { ease: 'power3.out' },
+        });
+
+        tl.to('.text-reveal-img', { x: 0, opacity: 1, duration: 0.9 }, 0)
+          .to('.text-reveal', { y: 0, opacity: 1, duration: 0.7, stagger: 0.15 }, 0.1)
+          .to('.text-reveal-cta', { y: 0, opacity: 1, duration: 0.6 }, 0.5);
+    });
+</script>
+@endPushOnce

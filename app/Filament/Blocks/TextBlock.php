@@ -18,6 +18,9 @@ class TextBlock extends PageBlock
             Field::text('eyebrow', 'Volanta'),
             Field::text('title', 'Título'),
             Field::rich('content', 'Contenido', 'avanced')->required(),
+            Field::image('image', 'Imagen', '800', '600', 'images/text'),
+            Field::route('cta_primary', 'Botón principal')->buttonLabel(),
+            Field::route('cta_secondary', 'Botón secundario')->buttonLabel(),
             Field::toggleButtons('width', 'Ancho', [
                 'narrow' => 'Angosto',
                 'container' => 'Contenedor',

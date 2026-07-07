@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 568.7 144.88">
+  <defs>
+    <style>
+      .cls-1 {
+        stroke: #5c6b73;
+        stroke-miterlimit: 10;
+        stroke-width: 3px;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        fill: #f3f4f4;
+      }
+
+      .cls-5 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-6 {
+        letter-spacing: .03em;
+      }
+
+      .cls-7 {
+        letter-spacing: -.11em;
+      }
+
+      .cls-8 {
+        letter-spacing: 0em;
+      }
+
+      .cls-9 {
+        letter-spacing: 0em;
+      }
+
+      .cls-3 {
+        font-family: BellotaText-Bold, 'Bellota Text';
+        font-weight: 700;
+      }
+
+      .cls-3, .cls-4 {
+        font-size: 68.03px;
+      }
+
+      .cls-10 {
+        letter-spacing: .01em;
+      }
+
+      .cls-4 {
+        font-family: BellotaText-Regular, 'Bellota Text';
+      }
+
+      .cls-11 {
+        letter-spacing: .01em;
+      }
+    </style>
+  </defs>
+  <g id="Capa_1-2" data-name="Capa_1">
+    <g>
+      <path class="cls-2" d="M193.5,74.04c-5.33-5.12-12.2-8-20.61-8.65,6.57-1.72,11.93-4.87,16.08-9.46,4.15-4.58,6.22-10.59,6.22-18.02,0-5.71-1-10.34-2.99-13.9-2-3.56-4.74-6.3-8.24-8.24-3.5-1.94-7.41-3.26-11.72-3.96-4.31-.7-8.84-1.05-13.58-1.05h-63.3l-42.35,73.06L9.7,10.76H0v114.28h6.79V18.85l46.02,77.59,1.83-2.92L98.11,18.85v106.2h6.79V16.91h15.13v108.13h37.66c5.17,0,10.34-.43,15.52-1.29,5.17-.86,9.88-2.4,14.14-4.61,4.26-2.21,7.68-5.33,10.26-9.38,2.59-4.04,3.88-9.19,3.88-15.44,0-8.41-2.67-15.17-8-20.29ZM126.82,16.91h32c5.17,0,10.05.48,14.63,1.45,4.58.97,8.3,2.99,11.15,6.06,2.85,3.07,4.28,7.79,4.28,14.14,0,4.85-1.08,8.89-3.23,12.12-2.16,3.23-5.01,5.79-8.57,7.68-3.56,1.89-7.41,3.23-11.56,4.04-4.15.81-8.22,1.21-12.2,1.21h-26.51V16.91h0ZM191.31,107.75c-2.26,3.34-5.25,5.79-8.97,7.35-3.72,1.56-7.79,2.59-12.2,3.07-4.42.48-8.73.73-12.93.73h-30.39v-49.3h33.94c4.09,0,8.13.38,12.12,1.13,3.99.76,7.62,2.05,10.91,3.88,3.29,1.83,5.93,4.34,7.92,7.52,1.99,3.18,2.99,7.25,2.99,12.2,0,5.6-1.13,10.08-3.39,13.42Z"/>
+      <line class="cls-1" x1="233.16" y1="2" x2="233.16" y2="137.2"/>
+      <text class="cls-4" transform="translate(264.2 57.28)"><tspan class="cls-8" x="0" y="0">M</tspan><tspan class="cls-9" x="56.12" y="0">a</tspan><tspan class="cls-5" x="89.32" y="0">r</tspan><tspan class="cls-11" x="113.13" y="0">c</tspan><tspan class="cls-8" x="146.94" y="0">ela I.</tspan><tspan class="cls-7" x="285.45" y="0"> </tspan></text>
+      <text class="cls-3" transform="translate(264.2 124.41)"><tspan class="cls-6" x="0" y="0">Bas</tspan><tspan class="cls-10" x="112.25" y="0">t</tspan><tspan class="cls-6" x="136.67" y="0">erra</tspan></text>
+    </g>
+  </g>
+</svg>

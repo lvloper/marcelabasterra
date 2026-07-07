@@ -17,7 +17,7 @@ trait HandlesExternalImages
      */
     protected function resolveImageFields(): array
     {
-        $single = ['image', 'image_mobile', 'photo', 'picture', 'avatar'];
+        $single = ['image', 'image_mobile', 'photo', 'picture', 'avatar', 'profile_photo'];
         $multiple = ['images', 'gallery'];
 
         // Try to get model class from the Filament page/resource context

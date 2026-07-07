@@ -113,27 +113,36 @@ class DatabaseSeeder extends Seeder
         ];
 
         return collect($posts)->map(function (array $post, int $index) use ($parentRoute): Blog {
-            $blog = Blog::updateOrCreate(
-                ['published_at' => now()->subDays(4 - $index)->startOfDay()],
+            $route = Route::updateOrCreate(
                 [
-                    'description' => '<p>'.$post['description'].'</p>',
-                    'content' => '<p>'.$post['description'].' Este contenido fue creado por el seeder para validar el flujo de crear, editar, publicar y borrar novedades desde Filament.</p>',
-                    'image' => null,
-                ]
-            );
-
-            $blog->route()->updateOrCreate(
-                ['routable_type' => Blog::class, 'routable_id' => $blog->id],
+                    'routable_type' => Blog::class,
+                    'slug' => $post['slug'],
+                    'parent_id' => $parentRoute->id,
+                ],
                 [
                     'title' => $post['title'],
-                    'slug' => $post['slug'],
                     'layout' => 'default',
                     'status' => Status::Published,
-                    'parent_id' => $parentRoute->id,
                     'full_slug' => $parentRoute->full_slug . '/' . $post['slug'],
                     'description' => $post['description'],
                 ]
             );
+
+            if ($route->routable && $route->routable instanceof Blog) {
+                $blog = $route->routable;
+                $blog->update([
+                    'description' => '<p>'.$post['description'].'</p>',
+                    'content' => '<p>'.$post['description'].' Este contenido fue creado por el seeder para validar el flujo de crear, editar, publicar y borrar novedades desde Filament.</p>',
+                    'image' => null,
+                ]);
+            } else {
+                $blog = Blog::create([
+                    'description' => '<p>'.$post['description'].'</p>',
+                    'content' => '<p>'.$post['description'].' Este contenido fue creado por el seeder para validar el flujo de crear, editar, publicar y borrar novedades desde Filament.</p>',
+                    'image' => null,
+                ]);
+                $route->routable()->associate($blog)->save();
+            }
 
             return $blog->fresh('route');
         })->all();

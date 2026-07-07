@@ -1,5 +1,7 @@
 @php
     $mediaType = $media_type ?? 'image';
+$image = is_array($image ?? null) ? ($image[0] ?? null) : $image;
+$video_file = is_array($video_file ?? null) ? ($video_file[0] ?? null) : $video_file;
 @endphp
 
 <x-block class="py-12 md:py-16">

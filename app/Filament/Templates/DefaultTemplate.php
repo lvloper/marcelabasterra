@@ -11,11 +11,13 @@ class DefaultTemplate
     {
         // Copy here the blocks you want to use in the template
         $blocks = [
+            \App\Filament\Blocks\HeroBlock::make(),
             \App\Filament\Blocks\TextBlock::make(),
             \App\Filament\Blocks\MediaBlock::make(),
             \App\Filament\Blocks\MediaTextBlock::make(),
             \App\Filament\Blocks\CardsBlock::make(),
             \App\Filament\Blocks\SearchBlock::make(),
+            \App\Filament\Blocks\BookPresentationBlock::make(),
         ];
 
         // foreach ($blocks as $block) {
@@ -48,8 +50,7 @@ class DefaultTemplate
                 ->cloneable()
                 ->editAction(
                     fn(Action $action) => $action->closeModalByClickingAway(false)
-                )
-                ->view('filament-forms::components.editor'),
+                ),
             
             // Hidden input for paste functionality
             \Filament\Forms\Components\Hidden::make('blocks_pastable')

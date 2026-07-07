@@ -9,6 +9,7 @@ use App\Models\Blog;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
@@ -55,6 +56,7 @@ class BlogResource extends ResourceBase
                     \Filament\Schemas\Components\Group::make()
                         ->schema([
                             SpatieTagsInput::make('tags')->label('Nube de tags'),
+                            Toggle::make('is_featured')->label('Destacada'),
                         ]),
                 ]),
             RichEditor::make('description')

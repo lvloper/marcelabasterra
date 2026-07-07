@@ -1,7 +1,7 @@
 @php
 $menu = App\Models\Menu::query()->where('slug', 'header')->first();
 @endphp
-<header x-cloak class="overflow-hidden sticky top-0 z-30 w-full bg-gray-200 md:fixed lg:hidden" x-data="{ 
+<header x-cloak class="overflow-hidden fixed top-0 z-30 w-full bg-transparent lg:hidden" x-data="{ 
                 open: false,
                 activeAccordion: null,
                 setActiveAccordion(id) {
@@ -12,8 +12,8 @@ $menu = App\Models\Menu::query()->where('slug', 'header')->first();
 
     <div class="flex justify-between px-6 md:px-[7rem] items-center h-[80px] md:h-[60px] bg-white">
         <div class="xl:pl-6">
-            <a href="/" class="block text-lg font-bold uppercase tracking-wide text-primary">
-                {{ config_text('site-name', 'CMS Base') }}
+            <a href="/" class="block">
+                <img src="{{ asset('img/Logo-azul.svg') }}" alt="{{ config_text('site-name', 'CMS Base') }}" class="h-8">
             </a>
         </div>
 
@@ -33,8 +33,8 @@ $menu = App\Models\Menu::query()->where('slug', 'header')->first();
 
         <div class="flex justify-between items-center h-[80px] md:h-[60px] mb-20">
             <div class="xl:pl-6">
-                <a href="/" class="block text-lg font-bold uppercase tracking-wide text-white">
-                    {{ config_text('site-name', 'CMS Base') }}
+                <a href="/" class="block">
+                    <img src="{{ asset('img/Logo-blanco.svg') }}" alt="{{ config_text('site-name', 'CMS Base') }}" class="h-8">
                 </a>
             </div>
 

@@ -2,27 +2,31 @@
 .text-wysiwyg {
 
     p, p span, span, ol, ul li {
-        font-family: 'Poppins', sans-serif !important;
+        font-family: 'Work Sans', sans-serif !important;
         @apply text-base;
     }
 
     h1 {
-        @apply font-heavy text-pretty leading-tight mb-4 !important;
+        @apply font-heavy font-black text-pretty leading-tight mb-4 !important;
+        font-family: 'Bellota Text', cursive !important;
         font-size: 5rem !important;
     }
 
     h2 {
-        @apply font-heavy text-pretty leading-tight text-3xl mb-4 !important;
+        @apply font-heavy font-black text-pretty leading-tight text-3xl mb-4 !important;
+        font-family: 'Bellota Text', cursive !important;
         color: var(--color-primary) !important;
         font-weight: bold !important;
     }
 
     h3,.h3 {
         @apply font-medium text-balance text-2xl leading-tight mb-2 !important;
+        font-family: 'Bellota Text', cursive !important;
     }
 
     h4,.h4 {
         @apply font-medium text-balance text-xl leading-tight mb-2 !important;
+        font-family: 'Bellota Text', cursive !important;
 
         strong {
             font-weight: bold !important;
@@ -55,7 +59,7 @@
         position: absolute;
         top: -0.5rem;
         left: 0.5rem;
-        font-family: 'Futura Std', sans-serif;
+            font-family: 'Bellota Text', cursive !important;
     } */
 
     blockquote p {
@@ -114,7 +118,7 @@
             line-height: 1.25 !important;
         }
         p, span {
-            font-family: 'Poppins', sans-serif !important;
+            font-family: 'Work Sans', sans-serif !important;
         }
 
         blockquote {
@@ -137,11 +141,11 @@
 @layer components {
 
     .font-sans {
-        font-family: 'Manrope', sans-serif !important;
+        font-family: 'Work Sans', sans-serif !important;
     }
 
     .font-poppins {
-        font-family: 'Poppins', sans-serif;
+        font-family: 'Work Sans', sans-serif;
     }
 
     .text-primary {

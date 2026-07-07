@@ -12,10 +12,14 @@
 | `eyebrow` | text | no | — | Volanta / sobre-título |
 | `title` | text | no | — | Título principal |
 | `content` | rich (avanced) | sí | — | Editor de texto completo con formato avanzado |
+| `image` | image | no | — | Imagen opcional, se muestra a la izquierda del contenido en desktop |
+| `cta_primary` | route | no | — | Botón principal debajo del texto |
+| `cta_secondary` | route | no | — | Botón secundario debajo del texto |
 | `width` | toggleButtons | sí | `container` | Opciones: `narrow` (Angosto), `container` (Contenedor), `wide` (Amplio) |
 
 ## Comportamiento
 - Renderiza un bloque de texto enriquecido con volanta y título opcionales.
+- Si se carga una imagen, se muestra a la izquierda del texto en desktop (layout `flex` de 2 columnas). En mobile, la imagen se apila arriba del contenido.
 - El campo `width` controla el ancho máximo del contenedor en frontend:
   - `narrow`: ~640px (lectura cómoda).
   - `container`: ~1200px (ancho de página estándar).

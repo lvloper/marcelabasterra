@@ -35,6 +35,13 @@ $processedImages[] = Storage::url($image);
 if (isset($imageMobile)) {
 if (is_array($imageMobile)) {
 $processedImagesMobile = array_values($imageMobile);
+$processedImagesMobile = array_map(function($img) {
+if(str_starts_with($img, 'http')) {
+return $img;
+} else {
+return Storage::url($img);
+}
+}, $processedImagesMobile);
 } elseif (is_string($imageMobile) && str_starts_with($imageMobile, 'http')) {
 $processedImagesMobile[] = $imageMobile;
 } elseif (is_string($imageMobile)) {

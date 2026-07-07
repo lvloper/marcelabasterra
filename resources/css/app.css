@@ -1,6 +1,6 @@
 @import "futura.css";
 @import "./components/embla.css";
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap');
+
 @import "./components/line-title.css";
 @import "./components/text-wysiwyg.css";
 @import "./components/gallery.css";
@@ -9,11 +9,11 @@
 @import "./view-transition.css";
 
 :root {
-  --color-primary: #334155;
-  --color-primary-hover: #1e293b;
-  --color-secondary: #64748b;
-  --color-secondary-hover: #475569;
-  --color-secondary-light: #94a3b8;
+  --color-primary: #2a3461;
+  --color-primary-hover: #1e2747;
+  --color-secondary: #45bfe3;
+  --color-secondary-hover: #2da8cf;
+  --color-secondary-light: #7ad4ef;
 
   --color-black: #000000;
   --color-white: #FFFFFF;
@@ -271,7 +271,7 @@ html {
 
 .text-normal,
 .normal-text {
-  @apply text-base font-poppins ;
+  @apply text-base font-sans ;
 }
 
 .sm-text {
@@ -279,19 +279,20 @@ html {
 }
 
 .text-question {
-  @apply text-[7rem] sm:text-[10rem] md:text-[15rem] lg:text-[20rem] xl:text-[20rem] 2xl:text-[20rem] mt-12 text-[#FFFFFF80] bg-transparent flex justify-center futura-bold
+  @apply text-[7rem] sm:text-[10rem] md:text-[15rem] lg:text-[20rem] xl:text-[20rem] 2xl:text-[20rem] mt-12 text-[#FFFFFF80] bg-transparent flex justify-center font-bellota;
+  font-weight: bold;
 }
 
 .title-normal {
-  @apply text-xl lg:text-2xl font-bold font-poppins;
+  @apply text-xl lg:text-2xl font-bold font-bellota;
   line-height: 1.15;
 }
 .description-normal {
-  @apply leading-snug font-poppins text-base;
+  @apply leading-snug font-sans text-base;
 }
 
 .description2-normal {
-  @apply font-poppins leading-snug text-base;
+  @apply font-sans leading-snug text-base;
 }
 
 .block-Hero {
@@ -315,6 +316,7 @@ html {
   color: #F32735;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
+  font-family: 'Bellota Text', cursive;
 }
 
 .h3 {
@@ -322,6 +324,7 @@ html {
   color: #000000;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
+  font-family: 'Bellota Text', cursive;
 }
 
 .block-hidden {
@@ -336,7 +339,7 @@ html {
 
 .block-Hero, .block-Hero2 {
   strong {
-    @apply font-heavy;
+    @apply font-heavy font-black;
   }
 
 
@@ -347,26 +350,26 @@ html {
     @apply text-2xl leading-tight 2xl:text-3xl;
 
     strong {
-      @apply font-heavy;
+      @apply font-heavy font-black;
     }
   }
 
   .richEvents h3 {
-    @apply hidden md:block text-xl font-poppins  pt-8;
+    @apply hidden md:block text-xl font-sans pt-8;
   }
 }
 
 .text {
   h2 {
-    @apply text-primary font-bold;
+    @apply text-primary font-bold font-bellota;
   }
 
   h3 {
-    @apply leading-tight text-xl md:text-3xl lg:text-3xl xl:text-3xl pb-4 xl:pb-6 font-bold;
+    @apply leading-tight text-xl md:text-3xl lg:text-3xl xl:text-3xl pb-4 xl:pb-6 font-bold font-bellota;
   }
 
   p {
-    @apply pb-8 text-md md:text-xl xl:text-lg font-poppins;
+    @apply pb-8 text-md md:text-xl xl:text-lg font-sans;
   }
 }
 

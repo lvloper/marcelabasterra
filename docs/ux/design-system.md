@@ -7,11 +7,11 @@
 
 ## Colors
 ```css
---color-primary       /* Color principal (botones, links, acentos) */
---color-primary-hover /* Hover del color principal */
---color-secondary     /* Color secundario */
---color-secondary-hover
---color-secondary-light
+--color-primary: #2a3461        /* Azul principal (botones, links, acentos) */
+--color-primary-hover: #1e2747  /* Hover del color principal */
+--color-secondary: #45bfe3      /* Celeste secundario */
+--color-secondary-hover: #2da8cf
+--color-secondary-light: #7ad4ef
 --color-black
 --color-white
 --color-gray          /* Gris base */
@@ -21,8 +21,8 @@
 
 ## Typography
 ```css
-font-family: 'Manrope', sans-serif;  /* Default body */
-font-family: 'Poppins', sans-serif;  /* Alternativa */
+font-family: 'Work Sans', sans-serif;    /* Body text, default */
+font-family: 'Bellota Text', cursive;    /* Headlines, highlights */
 ```
 
 ## Spacing
