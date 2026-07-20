@@ -1,656 +1,2698 @@
 # Design System — Marcela Basterra
 
-> Última actualización: 2026-06-08
-> Versión: 2.0
+> Manual de identidad visual e implementación web  
+> Versión: 1.0  
+> Estado: base operativa para diseño y maquetación  
+> Uso principal: adaptar y crear bloques para el sitio institucional de Marcela Basterra  
+> Base estructural permitida: OpenTailwind  
+> Base estética permitida: únicamente este documento
 
 ---
 
-## 1. Principios
+## 1. Propósito del documento
 
-- **Mobile-first responsive** — todo se diseña mobile primero, luego breakpoints up.
-- **Accesible WCAG AA** — contraste mínimo 4.5:1 en texto, focus visible, labels en formularios.
-- **Tokens via CSS custom properties** — colores, tamaños y espaciados referencian variables, no valores hardcodeados.
-- **Todo editable desde CMS** — ningún texto, imagen o color debe estar hardcodeado en vistas.
-- **Tailwind-first** — usar clases utilitarias de Tailwind. Las custom properties se exponen vía `tailwind.config.js`.
+Este documento define el sistema visual, editorial y de interacción para las interfaces web de la marca personal **Marcela Basterra**, abogada constitucionalista.
+
+Su objetivo principal es permitir que una persona desarrolladora o una LLM agéntica pueda:
+
+1. seleccionar estructuras útiles de OpenTailwind;
+2. eliminar la identidad visual original del bloque;
+3. adaptar el bloque a la identidad de Marcela Basterra;
+4. crear nuevos bloques compatibles con el resto del sitio;
+5. mantener consistencia entre páginas, secciones y contenidos;
+6. evitar decisiones estéticas improvisadas.
+
+Este manual no debe interpretarse como una colección de sugerencias. Las reglas marcadas como **obligatorias** deben cumplirse en todos los bloques.
 
 ---
 
-## 2. Colores
+## 2. Idea central de marca
 
-### 2.1 Paleta
+Marcela Basterra debe presentarse como:
 
-| Token | Valor | Uso |
-|-------|-------|-----|
-| `--color-primary` | `#2a3461` | Botones default, links, títulos, footer bg, acciones estándar |
-| `--color-primary-hover` | `#1f2748` | Hover de botones y links primary |
-| `--color-secondary` | `#9499b0` | Texto secundario, iconos, destacados suaves |
-| `--color-secondary-hover` | `#7a80a0` | Hover secondary |
-| `--color-secondary-light` | `#c4c7d4` | Fondos sutiles, bordes, separadores |
-| `--color-accent` | `#45bfe3` | SOLO botones MUY destacados / featured |
-| `--color-accent-hover` | `#3aaed2` | Hover accent |
-| `--color-black` | `#000000` | Texto principal |
-| `--color-white` | `#FFFFFF` | Fondos, texto sobre oscuro |
-| `--color-gray` | `#5c6b73` | Texto base gris |
-| `--color-gray-2` | `#bec4c7` | Gris claro, bordes, fondos alternados |
-| `--color-gray-3` | `#f3f4f4` | Gris fondo, secciones |
+> **Una autoridad constitucional que explica con claridad, fundamenta con rigor e interviene en el presente.**
 
-### 2.2 Reglas de uso
+La identidad debe comunicar, en este orden:
 
-```
-FONDO           → gray-3 (#f3f4f4) o white (#ffffff)
-TEXTO           → black (#000000) o gray (#5c6b73)
-ACCIÓN          → primary (#2a3461)
-DESTAQUE EXTRA  → accent (#45bfe3)
-```
+1. autoridad institucional;
+2. trayectoria profesional y académica;
+3. rigor jurídico;
+4. claridad expositiva;
+5. vigencia e intervención pública;
+6. una personalidad editorial propia.
 
-- Primary se usa para botones comunes, links, footer, títulos destacados.
-- Accent se reserva para CTAs principales, botones de conversión, acciones premium.
-- No usar accent para texto ni fondos de sección.
+El sitio no debe parecer:
 
-### 2.3 Gradientes
+- una plantilla genérica para estudios jurídicos;
+- un sitio universitario tradicional;
+- una landing de servicios tecnológicos;
+- una interfaz SaaS;
+- un portfolio creativo experimental;
+- un diario clásico trasladado literalmente a la web.
 
-| Token | Valor |
-|-------|-------|
-| `--gradient-primary-secondary` | `linear-gradient(to right, var(--color-primary), var(--color-secondary))` |
-| `--gradient-secondary-primary` | `linear-gradient(to right, var(--color-secondary), var(--color-primary))` |
+La dirección visual es **editorial digital contemporánea**, con recursos tomados de publicaciones y plataformas actuales: tipografía de gran escala, bloques de color, grillas asimétricas, fotografía protagonista, líneas visibles y movimiento editorial.
 
-### 2.4 Clases Tailwind correspondientes
+---
+
+## 3. Objetivo principal del sitio
+
+El objetivo central es:
+
+> **Presentar trayectoria y autoridad.**
+
+Las decisiones de interfaz deben priorizar:
+
+- antecedentes;
+- cargos y funciones;
+- publicaciones;
+- actividad académica;
+- intervenciones públicas;
+- participación en medios;
+- conferencias;
+- pensamiento jurídico;
+- vigencia profesional.
+
+Las llamadas a la acción deben ser secundarias respecto de la construcción de autoridad. No convertir la portada en una landing comercial agresiva.
+
+---
+
+## 4. Personalidad visual
+
+### 4.1 Dirección general
+
+La identidad combina:
+
+- estructura editorial contemporánea;
+- autoridad institucional;
+- ritmo visual activo;
+- fotografía documental y de retrato;
+- tipografía expresiva;
+- superficies planas;
+- composiciones modulares;
+- animación visible pero controlada.
+
+### 4.2 Principios obligatorios
+
+- Diseño flat.
+- Sin sombras.
+- Sin bordes redondeados.
+- Sin tarjetas flotantes.
+- Sin negro como color estructural.
+- Sin texto superpuesto sobre fotografías.
+- Sin degradados como recurso habitual.
+- Sin iconografía decorativa dominante.
+- Sin estética de dashboard o aplicación.
+- Sin automatismos que distraigan de la lectura.
+- Sin adoptar la identidad visual original de OpenTailwind.
+
+### 4.3 Referencia conceptual
+
+La dirección debe sentirse más cercana a un cruce entre:
+
+- publicación digital moderna;
+- marca institucional contemporánea;
+- archivo vivo de trayectoria;
+- plataforma de pensamiento y actualidad.
+
+La estructura puede ser enérgica y asimétrica, pero nunca caótica.
+
+---
+
+## 5. Jerarquía de reglas
+
+Al adaptar un bloque, aplicar esta prioridad:
+
+1. accesibilidad y legibilidad;
+2. reglas obligatorias de este manual;
+3. identidad de marca;
+4. función del contenido;
+5. estructura del bloque original;
+6. detalles visuales del bloque original.
+
+Si una decisión de OpenTailwind contradice este manual, se elimina o reemplaza.
+
+---
+
+# 6. Uso de OpenTailwind
+
+## 6.1 Rol de la librería
+
+OpenTailwind se utiliza como:
+
+- catálogo de estructuras;
+- punto de partida para grillas;
+- referencia de comportamiento responsive;
+- base de componentes;
+- fuente de patrones funcionales;
+- acelerador de desarrollo.
+
+OpenTailwind **no** se utiliza como:
+
+- sistema de color;
+- sistema tipográfico;
+- criterio de espaciado final;
+- identidad visual;
+- referencia de bordes;
+- referencia de botones;
+- referencia de tarjetas;
+- referencia de animación final;
+- criterio para elegir iconos;
+- fuente definitiva de contenido.
+
+## 6.2 Colecciones
+
+Cuando haya varias alternativas estructurales:
+
+1. revisar primero bloques de composición más contemporánea o asimétrica;
+2. evaluar luego bloques simples que puedan transformarse;
+3. elegir por estructura, no por apariencia;
+4. evitar seleccionar un bloque solo porque sus colores o imágenes parecen adecuados.
+
+La colección de origen no determina el resultado final.
+
+## 6.3 Qué puede conservarse
+
+Puede conservarse, si es útil:
+
+- orden semántico;
+- estructura HTML;
+- grilla responsive;
+- distribución de columnas;
+- comportamiento de menú;
+- acordeones;
+- tabs;
+- carruseles manuales;
+- lógica de interacción;
+- jerarquía funcional;
+- atributos ARIA correctos;
+- relaciones de aspecto;
+- breakpoints;
+- organización de datos;
+- estructura de formularios.
+
+## 6.4 Qué debe revisarse siempre
+
+Revisar y adaptar obligatoriamente:
+
+- colores;
+- fuentes;
+- tamaño tipográfico;
+- interlineado;
+- `border-radius`;
+- sombras;
+- bordes;
+- fondos oscuros;
+- botones;
+- badges;
+- iconos;
+- espaciado vertical;
+- ancho de contenedores;
+- animaciones;
+- overlays;
+- posición del texto;
+- tratamiento de imágenes;
+- estados hover;
+- estados focus;
+- modo oscuro;
+- contenido de ejemplo.
+
+## 6.5 Qué debe eliminarse siempre
+
+Eliminar:
+
+- todas las clases `rounded-*`;
+- todas las clases `shadow-*`;
+- fondos negros o casi negros usados como superficie;
+- gradientes decorativos;
+- blur decorativo;
+- glow;
+- glassmorphism;
+- blobs;
+- círculos decorativos genéricos;
+- badges redondeados tipo píldora;
+- iconos grandes como protagonistas;
+- overlays de color sobre fotografías;
+- texto ubicado encima de fotografías;
+- autoplay;
+- cursores personalizados;
+- animaciones elásticas;
+- efectos 3D;
+- elevación de tarjetas en hover;
+- estilos propios de modo oscuro no definidos en este manual.
+
+## 6.6 Regla de transformación
+
+Un bloque adaptado no debe percibirse como “un bloque de OpenTailwind con otros colores”.
+
+Debe percibirse como una pieza creada específicamente para Marcela Basterra.
+
+---
+
+# 7. Logotipo
+
+## 7.1 Archivos disponibles
+
+- Con tagline: `public/logos/logo-con-tagline.svg`
+- Sin tagline: `public/logos/logo-sin-tagline.svg`
+- Horizontal: `public/logos/logo-horizontal-sin-tagline.svg`
+- Horizontal con tagline: `public/logos/logo-horizontal-con-tagline.svg`
+- Monograma: `public/logos/monograma.svg`
+- Logotipo solo: `public/logos/logotipo.svg`
+- Logotipo horizontal: `public/logos/logotipo-horizontal.svg`
+
+## 7.2 Uso principal
+
+La marca principal es el nombre completo.
+
+Siempre que el espacio permita leerlo correctamente, usar una versión que incluya **Marcela Basterra**.
+
+## 7.3 Header
+
+Estado inicial:
+
+- usar `logo-sin-tagline.svg`;
+- no usar tagline en la navegación principal;
+- respetar un área de seguridad visual;
+- mantener alta legibilidad.
+
+Estado reducido durante scroll:
+
+- reemplazar el logo completo por `monograma.svg`;
+- reducir la altura del header;
+- no deformar ni recortar el logo;
+- ejecutar el cambio con una transición breve.
+
+## 7.4 Mobile
+
+En mobile puede utilizarse:
+
+- logo sin tagline cuando el ancho lo permita;
+- monograma en estados compactos;
+- monograma dentro del header reducido;
+- nombre completo dentro del panel de navegación.
+
+## 7.5 Usos secundarios
+
+El monograma puede utilizarse como:
+
+- sello institucional;
+- firma visual en el footer;
+- marcador editorial;
+- favicon;
+- recurso de cierre;
+- detalle en piezas reducidas.
+
+No utilizar el monograma como patrón decorativo repetido en exceso.
+
+## 7.6 Prohibiciones
+
+- No agregar sombras al logo.
+- No encerrar el logo en cápsulas.
+- No aplicar degradados.
+- No alterar proporciones.
+- No cambiar sus tipografías.
+- No colocar el logo sobre una fotografía compleja.
+- No combinar varias versiones del logo en un mismo bloque sin motivo funcional.
+
+---
+
+# 8. Sistema de color
+
+## 8.1 Paleta principal
+
+| Token | Valor | Función |
+|---|---:|---|
+| `brand-primary` | `#2a3461` | Azul institucional principal |
+| `brand-primary-muted` | `#9499b0` | Azul reducido, fondos secundarios y elementos no textuales |
+| `brand-accent` | `#45bfe3` | Acento puntual |
+| `text-base` | `#5c6b73` | Texto base sobre fondos claros |
+| `text-muted` | `#bec4c7` | Texto muy secundario y elementos decorativos; no usar para párrafos |
+| `surface-white` | `#ffffff` | Fondo general |
+| `surface-light` | `#f3f4f4` | Fondo gris claro |
+| `surface-ivory` | `#f5f0e8` | Fondo editorial cálido |
+| `border-light` | `#bec4c7` | Divisores suaves |
+| `on-primary` | `#ffffff` | Texto principal sobre azul |
+| `on-primary-soft` | `#f3f4f4` | Texto secundario sobre azul |
+
+`surface-ivory` se adopta como valor operativo para el fondo marfil. Si la dirección de arte final modifica este valor, debe actualizarse en un único token y no directamente en componentes.
+
+## 8.2 Fondo general
+
+El fondo base del sitio es:
 
 ```css
-text-primary           → color: var(--color-primary)
-bg-primary             → background-color: var(--color-primary)
-text-secondary         → color: var(--color-secondary)
-bg-secondary           → background-color: var(--color-secondary)
-bg-secondary-light     → background-color: var(--color-secondary-light)
-text-accent            → color: var(--color-accent)
-bg-accent              → background-color: var(--color-accent)
-text-accent-hover      → color: var(--color-accent-hover)
-bg-accent-hover        → background-color: var(--color-accent-hover)
-text-black             → color: var(--color-black)
-bg-white               → background-color: var(--color-white)
-text-gray              → color: var(--color-gray)
-bg-gray                → background-color: var(--color-gray)
-bg-gray-2              → background-color: var(--color-gray-2)
-bg-gray-3              → background-color: var(--color-gray-3)
+background: #ffffff;
 ```
 
-### 2.5 Fondos combinados (clases custom)
+El blanco puro permite que las secciones marfil, gris claro y azul institucional generen contrastes claros.
 
-| Clase | Descripción |
-|-------|-------------|
-| `bg-primary-white` | Mitad superior `--color-primary`, mitad inferior blanco |
-| `bg-white-gray` | Mitad superior blanco, mitad inferior `--color-gray-3` |
+## 8.3 Azul institucional
+
+`#2a3461` es el único color oscuro estructural.
+
+Se utiliza para:
+
+- fondos de secciones destacadas;
+- títulos sobre fondos claros;
+- botones primarios;
+- bordes de alta jerarquía;
+- navegación;
+- destacados;
+- subrayados institucionales;
+- superficies de cierre;
+- bloques de trayectoria o pensamiento;
+- estados hover.
+
+No sustituirlo por negro.
+
+## 8.4 Marfil
+
+`#f5f0e8` puede utilizarse frecuentemente en secciones completas.
+
+Funciones:
+
+- aportar temperatura editorial;
+- separar capítulos;
+- acompañar textos largos;
+- panel de navegación;
+- citas;
+- publicaciones;
+- transiciones entre bloques fotográficos y bloques institucionales.
+
+No usarlo como fondo de todas las tarjetas dentro de una sección marfil.
+
+## 8.5 Gris claro
+
+`#f3f4f4` se utiliza para:
+
+- secciones secundarias;
+- fichas;
+- áreas informativas;
+- formularios;
+- estados suaves;
+- fondos sobre los que el marfil no sea apropiado.
+
+No debe competir en frecuencia con el blanco y el marfil.
+
+## 8.6 Celeste de acento
+
+`#45bfe3` debe usarse poco.
+
+Usos permitidos:
+
+- subrayar una palabra;
+- línea corta;
+- marcador activo;
+- estado focus;
+- pequeño detalle de botón;
+- indicador de navegación;
+- borde parcial;
+- dato puntual;
+- microinteracción.
+
+Usos prohibidos:
+
+- grandes fondos de sección;
+- párrafos;
+- titulares completos;
+- múltiples tarjetas simultáneas;
+- superficies dominantes;
+- gradientes.
+
+Regla recomendada: el celeste no debería ocupar visualmente más del 5 % de una vista.
+
+## 8.7 Gris base
+
+`#5c6b73` se utiliza para:
+
+- párrafos;
+- navegación secundaria;
+- descripciones;
+- formularios;
+- metadatos legibles;
+- texto funcional.
+
+Puede usarse el azul institucional para titulares y datos de mayor jerarquía.
+
+## 8.8 Colores reducidos
+
+`#bec4c7` y `#9499b0` no deben utilizarse para párrafos pequeños sobre blanco.
+
+Reservarlos para:
+
+- bordes;
+- fondos;
+- marcas de paginación;
+- elementos deshabilitados;
+- decoraciones;
+- metadatos grandes;
+- texto sobre fondos donde exista contraste suficiente.
+
+## 8.9 Combinaciones preferidas
+
+### Fondo blanco
+
+- título: azul institucional;
+- párrafo: gris base;
+- borde: gris reducido o azul;
+- acento: celeste;
+- botón primario: azul con texto blanco.
+
+### Fondo marfil
+
+- título: azul institucional;
+- párrafo: gris base;
+- borde: azul o gris base con baja presencia;
+- botón: azul pleno o borde azul.
+
+### Fondo gris claro
+
+- título: azul institucional;
+- párrafo: gris base;
+- borde: gris reducido;
+- acento: celeste puntual.
+
+### Fondo azul institucional
+
+- título: blanco;
+- párrafo: gris claro;
+- borde: blanco con opacidad controlada;
+- acento: celeste;
+- botón primario invertido: blanco con texto azul;
+- botón secundario: borde blanco.
 
 ---
 
-## 3. Tipografía
+# 9. Tipografía
 
-### 3.1 Fuentes
+## 9.1 Familias
 
-| Familia | Pesos | Archivos | Uso | Clase Tailwind |
-|---------|-------|----------|-----|----------------|
-| **Bellota Text** | 400, 700 | `public/fonts/BellotaText-Regular.ttf`, `public/fonts/BellotaText-Bold.ttf` | Body, headings, UI, todo el sitio | `font-sans` |
-| **Source Serif 4** | 500 | `public/fonts/SourceSerif4_18pt-Medium.ttf` | Texto editorial, WYSIWYG, artículos | `font-source` |
+### Bellota Text
 
-### 3.2 Reglas de uso
+Uso:
 
-```
-TITULARES   → Bellota Text Bold (700)   → font-sans font-bold
-TEXTOS BASE → Bellota Text Regular (400) → font-sans
-EDITORIAL   → Source Serif 4 Medium (500) → font-source
-```
+- titulares;
+- destacados;
+- conceptos;
+- frases institucionales;
+- nombres de bloques importantes;
+- palabras protagonistas.
 
-### 3.3 Escala tipográfica
+No usar en:
 
-| Clase | Size | Uso |
-|-------|------|-----|
-| `text-xs` | 0.75rem | Notas, labels pequeños |
-| `text-sm` | 0.85rem | Texto secundario |
-| `text-base` | 0.85rem | Body (mismo que sm — ajustado para diseño editorial) |
-| `text-md` | 1.1rem | Párrafos destacados |
-| `text-lg` | 1.3rem | Subtítulos |
-| `text-xl` | 1.4rem | Títulos de sección |
-| `text-2xl` | 1.6rem | Títulos de bloque |
-| `text-3xl` | 2rem | Títulos principales |
-| `text-4xl` | 2.7rem | Hero headings |
-| `text-5xl` | 3.5rem | Display headings |
+- navegación;
+- botones;
+- etiquetas pequeñas;
+- formularios;
+- párrafos largos;
+- metadatos;
+- tablas.
 
-### 3.4 Clases tipográficas de utilidad
+Pesos permitidos:
 
-| Clase | Definición |
-|-------|-----------|
-| `title-normal` | `text-xl lg:text-2xl font-bold font-sans` leading 1.15 |
-| `description-normal` | `leading-snug font-source text-base` |
-| `description2-normal` | `font-source leading-snug text-base` |
-| `text-normal` / `normal-text` | `text-base font-sans` |
-| `sm-text` | `text-md xl:text-base` |
+- regular;
+- bold.
 
-### 3.5 Mapeo de clases viejas → nuevas
+### Work Sans
 
-| Vieja | Nueva |
-|-------|-------|
-| `font-sans` (Manrope) | `font-sans` (Bellota Text) |
-| `font-poppins` | `font-source` |
-| `font-pt` | `font-sans` |
-| `futura-light` | `font-normal` |
-| `futura-bold` | `font-bold` |
-| `font-heavy` | `font-bold` |
+Uso:
 
----
+- texto base;
+- navegación;
+- botones;
+- formularios;
+- mensajes funcionales;
+- pies de imagen;
+- metadatos operativos;
+- textos breves de interfaz.
 
-## 4. Botones
+### Source Serif 4
 
-**Todos flat, sin sombra, border-radius chico (`rounded-sm`). Con icono de flecha a la derecha.**
+Uso:
 
-```blade
-{{-- Primario (acciones comunes) --}}
-<a class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3
-          font-bold rounded-sm hover:bg-primary-hover transition-colors group">
-    {{ $label }}
-    <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-</a>
+- artículos;
+- textos editoriales;
+- citas textuales;
+- párrafos introductorios;
+- fechas destacadas;
+- años;
+- estadísticas;
+- cartelería editorial;
+- etiquetas de sección;
+- extractos de publicaciones;
+- contenido académico.
 
-{{-- Destacado (SOLO CTAs principales) --}}
-<a class="inline-flex items-center gap-2 bg-accent text-white px-6 py-3
-          font-bold rounded-sm hover:bg-accent-hover transition-colors group">
-    {{ $label }}
-    <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-</a>
+## 9.2 Jerarquía sugerida
 
-{{-- Outline --}}
-<a class="inline-flex items-center gap-2 border border-primary text-primary px-6 py-3
-          font-bold rounded-sm hover:bg-primary hover:text-white transition-colors group">
-    {{ $label }}
-    <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-</a>
-```
+| Nivel | Fuente | Tamaño desktop | Tamaño mobile | Interlineado |
+|---|---|---:|---:|---:|
+| Display XL | Bellota Text | `clamp(72px, 7.5vw, 112px)` | `clamp(42px, 12vw, 56px)` | `0.90–0.96` |
+| H1 | Bellota Text | `clamp(64px, 6vw, 96px)` | `40–52px` | `0.94–1` |
+| H2 | Bellota Text | `48–72px` | `36–44px` | `0.98–1.05` |
+| H3 | Bellota Text | `32–48px` | `28–36px` | `1–1.08` |
+| H4 | Bellota Text o Source Serif 4 | `24–32px` | `22–28px` | `1.1` |
+| Intro | Source Serif 4 | `24–32px` | `21–26px` | `1.25–1.4` |
+| Texto editorial | Source Serif 4 | `20px` | `18px` | `1.55–1.7` |
+| Texto base | Work Sans | `17px` | `16px` | `1.5–1.65` |
+| Texto pequeño | Work Sans | `14–15px` | `14px` | `1.4–1.55` |
+| Etiqueta editorial | Source Serif 4 | `13–16px` | `12–14px` | `1.2–1.4` |
 
----
+## 9.3 Titulares
 
-## 5. Espaciado y Layout
+Los titulares:
 
-### 5.1 Container
+- se alinean a la izquierda;
+- pueden tener saltos manuales;
+- pueden revelarse por línea o palabra;
+- deben tener interlineado cerrado;
+- deben mantener una forma legible;
+- pueden ocupar entre el 40 % y el 70 % del ancho del contenedor;
+- pueden dominar una sección;
+- no se colocan sobre fotografías.
+
+No centrar titulares por defecto.
+
+## 9.4 Saltos manuales
+
+Se permiten en:
+
+- portada;
+- aperturas de sección;
+- frases institucionales;
+- campañas;
+- páginas editoriales controladas.
+
+No usarlos en:
+
+- títulos dinámicos;
+- tarjetas reutilizables;
+- listados;
+- contenidos que puedan cambiar desde CMS sin control editorial.
+
+## 9.5 Texto base
+
+Tamaño recomendado en desktop:
 
 ```css
-container {
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-
-@media (min-width: 1280px) {
-  container {
-    padding-left: 4rem;
-    padding-right: 4rem;
-  }
-}
-
-@media (min-width: 1700px) {
-  container {
-    padding-left: 6rem;
-    padding-right: 6rem;
-  }
-}
+font-size: 17px;
+line-height: 1.6;
 ```
 
-### 5.2 Espaciado de secciones
+No reducir el cuerpo principal a 14 px o 15 px.
 
-| Clase | Uso |
-|-------|-----|
-| `py-12 md:py-16` | Padding vertical estándar de sección |
-| `py-16 md:py-20` | Padding vertical de sección destacada |
-| `py-24 md:py-32` | Padding vertical de hero |
+## 9.6 Lectura larga
 
-### 5.3 Márgenes de bloque (CMS)
+Los textos extensos deben:
 
-| Clase | Significado |
-|-------|------------|
-| `mb-0` | Sin margen |
-| `mb-6` | Pequeño (1.5rem) |
-| `mb-12` | Estándar (3rem) |
-| `mb-24` | Grande (6rem) |
+- usar Source Serif 4;
+- tener un tamaño aproximado de 20 px en desktop;
+- tener un ancho máximo de `68ch`;
+- utilizar un contenedor reducido;
+- mantener espacios claros entre párrafos;
+- ofrecer contraste suficiente;
+- evitar columnas múltiples para artículos largos.
 
-### 5.4 Variantes de container
+## 9.7 Introducciones
 
-| Clase | Uso |
-|-------|-----|
-| `container` | Contenido general centrado |
-| `container-card` | Cards estrechas en detalle |
-| `container-notice` | Contenido de blog/noticia |
-| `container-info` | Layout con sidebar |
-| `container-modal` | Contenido de modal (50% width en xl+) |
-| `container-accordeon` | Contenido de acordeón |
-| `container-sm` | Contenido angosto |
-| `compact` | `container max-w-[980px]` |
-| `container-banners` | Banners full-width con padding lateral |
+Los párrafos introductorios pueden usar Source Serif 4 entre 24 px y 32 px.
+
+Se utilizan en:
+
+- apertura biográfica;
+- páginas de publicaciones;
+- manifiestos;
+- textos institucionales;
+- introducciones de trayectoria.
+
+## 9.8 Citas
+
+- Declaración institucional o concepto breve: Bellota Text.
+- Cita textual, jurídica o académica: Source Serif 4.
+- Autor y fuente: Work Sans.
+- No usar comillas gigantes decorativas como icono.
+- Se permite una línea vertical o borde superior.
+- Se permite un monograma pequeño como sello.
+
+## 9.9 Mayúsculas
+
+No utilizar mayúsculas sistemáticamente.
+
+Permitidas para:
+
+- metadatos muy pequeños;
+- siglas;
+- etiquetas técnicas;
+- categorías breves cuando la lectura siga siendo clara.
+
+Las etiquetas editoriales principales pueden permanecer en escritura normal con Source Serif 4.
+
+## 9.10 Subrayados
+
+Se permite subrayar una palabra o fragmento con celeste.
+
+No subrayar títulos completos.
+
+El recurso debe representar:
+
+- énfasis editorial;
+- actualidad;
+- idea central;
+- vínculo visual entre bloques.
 
 ---
 
-## 6. Breakpoints
+# 10. Contenedores y grilla
 
-| Prefijo | Min-width | Uso típico |
-|---------|-----------|------------|
-| _default_ | 0px | Mobile (base) |
-| `xs` | 480px | Tablets pequeñas |
-| `sm` | 640px | Tablets |
-| `md` | 768px | Tablets landscape |
-| `lg` | 1024px | Desktop |
-| `xl` | 1080px | Desktop medio |
-| `2xl` | 1280px | Desktop grande |
-| `3xl` | 1340px | Desktop XL |
-| `4xl` | 1640px | Desktop XXL |
-| `5xl` | 1920px | Full HD |
+## 10.1 Contenedor principal
 
----
-
-## 7. Componentes Base
-
-### 7.1 `<x-block>`
-Wrapper de sección para cada bloque del page builder.
-```blade
-<x-block class="py-12 md:py-20">
-  <!-- contenido del bloque -->
-</x-block>
-```
-Atributos: `class` (clases CSS adicionales). Renderiza `<section class="{{ $class }}">`.
-
-### 7.2 `<x-link>`
-Link que resuelve rutas internas (route_id), externas (external_url), anclas (#anchor) y descargas de archivo (-1).
-```blade
-<x-link :attrs="['route_id' => $route_id, 'btn_label' => 'Ver más']" class="btn-primary">
-  Ver más
-</x-link>
-```
-Parámetros: `route_id`, `external_url`, `anchor`, `file`, `btn_label`, `new_window`, `disableWireNavitage`, `hideIfNull`.
-
-### 7.3 `<x-layout>`
-Layout de página completa (header + main + footer).
-
-### 7.4 `<x-common.header>`
-Header con navegación principal.
-
-### 7.5 `<x-common.footer>`
-Footer del sitio.
-
----
-
-## 8. Lenguaje visual
-
-### 8.1 Botones
-
-**Flat, sin sombra, border-radius chico (`rounded-sm`).** Icono de flecha a la derecha con micro-animación.
-
-```blade
-{{-- Primario (accion comun) --}}
-<a class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3
-          font-bold rounded-sm hover:bg-primary-hover transition-colors group">
-    {{ $label }}
-    <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-</a>
-
-{{-- Destacado (solo CTAs principales) --}}
-<a class="inline-flex items-center gap-2 bg-accent text-white px-6 py-3
-          font-bold rounded-sm hover:bg-accent-hover transition-colors group">
-    {{ $label }}
-    <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-</a>
-
-{{-- Outline --}}
-<a class="inline-flex items-center gap-2 border border-primary text-primary
-          px-6 py-3 font-bold rounded-sm hover:bg-primary hover:text-white
-          transition-colors group">
-    {{ $label }}
-    <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-</a>
-```
-
-### 8.2 Cortes y transiciones de sección
-
-**SVG wave dividers** entre secciones de distinto color de fondo. Suavizan el paso entre luz y oscuridad.
-
-```blade
-{{-- Wave divider: oscuro arriba, claro abajo --}}
-<div class="relative w-full overflow-hidden leading-none z-10 text-gray-3">
-    <svg class="relative w-full h-12 md:h-20 lg:h-28" viewBox="0 0 1440 100" preserveAspectRatio="none">
-        <path d="M0,80 C480,80 480,0 720,0 C960,0 960,80 1440,80 L1440,100 L0,100 Z" fill="currentColor" />
-    </svg>
-</div>
-
-{{-- Wave divider inverso: claro arriba, oscuro abajo --}}
-<div class="relative w-full overflow-hidden leading-none z-10 text-primary">
-    <svg class="relative w-full h-12 md:h-20 lg:h-28 rotate-180" viewBox="0 0 1440 100" preserveAspectRatio="none">
-        <path d="M0,80 C480,80 480,0 720,0 C960,0 960,80 1440,80 L1440,100 L0,100 Z" fill="currentColor" />
-    </svg>
-</div>
-```
-
-**Fondo diagonal / angular** para secciones que necesitan corte no rectangular.
-
-```blade
-{{-- Corte diagonal: background primary que invade la seccion siguiente --}}
-<div class="relative">
-    <div class="absolute inset-0 z-0 pointer-events-none">
-        <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-            <path d="M0,5 L53,5 C56,5 57,0 62,0 L100,0 L100,92 L53,92 C50,92 49,100 44,100 L0,100 Z" fill="#2a3461" />
-        </svg>
-    </div>
-    <div class="relative z-10">
-        {{-- contenido --}}
-    </div>
-</div>
-```
-
-**Contenedor con bordes redondeados grandes** para secciones destacadas (blog, testimonios).
-
-```blade
-<section class="container rounded-[2.5rem] bg-gray-3 py-20 my-20">
-    {{-- contenido --}}
-</section>
-```
-
-### 8.3 Cards y superficies
-
-**Cards limpias, sin sombra, con hover sutil.**
-
-```blade
-{{-- Card estandar --}}
-<article class="bg-white rounded-2xl p-6 md:p-8 border border-gray-2
-                hover:-translate-y-1 transition-all duration-300 group">
-    <div class="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mb-4
-                group-hover:bg-primary/10 transition-colors">
-        <x-lucide-icon class="w-5 h-5 text-primary" />
-    </div>
-    <h3 class="font-sans font-bold text-lg mb-2">{{ $title }}</h3>
-    <p class="text-gray text-sm leading-relaxed">{{ $description }}</p>
-</article>
-
-{{-- Card con borde mas redondo (tipo feature) --}}
-<article class="bg-gray-3 rounded-3xl p-8 md:p-12 border border-gray-2
-                hover:-translate-y-1 hover:bg-white transition-all duration-300">
-    {{-- contenido --}}
-</article>
-```
-
-### 8.4 Fondos decorativos
-
-**Grid pattern sutil** con mascara radial, para secciones que necesitan textura de fondo sin distraer.
+Ancho máximo:
 
 ```css
-.bg-grid {
-    background-size: 80px 80px;
-    background-image:
-        linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
-    mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
-}
+max-width: 1440px;
 ```
 
-```blade
-<div class="relative">
-    <div class="absolute inset-0 bg-grid pointer-events-none z-0"></div>
-    <div class="relative z-10 container">
-        {{-- contenido --}}
-    </div>
-</div>
-```
-
-### 8.5 Glass / Vidrio esmerilado
-
-**Para elementos flotantes sobre imágenes o fondos oscuros.** Solo en desktop (mobile usa fondo solido).
+Márgenes laterales desktop:
 
 ```css
-.glass-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-}
+padding-inline: clamp(48px, 4.5vw, 64px);
 ```
 
-### 8.6 Hero
+En pantallas mayores, el contenido debe permanecer controlado.
 
-**Titulo grande + descripcion + posible imagen lateral. Layout mobile-first que escala a desktop.**
+## 10.2 Contenedor reducido
 
-```blade
-<section class="relative bg-gray-3 overflow-hidden">
-    {{-- Grid decorativo de fondo --}}
-    <div class="absolute inset-0 bg-grid pointer-events-none z-0"></div>
-
-    <div class="relative z-10 container">
-        <div class="flex flex-col md:flex-row gap-8 md:gap-16 items-center py-12 md:py-24">
-            {{-- Columna de texto --}}
-            <div class="w-full md:w-3/5">
-                <h1 class="font-sans font-bold text-3xl md:text-4xl lg:text-5xl
-                           text-primary leading-[1.05] mb-6">
-                    {{ $title }}
-                </h1>
-                @isset($description)
-                    <p class="text-md md:text-xl text-gray max-w-xl leading-relaxed">
-                        {{ $description }}
-                    </p>
-                @endisset
-                @isset($cta_label)
-                    <a href="{{ $cta_url ?? '#' }}"
-                       class="inline-flex items-center gap-2 bg-primary text-white
-                              px-6 py-3 font-bold rounded-sm mt-8
-                              hover:bg-primary-hover transition-colors group">
-                        {{ $cta_label }}
-                        <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </a>
-                @endisset
-            </div>
-
-            {{-- Imagen lateral (opcional) --}}
-            @isset($image)
-            <div class="w-full md:w-2/5">
-                <img src="{{ $image }}" alt="{{ $title ?? '' }}"
-                     class="w-full h-auto object-cover rounded-2xl"
-                     loading="eager" />
-            </div>
-            @endisset
-        </div>
-    </div>
-</section>
-```
-
-### 8.7 CTA / Llamado a la acción
-
-**Imagen full-width con overlay oscuro, texto centrado, botones abajo.**
-
-```blade
-<section class="relative h-[400px] md:h-[500px] rounded-t-[2.5rem] overflow-hidden">
-    <img src="{{ $image }}" alt="" class="absolute inset-0 w-full h-full object-cover" />
-    <div class="absolute inset-0 bg-gradient-to-b from-primary/70 via-primary/40 to-primary/80"></div>
-    <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
-        <h2 class="text-3xl md:text-5xl font-sans font-bold text-white mb-6 max-w-2xl">
-            {{ $title }}
-        </h2>
-        <div class="flex flex-col md:flex-row gap-4">
-            <a href="{{ $cta_url ?? '#' }}"
-               class="bg-white text-primary px-8 py-3 rounded-sm font-bold
-                      hover:bg-gray-100 transition-colors inline-flex items-center gap-2 group">
-                {{ $cta_label }}
-                <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
-            @isset($secondary_label)
-            <a href="{{ $secondary_url ?? '#' }}"
-               class="border border-white/40 text-white px-8 py-3 rounded-sm font-bold
-                      hover:bg-white/10 transition-colors backdrop-blur-sm">
-                {{ $secondary_label }}
-            </a>
-            @endisset
-        </div>
-    </div>
-</section>
-```
-
-### 8.8 Marquesina / Carrusel de logos
-
-**Scroll infinito horizontal con fade en bordes.**
-
-```blade
-<div class="border-y border-gray-2 py-8 overflow-hidden relative">
-    <div class="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-gray-3 to-transparent z-10"></div>
-    <div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-gray-3 to-transparent z-10"></div>
-    <div class="flex gap-8 md:gap-16 items-center w-max animate-scroll">
-        {{-- duplicar items para loop --}}
-        @foreach([...$items, ...$items] as $item)
-            <div class="opacity-40 hover:opacity-100 transition-opacity duration-300">
-                {{ $item }}
-            </div>
-        @endforeach
-    </div>
-</div>
-```
+Ancho orientativo:
 
 ```css
-@keyframes scroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
-.animate-scroll {
-    animation: scroll 40s linear infinite;
-}
+max-width: 720px;
 ```
+
+Puede ampliarse hasta:
+
+```css
+max-width: 800px;
+```
+
+Uso:
+
+- artículos;
+- textos largos;
+- biografía;
+- introducciones;
+- citas extensas;
+- cuerpo académico;
+- secciones que necesiten cambiar el ritmo.
+
+El cambio de ancho debe ser visible y deliberado.
+
+## 10.3 Full width
+
+Se permiten secciones que ocupen todo el viewport para:
+
+- fondos azules;
+- fondos marfil;
+- galerías;
+- fotografías;
+- videos;
+- separadores editoriales;
+- aperturas;
+- cierres.
+
+El contenido interno puede volver al contenedor de 1440 px.
+
+## 10.4 Grilla
+
+Usar preferentemente una grilla de 12 columnas en desktop.
+
+Distribuciones frecuentes:
+
+- 8 + 4;
+- 7 + 5;
+- 5 + 7;
+- 9 + 3;
+- 6 + 6;
+- 4 + 4 + 4;
+- 6 + 3 + 3.
+
+No repetir siempre dos columnas iguales.
+
+## 10.5 Asimetría
+
+La asimetría está permitida y recomendada cuando:
+
+- existe una pieza principal;
+- una fotografía debe dominar;
+- un contenido actual se diferencia de secundarios;
+- una fecha o cita funciona como contrapunto;
+- se busca ritmo editorial.
+
+La asimetría no debe romper:
+
+- alineaciones de base;
+- jerarquía;
+- orden de lectura;
+- accesibilidad;
+- comportamiento responsive.
+
+## 10.6 Alineaciones
+
+Todo elemento debe alinearse al menos con uno de estos ejes:
+
+- borde del contenedor;
+- columna de la grilla;
+- borde de imagen;
+- línea divisoria;
+- eje tipográfico;
+- bloque anterior o posterior.
+
+Evitar desplazamientos arbitrarios.
 
 ---
 
-## 9. Patrones de diseño
+# 11. Espaciado
 
-### 9.1 Estructura de bloque estándar
+## 11.1 Escala base
 
-```blade
-<x-block class="py-12 md:py-20 {{ $mb }} {{ $mdMb }} {{ implode(' ', $clases ?? []) }}"
-         id="{{ $blockAnchor ?? '' }}">
-  <div class="container">
-    @isset($title)
-      <h2 class="title-normal mb-6 md:mb-8">{{ $title }}</h2>
-    @endisset
-    {{-- contenido del bloque --}}
-  </div>
-</x-block>
+Usar una escala consistente:
+
+```text
+4, 8, 12, 16, 24, 32, 48, 64, 80, 96, 128
 ```
 
-### 9.2 Cards
+## 11.2 Separación entre secciones
 
-```blade
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-  {{-- items --}}
-</div>
+La separación habitual es compacta:
+
+```text
+64–80px
 ```
 
-### 9.3 Media + Texto
+Se permiten valores mayores solo para:
 
-```blade
-<div class="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
-  <div class="w-full md:w-1/2">{{-- media --}}</div>
-  <div class="w-full md:w-1/2">{{-- texto --}}</div>
-</div>
-```
+- portada;
+- grandes cambios temáticos;
+- cierre;
+- bloques fotográficos;
+- pausas editoriales importantes.
 
-### 9.4 Hero
+## 11.3 Espaciado interno
 
-```blade
-<div class="relative bg-primary text-white py-16 md:py-24">
-  <div class="container">
-    <h1 class="text-4xl md:text-5xl font-bold font-sans">{{ $title }}</h1>
-    <p class="text-lg md:text-xl mt-4 max-w-2xl">{{ $subtitle }}</p>
-  </div>
-</div>
-```
+Referencias:
 
-### 9.5 Formulario
+- bloques compactos: `24–32px`;
+- tarjetas estándar: `24–40px`;
+- secciones editoriales: `48–80px`;
+- bloques hero: según altura y composición;
+- botones: altura aproximada de `48px`.
 
-```blade
-<form class="space-y-6 max-w-2xl mx-auto">
-  <div>
-    <label class="block text-sm font-bold mb-1 font-sans">{{ $label }}</label>
-    <input type="text" class="w-full border border-gray-2 px-4 py-2 rounded-sm focus:outline-none focus:border-primary">
-  </div>
-  <button type="submit" class="bg-primary text-white px-8 py-3 font-bold rounded-sm hover:bg-primary-hover transition-colors">
-    {{ $submit_label }}
-  </button>
-</form>
-```
+## 11.4 Tarjetas
+
+Las tarjetas deben tener espacio entre sí.
+
+No deben compartir borde como una tabla continua.
+
+El espacio depende del bloque:
+
+- `16px` para listados compactos;
+- `24px` como valor frecuente;
+- `32px` para piezas con fotografía;
+- `48px` cuando cada pieza tenga fuerte autonomía editorial.
+
+## 11.5 Regla de ritmo
+
+No aplicar el mismo padding a todas las secciones.
+
+Alternar:
+
+- bloque amplio;
+- bloque reducido;
+- superficie plena;
+- grilla;
+- pausa;
+- contenido de lectura.
+
+La variación debe estar dentro de la escala definida.
 
 ---
 
-## 10. Reglas para agentes
+# 12. Secciones y superficies
 
-1. **No hardcodear colores** — usar clases Tailwind (`text-primary`, `bg-gray-3`, etc.) o tokens CSS (`var(--color-primary)`).
-2. **No hardcodear fuentes** — usar `font-sans` (Bellota Text) o `font-source` (Source Serif 4).
-3. **Texto editable** — todo texto debe venir de una variable Blade (`{{ $title }}`), no hardcodeado.
-4. **Imágenes responsive** — usar `w-full h-auto object-cover` y lazy loading.
-5. **Estados interactivos** — hover, focus, active deben estar definidos.
-6. **Mobile-first** — escribir el estilo base para mobile, luego override con `md:`, `lg:`, `xl:`.
-7. **Animaciones** — GSAP para animaciones de entrada (scroll-triggered). `prefers-reduced-motion` respetado.
-8. **Wrapper section** — todo bloque debe envolverse en `<x-block>` para consistencia.
-9. **Íconos** — usar Lucide (ya instalado). No introducir otras librerías de iconos.
-10. **Variables del CMS** — `$mb`, `$mdMb`, `$clases`, `$blockAnchor`, `$blockTitle` vienen de `PageBlock` y deben usarse en la vista.
-11. **Botones** — flat, sin sombra, `rounded-sm`. Primary (`#2a3461`) para acciones comunes. Accent (`#45bfe3`) solo para CTAs principales.
-12. **Tipografía** — Bellota Text (`font-sans`) para todo por defecto. Source Serif 4 (`font-source`) solo para texto editorial/WYSIWYG.
-13. **Colores de texto** — `text-black` para contenido principal, `text-gray` para secundario. No usar `text-primary` como color de lectura.
+## 12.1 Tipos de superficie
+
+Se permiten:
+
+1. blanco;
+2. marfil;
+3. gris claro;
+4. azul institucional;
+5. fotografía como bloque independiente, sin texto encima.
+
+## 12.2 Alternancia
+
+No alternar fondos de forma mecánica.
+
+Cambiar la superficie cuando exista:
+
+- cambio de capítulo;
+- diferencia jerárquica;
+- contenido destacado;
+- pausa;
+- cambio de ritmo;
+- cierre;
+- cita;
+- transición entre actualidad y trayectoria.
+
+## 12.3 Secciones azules
+
+Pueden ocupar todo el ancho.
+
+Uso:
+
+- autoridad;
+- cargos;
+- frases institucionales;
+- hitos;
+- llamados a explorar publicaciones;
+- cierres;
+- navegación;
+- timeline;
+- cifras;
+- pensamiento.
+
+No usar más de dos grandes superficies azules consecutivas sin una pausa blanca, marfil, gris o fotográfica.
+
+## 12.4 Bordes
+
+Los bloques pueden delimitarse con bordes sólidos de 1 px.
+
+El color depende del fondo.
+
+No usar bordes punteados ni discontinuos.
+
+No utilizar bordes de 2 px salvo una excepción funcional claramente justificada.
 
 ---
 
-## 11. CSS Custom Properties (catálogo completo)
+# 13. Fotografía
+
+## 13.1 Rol
+
+La fotografía es uno de los recursos principales de identidad.
+
+Debe mostrar:
+
+- retratos editoriales;
+- primeros planos;
+- actividad pública;
+- conferencias;
+- docencia;
+- intervenciones en medios;
+- espacios institucionales;
+- libros y publicaciones;
+- contexto profesional.
+
+No limitar la identidad a retratos posados.
+
+## 13.2 Tratamiento
+
+Las fotografías deben conservar:
+
+- color natural;
+- saturación moderada;
+- contraste controlado;
+- piel realista;
+- iluminación coherente;
+- carácter documental;
+- temperatura ligeramente cálida cuando resulte natural.
+
+No aplicar:
+
+- duotono general;
+- blanco y negro sistemático;
+- filtros azules;
+- overlays de color;
+- efectos vintage fuertes;
+- desenfoques decorativos;
+- marcos redondeados.
+
+## 13.3 Formatos
+
+Las relaciones de aspecto son libres según la composición.
+
+Permitidas:
+
+- horizontal panorámica;
+- 16:9;
+- 3:2;
+- 4:3;
+- 1:1;
+- 4:5;
+- 3:4;
+- vertical larga;
+- recortes editoriales personalizados.
+
+## 13.4 Encuadre
+
+El recorte depende de la jerarquía.
+
+- Hero o retrato principal: preservar presencia, expresión y postura.
+- Tarjeta: se permiten recortes más cerrados.
+- Actividad pública: priorizar gesto y contexto.
+- Primer plano: puede recortar parte del cabello o cuerpo si la composición lo justifica.
+- Contenido documental: evitar recortes que eliminen información relevante.
+
+## 13.5 Fotografías y bordes
+
+Las imágenes pueden:
+
+- tocar los límites del bloque;
+- ocupar toda una columna;
+- extenderse hasta el borde del viewport;
+- dominar una tarjeta;
+- ocupar casi toda la tarjeta;
+- alternarse entre vertical y horizontal.
+
+No necesitan marco.
+
+## 13.6 Texto e imagen
+
+Regla obligatoria:
+
+> **No superponer texto sobre fotografías.**
+
+El texto debe ubicarse:
+
+- al lado;
+- arriba;
+- debajo;
+- en una superficie independiente;
+- en una columna separada;
+- en un bloque contiguo.
+
+Tampoco colocar cajas de texto encima de la imagen.
+
+## 13.7 Hover y scroll
+
+Se permite:
+
+- zoom suave;
+- desplazamiento mínimo;
+- revelado por máscara;
+- cambio moderado de escala;
+- transición de recorte.
+
+No se permite:
+
+- giro;
+- inclinación 3D;
+- distorsión;
+- rebote;
+- zoom agresivo;
+- desplazamiento que impida reconocer la imagen.
+
+## 13.8 Accesibilidad
+
+Toda fotografía informativa debe tener `alt` descriptivo.
+
+Fotografías puramente decorativas:
+
+```html
+alt=""
+```
+
+No repetir en el `alt` el mismo texto visible junto a la imagen.
+
+---
+
+# 14. Iconografía
+
+## 14.1 Librería
+
+Usar Lucide.
+
+## 14.2 Rol
+
+La iconografía acompaña. No protagoniza.
+
+Usos permitidos:
+
+- contacto;
+- descarga;
+- compartir;
+- abrir enlace externo;
+- reproducir video;
+- navegación;
+- acordeones;
+- formularios;
+- indicadores funcionales;
+- redes sociales.
+
+## 14.3 Usos prohibidos
+
+No usar iconos como:
+
+- elemento principal de una tarjeta;
+- sustituto de una fotografía;
+- decoración repetida;
+- insignia grande;
+- ilustración de conceptos abstractos;
+- destacado de beneficios estilo SaaS.
+
+## 14.4 Flechas
+
+Para enlaces editoriales, preferir caracteres tipográficos:
+
+```text
+→
+←
+↗
+```
+
+Ejemplo:
+
+```text
+Leer publicación →
+```
+
+Usar Lucide cuando la acción necesite una affordance funcional más explícita.
+
+## 14.5 Estilo
+
+- trazo regular;
+- tamaño coherente con el texto;
+- sin contenedor circular por defecto;
+- sin fondo redondeado;
+- color azul, gris o blanco según superficie.
+
+---
+
+# 15. Bordes, radios y sombras
+
+## 15.1 Bordes redondeados
+
+Valor global:
+
+```css
+border-radius: 0;
+```
+
+Eliminar:
+
+- `rounded`;
+- `rounded-sm`;
+- `rounded-md`;
+- `rounded-lg`;
+- `rounded-xl`;
+- `rounded-2xl`;
+- `rounded-3xl`;
+- `rounded-full`.
+
+Excepción:
+
+- avatares circulares solo si existe una necesidad real de identificación; no son el patrón recomendado para este sitio.
+
+## 15.2 Sombras
+
+No utilizar sombras.
+
+Eliminar:
+
+- `shadow`;
+- `shadow-sm`;
+- `shadow-md`;
+- `shadow-lg`;
+- `shadow-xl`;
+- `drop-shadow-*`;
+- sombras internas decorativas.
+
+## 15.3 Bordes permitidos
+
+- sólidos;
+- 1 px;
+- rectos;
+- visibles;
+- dependientes del fondo;
+- animables en su longitud.
+
+## 15.4 Elevación
+
+La jerarquía se construye mediante:
+
+- color;
+- escala;
+- borde;
+- espacio;
+- composición;
+- fotografía;
+- tipografía.
+
+Nunca mediante elevación artificial.
+
+---
+
+# 16. Botones y enlaces
+
+## 16.1 Variantes principales
+
+### Botón primario
+
+- fondo azul institucional;
+- texto blanco;
+- borde azul;
+- altura aproximada de 48 px;
+- rectangular;
+- Work Sans;
+- escritura normal;
+- sin sombra;
+- sin radio.
+
+Hover:
+
+- invertir a fondo blanco o marfil;
+- texto azul;
+- desplazar flecha si existe.
+
+### Botón secundario
+
+- fondo transparente;
+- borde de 1 px;
+- texto azul;
+- altura aproximada de 48 px;
+- rectangular.
+
+Hover:
+
+- fondo azul;
+- texto blanco;
+- flecha desplazada.
+
+### Sobre fondo azul
+
+Primario invertido:
+
+- fondo blanco;
+- texto azul;
+- borde blanco.
+
+Secundario:
+
+- fondo transparente;
+- texto blanco;
+- borde blanco.
+
+## 16.2 Texto
+
+Usar escritura normal.
+
+Ejemplos:
+
+- Ver trayectoria
+- Explorar publicaciones
+- Leer artículo
+- Ver participación
+- Descargar CV
+
+No usar mayúsculas completas por defecto.
+
+## 16.3 Flechas
+
+Se permite:
+
+```text
+Ver publicación →
+```
+
+La flecha puede moverse entre 4 px y 8 px en hover.
+
+## 16.4 Enlaces editoriales
+
+Pueden presentarse como:
+
+- texto con flecha;
+- texto subrayado;
+- texto con línea superior;
+- texto con borde inferior animado.
+
+No convertir cada enlace en botón.
+
+## 16.5 Focus
+
+Todo elemento interactivo debe tener un estado focus visible.
+
+Preferencia:
+
+- outline celeste;
+- separación suficiente;
+- contraste alto;
+- no depender solo del cambio de color.
+
+---
+
+# 17. Tarjetas
+
+## 17.1 Uso
+
+Las tarjetas están permitidas frecuentemente.
+
+Deben sentirse como piezas editoriales, no como widgets.
+
+## 17.2 Construcción
+
+Pueden usar:
+
+- fondo blanco;
+- fondo marfil;
+- fondo gris;
+- fondo azul;
+- borde de 1 px;
+- fotografía;
+- tipografía grande;
+- fecha;
+- categoría;
+- flecha;
+- distribución vertical u horizontal.
+
+## 17.3 Imagen
+
+Puede:
+
+- estar arriba;
+- estar al costado;
+- ocupar gran parte del bloque;
+- dominar visualmente;
+- tocar bordes;
+- cambiar de relación de aspecto.
+
+## 17.4 Espaciado
+
+Las tarjetas deben estar separadas entre sí.
+
+No elevarlas con sombras.
+
+No usar un radio para diferenciarlas del fondo.
+
+## 17.5 Hover
+
+Se permite combinar:
+
+- cambio de fondo;
+- cambio de color de texto;
+- zoom suave de imagen;
+- desplazamiento de flecha;
+- movimiento mínimo de contenido;
+- dibujo de borde.
+
+No elevar la tarjeta.
+
+No modificar su posición más de unos pocos píxeles.
+
+## 17.6 Tarjeta azul
+
+Una tarjeta azul debe:
+
+- usar texto blanco o gris claro;
+- mantener alto contraste;
+- usar celeste solo como detalle;
+- evitar múltiples iconos;
+- evitar bordes internos innecesarios.
+
+## 17.7 Tarjetas de publicaciones
+
+Estructura preferida:
+
+1. categoría o tipo;
+2. título;
+3. fecha o editorial;
+4. extracto opcional;
+5. enlace;
+6. imagen opcional.
+
+La publicación debe ser el centro, no el icono.
+
+---
+
+# 18. Header y navegación
+
+## 18.1 Comportamiento
+
+El header es fijo.
+
+Estado inicial:
+
+- altura amplia;
+- logo sin tagline;
+- navegación reducida;
+- fondo coherente con la portada;
+- presencia editorial.
+
+Estado al hacer scroll:
+
+- reduce altura;
+- cambia al monograma;
+- mantiene acceso a navegación;
+- conserva legibilidad;
+- no utiliza sombra;
+- puede usar borde inferior de 1 px.
+
+## 18.2 Transición
+
+La reducción debe:
+
+- ser visible;
+- ser rápida;
+- no rebotar;
+- no mover abruptamente el contenido;
+- respetar `prefers-reduced-motion`.
+
+## 18.3 Navegación desktop
+
+Usar un menú reducido y un panel desplegable amplio.
+
+El header puede mostrar:
+
+- dos o tres accesos prioritarios;
+- botón o enlace “Menú”;
+- acción institucional secundaria.
+
+El panel amplio contiene el mapa completo del sitio.
+
+## 18.4 Panel de navegación
+
+Fondo:
+
+```text
+Marfil
+```
+
+Puede incluir:
+
+- nombre completo;
+- monograma;
+- navegación principal;
+- enlaces secundarios;
+- publicaciones recientes;
+- datos de contacto;
+- fotografía, si no compite con la navegación.
+
+No usar fondo negro.
+
+No usar cards redondeadas dentro del panel.
+
+## 18.5 Mobile
+
+- header fijo;
+- monograma o logo reducido;
+- panel de navegación a pantalla completa o casi completa;
+- áreas táctiles mínimas de 44 px;
+- scroll interno cuando sea necesario;
+- cierre claramente identificable.
+
+## 18.6 Accesibilidad
+
+- navegación por teclado;
+- gestión de foco;
+- `aria-expanded`;
+- `aria-controls`;
+- cierre con Escape;
+- bloqueo correcto del scroll;
+- retorno del foco al disparador.
+
+---
+
+# 19. Footer
+
+## 19.1 Rol
+
+El footer debe cerrar el sitio con autoridad, no actuar como una zona residual.
+
+Puede ser:
+
+- azul institucional;
+- marfil;
+- blanco con borde superior.
+
+## 19.2 Contenido
+
+- logo o monograma;
+- navegación;
+- contacto;
+- redes;
+- créditos;
+- datos profesionales;
+- publicaciones o enlaces clave;
+- información legal.
+
+## 19.3 Composición
+
+Se permiten:
+
+- tipografía grande;
+- monograma amplio;
+- línea divisoria;
+- grilla asimétrica;
+- título de cierre;
+- fecha o actualización.
+
+No usar múltiples columnas pequeñas indistinguibles.
+
+---
+
+# 20. Recursos editoriales
+
+## 20.1 Texto vertical
+
+Está permitido libremente como recurso editorial.
+
+Puede utilizarse para:
+
+- etiquetas;
+- años;
+- categorías;
+- nombres de capítulo;
+- navegación lateral;
+- numeración;
+- notas.
+
+## 20.2 Reglas de texto vertical
+
+- debe seguir siendo legible;
+- no debe contener párrafos;
+- no debe ser esencial para comprender el contenido;
+- debe volver a horizontal en mobile cuando sea necesario;
+- puede tener movimiento diferencial durante scroll;
+- debe respetar `prefers-reduced-motion`.
+
+## 20.3 Líneas
+
+Las líneas son un recurso importante.
+
+Pueden:
+
+- separar columnas;
+- introducir títulos;
+- organizar fechas;
+- dibujarse al entrar;
+- marcar jerarquías;
+- conectar hitos.
+
+## 20.4 Grandes números y fechas
+
+Usar Source Serif 4.
+
+Aplicaciones:
+
+- años;
+- número de publicaciones;
+- cargos;
+- estadísticas;
+- décadas;
+- hitos.
+
+No tratar cifras como métricas de una startup.
+
+## 20.5 Etiquetas de sección
+
+Usar Source Serif 4.
+
+No son obligatorias en todas las secciones.
+
+Incluirlas cuando:
+
+- ayudan a orientar;
+- existe un cambio de capítulo;
+- el título es conceptual;
+- la jerarquía lo requiere.
+
+Evitar:
+
+```text
+ETIQUETA
+Título
+```
+
+de forma mecánica en cada bloque.
+
+## 20.6 Subrayados y acentos
+
+El celeste puede:
+
+- subrayar una palabra;
+- marcar un estado activo;
+- señalar un dato;
+- iniciar una línea;
+- aparecer en una transición.
+
+No usar varios acentos simultáneos en el mismo viewport.
+
+---
+
+# 21. Animación e interacción
+
+## 21.1 Dirección
+
+La animación debe ser editorial y visible.
+
+No debe sentirse:
+
+- lúdica;
+- elástica;
+- tecnológica;
+- futurista;
+- ornamental;
+- continua.
+
+## 21.2 Entradas
+
+Permitidas:
+
+- fade;
+- revelado por máscara;
+- aparición por línea;
+- aparición por palabra;
+- dibujo de bordes;
+- desplazamiento muy corto;
+- secuencias escalonadas.
+
+## 21.3 Titulares
+
+Pueden aparecer:
+
+- línea por línea;
+- palabra por palabra;
+- mediante clip o máscara.
+
+No animar letra por letra en textos largos.
+
+## 21.4 Fotografías
+
+Permitido:
+
+- zoom suave en hover;
+- zoom vinculado a scroll;
+- revelado por máscara;
+- cambio leve de encuadre.
+
+Duración orientativa:
+
+```text
+500–1000 ms
+```
+
+## 21.5 Bordes
+
+Pueden:
+
+- crecer horizontalmente;
+- crecer verticalmente;
+- aparecer desde un extremo;
+- acompañar la entrada del contenido.
+
+## 21.6 Texto vertical
+
+Puede desplazarse a una velocidad distinta del contenido.
+
+El efecto debe ser sutil y no impedir la lectura.
+
+## 21.7 Hover de tarjetas
+
+Combinar con moderación:
+
+- cambio de fondo;
+- zoom de imagen;
+- desplazamiento de flecha;
+- variación de borde;
+- cambio tipográfico o cromático.
+
+No utilizar todos los efectos en todas las tarjetas.
+
+## 21.8 Botones
+
+Hover recomendado:
+
+- inversión de color;
+- desplazamiento de flecha.
+
+## 21.9 Carruseles
+
+Permitidos según el bloque.
+
+Condiciones:
+
+- control manual;
+- sin autoplay;
+- navegación clara;
+- teclado;
+- swipe en mobile;
+- indicadores accesibles;
+- no ocultar contenido esencial.
+
+Usos posibles:
+
+- publicaciones;
+- prensa;
+- apariciones;
+- testimonios;
+- fotografías;
+- videos;
+- citas.
+
+## 21.10 Video
+
+El video solo comienza por acción del usuario.
+
+Requisitos:
+
+- botón de reproducción;
+- poster;
+- controles;
+- subtítulos cuando corresponda;
+- no autoplay;
+- no sonido automático;
+- no fondo de video decorativo.
+
+## 21.11 Duraciones
+
+Orientativas:
+
+- microinteracción: `150–250 ms`;
+- botón o enlace: `200–350 ms`;
+- tarjeta: `300–500 ms`;
+- entrada de bloque: `500–900 ms`;
+- máscara de imagen: `700–1200 ms`.
+
+## 21.12 Easing
+
+Preferir curvas suaves y controladas.
+
+Ejemplo:
+
+```css
+cubic-bezier(0.22, 1, 0.36, 1)
+```
+
+Evitar:
+
+- `bounce`;
+- `elastic`;
+- overshoot;
+- resortes notorios.
+
+## 21.13 Reducción de movimiento
+
+Obligatorio respetar:
+
+```css
+@media (prefers-reduced-motion: reduce)
+```
+
+En ese modo:
+
+- eliminar parallax;
+- eliminar revelados complejos;
+- eliminar zoom por scroll;
+- mostrar contenido inmediatamente;
+- mantener solo transiciones funcionales breves;
+- desactivar smooth scrolling.
+
+---
+
+# 22. Responsive
+
+## 22.1 Principio
+
+Mobile no debe ser una versión encogida del desktop.
+
+Debe preservar:
+
+- jerarquía;
+- claridad;
+- ritmo;
+- autoridad;
+- fotografía;
+- lectura.
+
+## 22.2 Contenedores mobile
+
+Padding orientativo:
+
+```css
+padding-inline: 20px;
+```
+
+Puede subir a 24 px en dispositivos amplios.
+
+## 22.3 Titulares
+
+Escala fluida:
+
+```css
+font-size: clamp(42px, 12vw, 56px);
+```
+
+Evitar que una palabra se corte o desborde.
+
+## 22.4 Grillas
+
+En mobile:
+
+- apilar columnas;
+- reordenar por importancia;
+- mantener la fotografía cerca del contenido relacionado;
+- evitar carruseles como solución automática;
+- convertir textos verticales a horizontales cuando sea necesario.
+
+## 22.5 Orden de contenido
+
+La prioridad de lectura debe existir en el DOM, no depender solo de CSS.
+
+Orden recomendado:
+
+1. contexto;
+2. título;
+3. texto principal;
+4. imagen;
+5. acciones;
+6. contenido secundario.
+
+Puede variar según el bloque, pero debe ser deliberado.
+
+## 22.6 Tarjetas
+
+En mobile:
+
+- pueden ocupar todo el ancho;
+- mantener separación;
+- evitar padding excesivo;
+- imágenes amplias;
+- botones de ancho completo solo cuando la acción lo justifique.
+
+## 22.7 Header
+
+Estado reducido desde el inicio o luego de un scroll breve.
+
+El panel debe ser fácil de cerrar y navegar con una mano.
+
+---
+
+# 23. Accesibilidad
+
+## 23.1 Estándar
+
+Objetivo mínimo:
+
+```text
+WCAG 2.2 AA
+```
+
+## 23.2 Contraste
+
+- texto base `#5c6b73` sobre blanco es adecuado para cuerpo;
+- `#bec4c7` no debe usarse para cuerpo sobre blanco;
+- celeste no debe utilizarse como texto pequeño sobre blanco;
+- blanco y gris claro son adecuados sobre azul institucional;
+- verificar cada combinación nueva.
+
+## 23.3 Tipografía
+
+- no reducir el texto base por debajo de 16 px en mobile;
+- evitar bloques extensos en mayúsculas;
+- mantener altura de línea suficiente;
+- limitar textos largos a 68ch;
+- permitir zoom del navegador.
+
+## 23.4 Teclado
+
+Todos los controles deben:
+
+- recibir foco;
+- tener orden lógico;
+- mostrar focus visible;
+- funcionar con teclado;
+- no depender de hover.
+
+## 23.5 Movimiento
+
+Respetar `prefers-reduced-motion`.
+
+## 23.6 Formularios
+
+- labels visibles;
+- errores asociados;
+- instrucciones claras;
+- no usar placeholder como única etiqueta;
+- estados de éxito y error legibles;
+- targets de 44 px como mínimo.
+
+## 23.7 Contenido
+
+- estructura correcta de encabezados;
+- un solo `h1` por página;
+- enlaces descriptivos;
+- fechas legibles;
+- tablas solo para datos tabulares;
+- listas semánticas;
+- `blockquote` para citas reales.
+
+---
+
+# 24. Componentes
+
+## 24.1 Hero
+
+Características permitidas:
+
+- titular muy grande;
+- grilla asimétrica;
+- fotografía independiente;
+- fondo blanco, marfil o azul;
+- introducción en Source Serif 4;
+- botón primario y secundario;
+- año o etiqueta vertical;
+- borde animado.
+
+No permitido:
+
+- texto sobre foto;
+- carrusel automático;
+- gradiente;
+- múltiples badges;
+- iconos de beneficios;
+- caja flotante con sombra.
+
+## 24.2 About / Biografía
+
+Preferir:
+
+- fotografía + texto;
+- cronología;
+- citas;
+- hitos;
+- cargos;
+- publicaciones;
+- contenedor reducido para narrativa.
+
+La biografía debe combinar dimensión personal e institucional, sin parecer un “About us” corporativo.
+
+## 24.3 Trayectoria
+
+Patrones útiles:
+
+- timeline;
+- años grandes;
+- columnas asimétricas;
+- acordeones;
+- capítulos;
+- hitos con fotografía;
+- bloques azules.
+
+No convertirla en una lista de logos o badges.
+
+## 24.4 Publicaciones
+
+Permitir:
+
+- grilla;
+- listado;
+- filtros;
+- portada de libro;
+- ficha editorial;
+- fecha;
+- extracto;
+- descarga;
+- enlace externo.
+
+El diseño debe priorizar título, tipo y fecha.
+
+## 24.5 Actualidad / Prensa
+
+Puede tener mayor ritmo visual:
+
+- piezas de distinto tamaño;
+- fotografía;
+- video;
+- fecha;
+- medio;
+- categoría;
+- carrusel manual;
+- grilla asimétrica.
+
+Debe seguir pareciendo institucional.
+
+## 24.6 Citas
+
+- gran escala;
+- Source Serif 4 o Bellota Text según tipo;
+- borde o línea;
+- fondo marfil, blanco o azul;
+- atribución clara;
+- sin comillas decorativas gigantes.
+
+## 24.7 Estadísticas
+
+Usar solo cuando sean relevantes.
+
+- número en Source Serif 4;
+- explicación en Work Sans;
+- borde;
+- sin icono grande;
+- sin estilo de dashboard;
+- sin contador animado obligatorio.
+
+## 24.8 FAQ
+
+Puede usar acordeón.
+
+- borde superior e inferior;
+- icono pequeño;
+- sin tarjetas redondeadas;
+- animación breve;
+- pregunta legible;
+- navegación por teclado.
+
+## 24.9 Testimonios
+
+Usar con moderación.
+
+Pueden adoptar formato:
+
+- cita editorial;
+- referencia institucional;
+- recomendación profesional;
+- extracto de prensa.
+
+Evitar carrusel automático y retratos circulares genéricos.
+
+## 24.10 Galerías
+
+- grilla asimétrica;
+- relaciones libres;
+- lightbox accesible;
+- sin bordes redondeados;
+- sin texto encima;
+- pie de foto opcional;
+- navegación manual.
+
+## 24.11 Formularios
+
+- campos rectangulares;
+- borde de 1 px;
+- fondo blanco o gris claro;
+- altura cómoda;
+- foco celeste o azul;
+- etiquetas visibles;
+- mensajes claros.
+
+## 24.12 CTA
+
+Debe ser institucional.
+
+Ejemplos:
+
+- Explorar publicaciones
+- Consultar trayectoria
+- Ver intervenciones
+- Acceder a una conferencia
+- Contactar
+
+No usar urgencia artificial ni lenguaje comercial agresivo.
+
+---
+
+# 25. Tokens técnicos
+
+## 25.1 Variables CSS
 
 ```css
 :root {
-  /* Colores */
-  --color-primary: #2a3461;
-  --color-primary-hover: #1f2748;
-  --color-secondary: #9499b0;
-  --color-secondary-hover: #7a80a0;
-  --color-secondary-light: #c4c7d4;
-  --color-accent: #45bfe3;
-  --color-accent-hover: #3aaed2;
-  --color-black: #000000;
-  --color-white: #FFFFFF;
-  --color-gray: #5c6b73;
-  --color-gray-2: #bec4c7;
-  --color-gray-3: #f3f4f4;
+  --color-brand-primary: #2a3461;
+  --color-brand-primary-muted: #9499b0;
+  --color-brand-accent: #45bfe3;
 
-  /* Gradientes */
-  --gradient-primary-secondary: linear-gradient(to right, var(--color-primary), var(--color-secondary));
-  --gradient-secondary-primary: linear-gradient(to right, var(--color-secondary), var(--color-primary));
+  --color-text-base: #5c6b73;
+  --color-text-muted: #bec4c7;
 
-  /* Layout */
-  --header-height: 80px;
-  --side-bar-width: 260px;
-  --side-bar-height: calc(100dvh - var(--header-height));
-  --scroll-margin-top: calc(var(--header-height) + 1rem);
+  --color-surface-white: #ffffff;
+  --color-surface-light: #f3f4f4;
+  --color-surface-ivory: #f5f0e8;
 
-  /* Tipografía */
-  --font-size-base: 0.85rem;
-  --font-size-2xl: 0.9rem;
-  --font-size-3xl: 1rem;
+  --color-border-light: #bec4c7;
+  --color-on-primary: #ffffff;
+  --color-on-primary-soft: #f3f4f4;
 
-  /* Swiper */
-  --swiper-theme-color: var(--color-primary);
-  --swiper-pagination-color: var(--color-primary);
-  --swiper-pagination-bullet-width: 20px;
-  --swiper-pagination-bullet-border-radius: 5px;
-  --swiper-pagination-bullet-horizontal-gap: 6px;
-  --swiper-pagination-bullet-inactive-width: 10px;
-  --swiper-pagination-bullet-inactive-color: var(--color-primary);
-  --swiper-pagination-bullet-inactive-opacity: 0.3;
+  --font-display: "Bellota Text", serif;
+  --font-body: "Work Sans", sans-serif;
+  --font-editorial: "Source Serif 4", serif;
 
-  /* Scrollbar */
-  --scrollbar-color: var(--color-secondary);
+  --container-main: 1440px;
+  --container-reading: 760px;
 
-  /* Browser */
-  interpolate-size: allow-keywords;
+  --page-padding-mobile: 20px;
+  --page-padding-desktop: clamp(48px, 4.5vw, 64px);
+
+  --section-space-compact: 64px;
+  --section-space-default: 80px;
+  --section-space-large: 96px;
+
+  --border-width: 1px;
+  --radius: 0px;
+
+  --duration-fast: 200ms;
+  --duration-medium: 400ms;
+  --duration-slow: 800ms;
+
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+}
+```
+
+## 25.2 Utilidades conceptuales
+
+El proyecto debería contar con equivalentes a:
+
+```text
+container-main
+container-reading
+section-space
+surface-white
+surface-light
+surface-ivory
+surface-primary
+font-display
+font-body
+font-editorial
+border-editorial
+link-editorial
+button-primary
+button-secondary
+motion-reveal
+motion-line
+```
+
+## 25.3 Contenedores
+
+```css
+.container-main {
+  width: min(100%, var(--container-main));
+  margin-inline: auto;
+  padding-inline: var(--page-padding-mobile);
+}
+
+.container-reading {
+  width: min(100%, var(--container-reading));
+  margin-inline: auto;
+  padding-inline: var(--page-padding-mobile);
+}
+
+@media (min-width: 1024px) {
+  .container-main {
+    padding-inline: var(--page-padding-desktop);
+  }
+
+  .container-reading {
+    padding-inline: 0;
+  }
+}
+```
+
+## 25.4 Display
+
+```css
+.text-display {
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 7.5vw, 7rem);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+}
+```
+
+## 25.5 Texto editorial
+
+```css
+.text-editorial {
+  max-width: 68ch;
+  font-family: var(--font-editorial);
+  font-size: 1.25rem;
+  line-height: 1.65;
+}
+```
+
+## 25.6 Botón base
+
+```css
+.button {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding-inline: 1.5rem;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  font-family: var(--font-body);
+  transition:
+    color var(--duration-fast) var(--ease-editorial),
+    background-color var(--duration-fast) var(--ease-editorial),
+    border-color var(--duration-fast) var(--ease-editorial);
+}
+```
+
+## 25.7 Reducción de movimiento
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 ```
 
 ---
 
-## 12. Scripts y dependencias frontend
+# 26. Mapeo orientativo a Tailwind
 
-| Librería | Uso |
-|----------|-----|
-| **GSAP** + ScrollTrigger | Animaciones de entrada, scroll |
-| **Swiper** | Carruseles, sliders |
-| **lite-youtube-embed** | Embeds de video ligeros |
-| **Alpine.js** | Interactividad (vía Livewire) |
-| **Lucide** | Iconos SVG |
+La implementación exacta depende de la versión del proyecto. Centralizar los valores en el tema y evitar hexadecimales repetidos en los componentes.
+
+## 26.1 Colores
+
+```text
+brand-primary
+brand-primary-muted
+brand-accent
+text-base
+text-muted
+surface-white
+surface-light
+surface-ivory
+border-light
+```
+
+## 26.2 Clases a buscar y reemplazar
+
+### Radios
+
+Buscar:
+
+```text
+rounded
+rounded-*
+```
+
+Reemplazar por:
+
+```text
+rounded-none
+```
+
+o eliminar.
+
+### Sombras
+
+Buscar:
+
+```text
+shadow
+shadow-*
+drop-shadow-*
+```
+
+Eliminar.
+
+### Fondos negros
+
+Buscar:
+
+```text
+bg-black
+bg-neutral-950
+bg-zinc-950
+bg-slate-950
+bg-gray-950
+```
+
+Evaluar y reemplazar generalmente por:
+
+```text
+bg-brand-primary
+```
+
+### Tipografía
+
+Reemplazar fuentes genéricas del bloque por:
+
+```text
+font-display
+font-body
+font-editorial
+```
+
+### Pills
+
+Buscar combinaciones como:
+
+```text
+rounded-full
+px-3
+py-1
+text-xs
+```
+
+Transformar en etiqueta editorial sin cápsula.
+
+### Overlays
+
+Buscar:
+
+```text
+absolute inset-0
+bg-black/*
+from-black
+to-transparent
+```
+
+Si sostienen texto sobre foto, reestructurar el bloque. No limitarse a quitar el overlay.
+
+---
+
+# 27. Procedimiento para adaptar un bloque
+
+## Paso 1 — Definir la función
+
+Antes de copiar un bloque, identificar:
+
+- qué contenido resuelve;
+- qué jerarquía necesita;
+- qué acción permite;
+- qué parte debe ser protagonista;
+- si necesita fotografía;
+- si necesita contenedor amplio o reducido.
+
+## Paso 2 — Evaluar la estructura
+
+Conservar solo si ayuda:
+
+- columnas;
+- orden;
+- interacción;
+- responsive;
+- semántica.
+
+## Paso 3 — Neutralizar el diseño original
+
+Eliminar:
+
+- colores;
+- tipografías;
+- sombras;
+- radios;
+- gradientes;
+- decoraciones;
+- iconografía protagonista;
+- overlays;
+- animaciones;
+- modo oscuro;
+- contenido ficticio.
+
+## Paso 4 — Aplicar tokens
+
+Sustituir valores directos por tokens del sistema.
+
+No dejar:
+
+- hexadecimales arbitrarios;
+- fuentes no aprobadas;
+- tamaños improvisados;
+- radios;
+- sombras.
+
+## Paso 5 — Rehacer la jerarquía
+
+Ajustar:
+
+- tamaño de título;
+- ancho de texto;
+- relación imagen/texto;
+- fondo;
+- bordes;
+- espacio;
+- orden mobile;
+- etiqueta editorial.
+
+## Paso 6 — Integrar fotografía
+
+Verificar:
+
+- color natural;
+- recorte adecuado;
+- ausencia de texto encima;
+- relación con la grilla;
+- `alt`;
+- comportamiento responsive.
+
+## Paso 7 — Aplicar interacción
+
+Elegir solo los efectos que mejoren el bloque:
+
+- fade;
+- máscara;
+- línea;
+- zoom suave;
+- flecha;
+- inversión de color.
+
+## Paso 8 — Revisar accesibilidad
+
+- contraste;
+- foco;
+- teclado;
+- semántica;
+- motion reduce;
+- encabezados;
+- alt;
+- tamaño táctil.
+
+## Paso 9 — Revisar coherencia
+
+Comparar con al menos dos bloques existentes.
+
+El nuevo bloque debe compartir:
+
+- tokens;
+- alineaciones;
+- tipografía;
+- bordes;
+- motion;
+- densidad;
+- comportamiento responsive.
+
+## Paso 10 — Eliminar restos de plantilla
+
+Revisar visualmente y en código que no queden:
+
+- colores originales;
+- copy genérico;
+- clases sin uso;
+- iconos innecesarios;
+- estilos dark;
+- radios ocultos;
+- sombras en hover;
+- gradientes;
+- overlays.
+
+---
+
+# 28. Creación de bloques nuevos
+
+Cuando no exista una estructura adecuada en OpenTailwind:
+
+1. definir objetivo;
+2. seleccionar contenedor;
+3. seleccionar superficie;
+4. definir jerarquía tipográfica;
+5. elegir grilla;
+6. asignar fotografía;
+7. definir bordes;
+8. agregar acciones;
+9. definir responsive;
+10. definir motion;
+11. validar accesibilidad.
+
+No copiar la estética de un bloque cercano solo para acelerar.
+
+## 28.1 Defaults
+
+Si no existe una regla específica:
+
+- fondo: blanco;
+- título: Bellota Text en azul;
+- párrafo: Work Sans en gris;
+- borde: 1 px gris reducido;
+- contenedor: 1440 px;
+- sección: 64–80 px vertical;
+- botón: azul rectangular de 48 px;
+- imagen: color natural;
+- animación: fade;
+- radio: 0;
+- sombra: ninguna.
+
+## 28.2 Decisiones que requieren consulta
+
+La LLM no debe decidir por sí sola:
+
+- agregar un nuevo color;
+- cambiar una tipografía;
+- usar negro;
+- usar degradados;
+- superponer texto sobre foto;
+- introducir un nuevo estilo de botón;
+- crear un nuevo tipo de logo;
+- cambiar el comportamiento global del header;
+- usar autoplay;
+- alterar la personalidad de la marca;
+- reemplazar una regla obligatoria.
+
+---
+
+# 29. Patrones recomendados
+
+## 29.1 Apertura editorial
+
+- fondo blanco;
+- título Bellota Text XL;
+- introducción Source Serif 4;
+- fotografía en columna contigua;
+- etiqueta vertical;
+- borde inferior;
+- CTA rectangular.
+
+## 29.2 Capítulo institucional
+
+- fondo azul;
+- año o concepto en Source Serif 4;
+- título blanco;
+- párrafo gris claro;
+- línea celeste breve;
+- imagen en bloque separado.
+
+## 29.3 Listado de publicaciones
+
+- fondo marfil;
+- grilla con separación;
+- tarjetas blancas o transparentes;
+- títulos en Bellota o Source Serif según jerarquía;
+- fecha en Source Serif;
+- enlace con flecha;
+- borde de 1 px.
+
+## 29.4 Actualidad destacada
+
+- pieza principal 8 columnas;
+- piezas secundarias 4 columnas;
+- fotos sin texto encima;
+- fechas;
+- bordes;
+- hover editorial;
+- fondo blanco.
+
+## 29.5 Trayectoria
+
+- años verticales o grandes;
+- línea;
+- hitos;
+- alternancia de ancho;
+- fotografías;
+- bloques azules puntuales;
+- movimiento de borde.
+
+## 29.6 Cita de pensamiento
+
+- contenedor reducido;
+- Source Serif 4 o Bellota Text;
+- fondo marfil;
+- borde izquierdo;
+- atribución;
+- amplio espacio.
+
+---
+
+# 30. Patrones prohibidos
+
+- Hero con foto de fondo y texto encima.
+- Cards redondeadas con sombra.
+- Bento grid de cápsulas.
+- Fondo negro.
+- Neón.
+- Degradados tecnológicos.
+- Botones píldora.
+- Iconos grandes dentro de círculos.
+- Cards que se elevan.
+- Testimonios con autoplay.
+- Texto gris muy claro.
+- Tres o más tipografías en un mismo bloque.
+- Títulos centrados por defecto.
+- Etiqueta en mayúsculas sobre cada título.
+- Secciones alternadas mecánicamente.
+- Monograma repetido como textura.
+- Animación en cada palabra de cada párrafo.
+- Scroll horizontal obligatorio.
+- Cursor personalizado.
+- Video automático.
+- Glassmorphism.
+- Parallax agresivo.
+- Copy comercial genérico.
+- Stock photos jurídicas estereotipadas.
+
+---
+
+# 31. Checklist de validación visual
+
+Antes de aprobar un bloque, responder:
+
+## Identidad
+
+- [ ] ¿Se percibe institucional y editorial?
+- [ ] ¿La jerarquía principal es clara?
+- [ ] ¿El bloque parece propio de Marcela Basterra?
+- [ ] ¿Se evitó la estética jurídica genérica?
+- [ ] ¿Se evitó la estética SaaS?
+
+## Color
+
+- [ ] ¿Solo usa tokens aprobados?
+- [ ] ¿El celeste es un acento?
+- [ ] ¿No hay negro?
+- [ ] ¿El texto tiene contraste suficiente?
+- [ ] ¿El fondo está justificado por la jerarquía?
+
+## Tipografía
+
+- [ ] ¿Bellota Text está limitada a titulares y destacados?
+- [ ] ¿Work Sans resuelve la interfaz?
+- [ ] ¿Source Serif 4 resuelve el contenido editorial?
+- [ ] ¿El título está alineado a la izquierda?
+- [ ] ¿El texto largo no supera 68ch?
+
+## Estructura
+
+- [ ] ¿Usa el contenedor correcto?
+- [ ] ¿La asimetría mantiene alineaciones?
+- [ ] ¿El espaciado pertenece a la escala?
+- [ ] ¿Las tarjetas tienen separación?
+- [ ] ¿No hay elementos flotantes?
+
+## Fotografía
+
+- [ ] ¿La foto conserva color natural?
+- [ ] ¿El recorte es adecuado?
+- [ ] ¿No hay texto encima?
+- [ ] ¿No hay overlay?
+- [ ] ¿Tiene `alt` correcto?
+
+## UI
+
+- [ ] ¿No hay sombras?
+- [ ] ¿No hay bordes redondeados?
+- [ ] ¿Los bordes son sólidos de 1 px?
+- [ ] ¿Los botones tienen 48 px aproximadamente?
+- [ ] ¿Los iconos acompañan y no protagonizan?
+
+## Interacción
+
+- [ ] ¿La animación tiene una función?
+- [ ] ¿No hay autoplay?
+- [ ] ¿No hay rebote ni elasticidad?
+- [ ] ¿El hover no eleva tarjetas?
+- [ ] ¿Se respeta `prefers-reduced-motion`?
+
+## Accesibilidad
+
+- [ ] ¿Funciona con teclado?
+- [ ] ¿El focus es visible?
+- [ ] ¿La semántica es correcta?
+- [ ] ¿Los controles tienen nombre accesible?
+- [ ] ¿El orden mobile coincide con la lectura?
+
+---
+
+# 32. Checklist específico de OpenTailwind
+
+Luego de copiar un bloque:
+
+- [ ] Eliminar `rounded-*`.
+- [ ] Eliminar `shadow-*`.
+- [ ] Eliminar fondos negros.
+- [ ] Eliminar gradientes.
+- [ ] Eliminar modo oscuro no solicitado.
+- [ ] Reemplazar fuentes.
+- [ ] Reemplazar colores.
+- [ ] Revisar paddings.
+- [ ] Ajustar contenedor a 1440 px o lectura.
+- [ ] Separar texto de fotografías.
+- [ ] Eliminar overlays.
+- [ ] Reemplazar iconos decorativos.
+- [ ] Revisar botones.
+- [ ] Rehacer hover.
+- [ ] Rehacer motion.
+- [ ] Quitar autoplay.
+- [ ] Revisar ARIA.
+- [ ] Reemplazar copy.
+- [ ] Comprobar mobile.
+- [ ] Confirmar que no parezca la plantilla original.
+
+---
+
+# 33. Instrucción maestra para una LLM agéntica
+
+Al trabajar sobre este proyecto:
+
+> Utilizá OpenTailwind únicamente como base estructural. Antes de implementar cualquier bloque, neutralizá su identidad visual original y aplicá los tokens, tipografías, reglas de composición, fotografía, interacción y accesibilidad definidos en este documento. No agregues sombras, bordes redondeados, fondos negros, texto sobre fotografías, autoplay, gradientes ni iconografía protagonista. Priorizá autoridad institucional, lectura editorial contemporánea, grillas asimétricas, fotografía natural y una jerarquía tipográfica fuerte. Cuando una decisión estética importante no esté definida, consultá antes de inventarla.
+
+---
+
+# 34. Resumen obligatorio
+
+## Sí
+
+- Editorial digital contemporáneo.
+- Autoridad institucional.
+- Bellota Text en titulares.
+- Work Sans en interfaz.
+- Source Serif 4 en contenido editorial.
+- Azul institucional.
+- Blanco general.
+- Marfil frecuente.
+- Gris claro secundario.
+- Celeste como acento.
+- Bordes de 1 px.
+- Grillas asimétricas.
+- Titulares grandes.
+- Fotografías naturales.
+- Tarjetas separadas.
+- Header fijo y reducido.
+- Menú amplio marfil.
+- Animación editorial.
+- Carruseles manuales.
+- Video por acción del usuario.
+- Texto vertical.
+- Contenedores de 1440 px y 720–800 px.
+
+## No
+
+- Sombras.
+- Bordes redondeados.
+- Negro.
+- Texto sobre fotos.
+- Overlays.
+- Gradientes.
+- Cards flotantes.
+- Autoplay.
+- Cursor personalizado.
+- Iconos protagonistas.
+- Animación elástica.
+- Estética SaaS.
+- Estética jurídica genérica.
+- Heredar la identidad visual de OpenTailwind.

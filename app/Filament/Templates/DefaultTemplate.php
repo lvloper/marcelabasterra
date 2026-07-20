@@ -17,21 +17,16 @@ class DefaultTemplate
             \App\Filament\Blocks\MediaTextBlock::make(),
             \App\Filament\Blocks\CardsBlock::make(),
             \App\Filament\Blocks\SearchBlock::make(),
-<<<<<<< HEAD
             \App\Filament\Blocks\BookPresentationBlock::make(),
-=======
-            \App\Filament\Blocks\HeroBlock::make(),
             \App\Filament\Blocks\CTABlock::make(),
             \App\Filament\Blocks\TimelineBlock::make(),
             \App\Filament\Blocks\CVDownloadBlock::make(),
-            \App\Filament\Blocks\BiographySummaryBlock::make(),
             \App\Filament\Blocks\ContactFormBlock::make(),
             \App\Filament\Blocks\FeaturedResourcesBlock::make(),
             \App\Filament\Blocks\PublicationsHighlightBlock::make(),
             \App\Filament\Blocks\InterviewsHighlightBlock::make(),
             \App\Filament\Blocks\EventsHighlightBlock::make(),
             \App\Filament\Blocks\RelatedResourcesBlock::make(),
->>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
         ];
 
         // foreach ($blocks as $block) {

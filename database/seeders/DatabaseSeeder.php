@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
         $this->seedOrCreatePage('Actualidad y Medios', 'actualidad-y-medios', [], 'default');
         $this->seedOrCreatePage('Exposicion Publica', 'exposicion-publica', [], 'default');
         $this->seedOrCreatePage('Dossier de Prensa', 'dossier-de-prensa', [], 'default');
+        $this->seedOrCreatePage('Muestra de bloques', 'muestra-bloques', $this->sampleBlocks(), 'default');
 
         // Now all routes exist, set blocks with resolved route references
         $home->update(['blocks' => $this->homeBlocks()]);
@@ -201,12 +202,7 @@ class DatabaseSeeder extends Seeder
                     'title' => $post['title'],
                     'layout' => 'default',
                     'status' => Status::Published,
-<<<<<<< HEAD
-                    'full_slug' => $parentRoute->full_slug . '/' . $post['slug'],
-=======
-                    'parent_id' => $parentRoute->id,
                     'full_slug' => $parentRoute->full_slug.'/'.$post['slug'],
->>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
                     'description' => $post['description'],
                 ]
             );
@@ -434,13 +430,23 @@ class DatabaseSeeder extends Seeder
     private function homeBlocks(): array
     {
         return [
-            // 1. Hero
+            // 1. Hero editorial
             $this->block('Hero', [
-                'title' => 'Marcela Basterra',
-                'subtitle' => 'Abogada | Academica | Investigadora',
-                'image' => null,
-                'cta_label' => 'Conoceme',
-                'cta_route' => $this->routeRef('sobre-mi'),
+                'blockTitle' => 'Hero · Apertura editorial',
+                'variant' => 'editorial',
+                'profile_photo' => null,
+                'image_alt' => '',
+                'badge' => 'Perfil institucional',
+                'name' => 'Marcela Basterra',
+                'subtitle' => 'Abogada constitucionalista',
+                'description' => 'Trayectoria académica, profesional e intervención pública.',
+                'indicators' => [
+                    ['label' => 'Derecho constitucional'],
+                    ['label' => 'Actividad académica'],
+                ],
+                'cta_primary' => array_merge($this->routeRef('sobre-mi'), ['btn_label' => 'Conocer trayectoria']),
+                'cta_secondary' => array_merge($this->routeRef('publicaciones'), ['btn_label' => 'Ver publicaciones']),
+                'cta_tertiary' => array_merge($this->routeRef('actualidad-y-medios'), ['btn_label' => 'Actualidad']),
             ]),
             // 2. Publicaciones destacadas
             $this->block('PublicationsHighlight', [
@@ -600,6 +606,149 @@ class DatabaseSeeder extends Seeder
                 'blockTitle' => 'Busqueda',
                 'title' => 'Busca en el sitio',
                 'description' => 'Usa el buscador para encontrar lo que necesitas.',
+            ]),
+        ];
+    }
+
+    // ─── Sample page with all registered blocks ────────────────
+
+    private function sampleBlocks(): array
+    {
+        $trayectoria = Route::where('slug', 'trayectoria')->where('routable_type', Page::class)->first();
+        $publicaciones = Route::where('slug', 'publicaciones')->where('routable_type', Page::class)->first();
+        $actualidad = Route::where('slug', 'actualidad-y-medios')->where('routable_type', Page::class)->first();
+        $sobreMi = Route::where('slug', 'sobre-mi')->where('routable_type', Page::class)->first();
+        $contacto = Route::where('slug', 'contacto')->where('routable_type', Page::class)->first();
+
+        return [
+            $this->block('Hero', [
+                'profile_photo' => null,
+                'badge' => 'Muestra de diseño',
+                'name' => 'Marcela Basterra',
+                'subtitle' => 'Abogada constitucionalista, académica e investigadora',
+                'description' => 'Una página de demostración con contenido ficticio para validar los 17 bloques registrados del CMS.',
+                'indicators' => [
+                    ['label' => '25 años de trayectoria'],
+                    ['label' => '120 publicaciones'],
+                    ['label' => '45 conferencias'],
+                ],
+                'cta_primary' => $this->routeAttrs($trayectoria, 'Ver trayectoria'),
+                'cta_secondary' => $this->routeAttrs($publicaciones, 'Ver publicaciones'),
+                'cta_tertiary' => $this->routeAttrs($actualidad, 'Actualidad y medios'),
+            ]),
+            $this->block('BiographySummary', [
+                'title' => 'Una mirada sobre el derecho constitucional',
+                'summary' => '<p>Este texto es ficticio y representa un resumen biográfico editable desde el CMS. Aquí podría presentarse la trayectoria, las áreas de especialización y la perspectiva profesional.</p>',
+                'photo' => null,
+                'cta_label' => 'Conocer trayectoria',
+                'cta_route' => $this->routeAttrs($sobreMi),
+            ]),
+            $this->block('BookPresentation', [
+                'intro_title' => 'Libros y pensamiento',
+                'intro_description' => 'Una selección ficticia de publicaciones para probar la presentación editorial.',
+                'items' => [
+                    ['title' => 'Constitución y democracia', 'description' => 'Ensayo ficticio sobre instituciones y ciudadanía.', 'image' => null],
+                    ['title' => 'Derechos en movimiento', 'description' => 'Investigación ficticia sobre derechos humanos.', 'image' => null],
+                    ['title' => 'La palabra pública', 'description' => 'Compilación ficticia de conferencias y entrevistas.', 'image' => null],
+                ],
+            ]),
+            $this->block('CTA', [
+                'title' => '¿Querés conocer más?',
+                'text' => 'Este es un llamado a la acción de ejemplo para invitaciones, consultas y colaboraciones.',
+                'button_label' => 'Ir a contacto',
+                'button_route' => $this->routeAttrs($contacto),
+            ]),
+            $this->block('CVDownload', [
+                'title' => 'Trayectoria completa',
+                'description' => 'Descargá una versión ficticia del curriculum vitae para probar este bloque.',
+                'button_text' => 'Descargar CV de muestra',
+            ]),
+            $this->block('Cards', [
+                'title' => 'Áreas de trabajo',
+                'description' => '<p>Tarjetas ficticias para representar distintos ejes de actividad.</p>',
+                'items' => [
+                    ['label' => 'articulo', 'title' => 'Derecho constitucional', 'description' => 'Análisis de instituciones y garantías.', 'image' => null, 'route' => []],
+                    ['label' => 'entrevista', 'title' => 'Debate público', 'description' => 'Participación en conversaciones de actualidad.', 'image' => null, 'route' => []],
+                    ['label' => 'libro', 'title' => 'Investigación académica', 'description' => 'Producción y divulgación de conocimiento.', 'image' => null, 'route' => []],
+                ],
+            ]),
+            $this->block('ContactForm', [
+                'title' => 'Escribinos',
+                'description' => 'Formulario ficticio para consultas generales y propuestas de colaboración.',
+                'recipient_email' => 'muestra@example.com',
+                'success_message' => 'Mensaje de muestra enviado correctamente.',
+                'show_phone' => true,
+                'show_subject' => true,
+            ]),
+            $this->block('EventsHighlight', [
+                'title' => 'Próximas actividades',
+                'description' => 'El bloque mostrará eventos seleccionados cuando existan registros disponibles.',
+                'eventos' => [],
+                'max_items' => 3,
+                'show_past' => false,
+            ]),
+            $this->block('FeaturedResources', [
+                'title' => 'Recursos destacados',
+                'description' => 'Selección ficticia de recursos relacionados.',
+                'items' => [],
+            ]),
+            $this->block('InterviewsHighlight', [
+                'title' => 'En los medios',
+                'description' => 'Entrevistas ficticias destacadas para probar el listado.',
+                'entrevistas' => [],
+                'max_items' => 3,
+            ]),
+            $this->block('Media', [
+                'media_type' => 'image',
+                'youtube_id' => null,
+                'video_file' => null,
+                'image' => null,
+                'caption' => 'Imagen de muestra para el bloque multimedia.',
+            ]),
+            $this->block('MediaText', [
+                'layout' => 'left',
+                'media_type' => 'image',
+                'youtube_id' => null,
+                'video_file' => null,
+                'image' => null,
+                'title' => 'Imagen y argumento',
+                'content' => '<p>Contenido ficticio para validar la convivencia entre una pieza multimedia y un texto editorial.</p>',
+                'cta' => [],
+            ]),
+            $this->block('PublicationsHighlight', [
+                'title' => 'Publicaciones destacadas',
+                'description' => 'Libros y artículos ficticios seleccionados para esta muestra.',
+                'libros' => [],
+                'articulos' => [],
+                'max_items' => 4,
+                'show_type_label' => true,
+            ]),
+            $this->block('RelatedResources', [
+                'title' => 'También puede interesarte',
+                'resource_types' => ['libro', 'articulo', 'entrevista'],
+                'tags' => ['constitución', 'democracia'],
+                'max_items' => 4,
+            ]),
+            $this->block('Search', [
+                'title' => 'Buscar en el sitio',
+                'description' => 'Probá el buscador con una palabra clave.',
+            ]),
+            $this->block('Text', [
+                'eyebrow' => 'Texto de muestra',
+                'title' => 'Claridad para explicar lo complejo',
+                'content' => '<p>Este bloque contiene texto enriquecido ficticio. Su objetivo es permitir la revisión visual de títulos, párrafos, enlaces y estructura editorial.</p><p>La información definitiva se cargará desde el panel de administración.</p>',
+                'image' => null,
+                'cta_primary' => [],
+                'cta_secondary' => [],
+                'width' => 'container',
+            ]),
+            $this->block('Timeline', [
+                'title' => 'Hitos de una trayectoria ficticia',
+                'items' => [
+                    ['year' => '2008', 'title' => 'Inicio de la actividad académica', 'description' => 'Primer hito de ejemplo.'],
+                    ['year' => '2016', 'title' => 'Publicación de una obra colectiva', 'description' => 'Segundo hito de ejemplo.'],
+                    ['year' => '2025', 'title' => 'Nueva etapa de investigación', 'description' => 'Tercer hito de ejemplo.'],
+                ],
             ]),
         ];
     }

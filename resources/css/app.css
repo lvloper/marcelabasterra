@@ -1,9 +1,5 @@
 @import "fonts.css";
 @import "./components/embla.css";
-<<<<<<< HEAD
-
-=======
->>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
 @import "./components/line-title.css";
 @import "./components/text-wysiwyg.css";
 @import "./components/gallery.css";
@@ -13,25 +9,22 @@
 
 :root {
   --color-primary: #2a3461;
-<<<<<<< HEAD
-  --color-primary-hover: #1e2747;
-  --color-secondary: #45bfe3;
-  --color-secondary-hover: #2da8cf;
-  --color-secondary-light: #7ad4ef;
-=======
   --color-primary-hover: #1f2748;
   --color-secondary: #9499b0;
   --color-secondary-hover: #7a80a0;
   --color-secondary-light: #c4c7d4;
   --color-accent: #45bfe3;
   --color-accent-hover: #3aaed2;
->>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
 
   --color-black: #000000;
   --color-white: #FFFFFF;
   --color-gray: #5c6b73;
   --color-gray-2: #bec4c7;
   --color-gray-3: #f3f4f4;
+  --color-surface-ivory: #f5f0e8;
+  --font-display: 'Bellota Text', serif;
+  --font-body: 'Work Sans', sans-serif;
+  --font-editorial: 'Source Serif 4', serif;
   --scrollbar-color: var(--color-secondary);
   --header-height: 80px;
   --side-bar-width: 260px;
@@ -65,6 +58,10 @@
    --font-size-base: 0.85rem;
   --font-size-2xl: 0.9rem;
   --font-size-3xl: 1rem;
+}
+
+.font-body {
+  font-family: var(--font-body);
 }
 
 .text-base {
@@ -291,23 +288,7 @@ html {
 }
 
 .text-question {
-<<<<<<< HEAD
-  @apply text-[7rem] sm:text-[10rem] md:text-[15rem] lg:text-[20rem] xl:text-[20rem] 2xl:text-[20rem] mt-12 text-[#FFFFFF80] bg-transparent flex justify-center font-bellota;
-  font-weight: bold;
-}
-
-.title-normal {
-  @apply text-xl lg:text-2xl font-bold font-bellota;
-  line-height: 1.15;
-}
-.description-normal {
-  @apply leading-snug font-sans text-base;
-}
-
-.description2-normal {
-  @apply font-sans leading-snug text-base;
-=======
-  @apply text-[7rem] sm:text-[10rem] md:text-[15rem] lg:text-[20rem] xl:text-[20rem] 2xl:text-[20rem] mt-12 text-[#FFFFFF80] bg-transparent flex justify-center font-bold
+  @apply text-[7rem] sm:text-[10rem] md:text-[15rem] lg:text-[20rem] xl:text-[20rem] 2xl:text-[20rem] mt-12 text-[#FFFFFF80] bg-transparent flex justify-center font-bold;
 }
 
 .title-normal {
@@ -320,7 +301,6 @@ html {
 
 .description2-normal {
   @apply font-source leading-snug text-base;
->>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
 }
 
 .block-Hero {
@@ -367,14 +347,8 @@ html {
 
 .block-Hero, .block-Hero2 {
   strong {
-<<<<<<< HEAD
-    @apply font-heavy font-black;
-=======
     @apply font-bold;
->>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
   }
-
-
 }
 
 .block-Events {
@@ -382,38 +356,26 @@ html {
     @apply text-2xl leading-tight 2xl:text-3xl;
 
     strong {
-<<<<<<< HEAD
-      @apply font-heavy font-black;
-=======
       @apply font-bold;
->>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
     }
   }
 
   .richEvents h3 {
-<<<<<<< HEAD
-    @apply hidden md:block text-xl font-sans pt-8;
-=======
-    @apply hidden md:block text-xl font-source  pt-8;
->>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
+    @apply hidden md:block text-xl font-source pt-8;
   }
 }
 
 .text {
   h2 {
-    @apply text-primary font-bold font-bellota;
+    @apply text-primary font-bold font-sans;
   }
 
   h3 {
-    @apply leading-tight text-xl md:text-3xl lg:text-3xl xl:text-3xl pb-4 xl:pb-6 font-bold font-bellota;
+    @apply leading-tight text-xl md:text-3xl lg:text-3xl xl:text-3xl pb-4 xl:pb-6 font-bold font-sans;
   }
 
   p {
-<<<<<<< HEAD
-    @apply pb-8 text-md md:text-xl xl:text-lg font-sans;
-=======
     @apply pb-8 text-md md:text-xl xl:text-lg font-source;
->>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
   }
 }
 

@@ -8,38 +8,39 @@ class HeroBlock extends PageBlock
 {
     protected const NAME = 'Hero';
 
-<<<<<<< HEAD
-    protected const LABEL = 'Hero';
-
-    protected const CATEGORY = 'Contenido';
-=======
     protected const CATEGORY = 'Hero';
 
     protected const LABEL = 'Hero';
->>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
 
     protected static function fields(): array
     {
         return [
-<<<<<<< HEAD
-            Field::image('profile_photo', 'Foto de perfil', '800', '1200', 'images/hero'),
-            Field::text('badge', 'Etiqueta superior'),
-            Field::text('name', 'Nombre completo'),
-            Field::text('subtitle', 'Subtitulo'),
-            Field::textarea('description', 'Descripcion'),
+            Field::toggleButtons('variant', 'Versión visual', [
+                'editorial' => '01 · Apertura editorial',
+                'institutional' => '02 · Capítulo institucional',
+                'portrait' => '03 · Retrato protagonista',
+            ])
+                ->default('editorial')
+                ->inline()
+                ->required(),
+            Field::image('profile_photo', 'Retrato principal', '1200', '1500', 'images/hero', true),
+            Field::text('image_alt', 'Texto alternativo del retrato')
+                ->helperText('Describe la fotografía sin repetir el título visible.'),
+            Field::text('badge', 'Etiqueta editorial'),
+            Field::text('name', 'Nombre o título principal')->required(),
+            Field::text('subtitle', 'Área de especialización')->required(),
+            Field::textarea('description', 'Presentación breve')
+                ->rows(4)
+                ->maxLength(360),
             Field::repeater('indicators', 'Indicadores', [
                 Field::text('label', 'Texto'),
-            ])->collapsible(),
+            ])
+                ->helperText('Cargos, áreas o hitos breves. Se recomienda usar entre 2 y 4.')
+                ->maxItems(4)
+                ->collapsible(),
             Field::route('cta_primary', 'Ver CV')->buttonLabel(),
             Field::route('cta_secondary', 'Ver publicaciones')->buttonLabel(),
             Field::route('cta_tertiary', 'Actualidad')->buttonLabel(),
-=======
-            Field::text('title', 'Título principal')->required(),
-            Field::textarea('subtitle', 'Subtítulo')->rows(3),
-            Field::image('image', 'Imagen de fondo', '1920', '1080', 'images/hero'),
-            Field::text('cta_label', 'Texto del botón'),
-            Field::route('cta_route', 'Ruta del CTA'),
->>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
         ];
     }
 }

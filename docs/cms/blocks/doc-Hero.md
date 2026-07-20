@@ -4,11 +4,17 @@
 
 | Prop | Tipo | Requerido | Default | Descripción |
 |------|------|-----------|---------|-------------|
-| `title` | `text` | sí | | Título principal |
-| `subtitle` | `textarea` | no | | Subtítulo |
-| `image` | `image` | no | | Imagen de fondo (1920x1080) |
-| `cta_label` | `text` | no | | Texto del botón CTA |
-| `cta_route` | `route` | no | | Ruta del botón CTA |
+| `variant` | `toggleButtons` | sí | `editorial` | Composición visual: `editorial`, `institutional` o `portrait` |
+| `profile_photo` | `image` | no | | Retrato principal 4:5 (1200x1500) |
+| `image_alt` | `text` | no | | Descripción accesible de la fotografía |
+| `badge` | `text` | no | | Etiqueta editorial de contexto |
+| `name` | `text` | sí | | Nombre o título principal |
+| `subtitle` | `text` | sí | | Área de especialización |
+| `description` | `textarea` | no | | Presentación breve, máximo 360 caracteres |
+| `indicators` | `repeater` | no | `[]` | Hasta cuatro cargos, áreas o hitos; cada ítem contiene `label` |
+| `cta_primary` | `route` | no | | Acción principal con etiqueta integrada |
+| `cta_secondary` | `route` | no | | Acción secundaria con etiqueta integrada |
+| `cta_tertiary` | `route` | no | | Enlace editorial terciario con etiqueta integrada |
 
 ## Contrato de datos
 
@@ -16,16 +22,25 @@
 {
   "type": "Hero",
   "data": {
-    "title": "Marcela Basterra",
-    "subtitle": "Abogada especialista en...",
-    "image": "images/hero/fondo.jpg",
-    "cta_label": "Conocer más",
-    "cta_route": { "route_id": "1", "btn_label": "Ver más" }
+    "variant": "editorial",
+    "profile_photo": "images/hero/retrato.jpg",
+    "image_alt": "Retrato de Marcela Basterra",
+    "badge": "Perfil institucional",
+    "name": "Marcela Basterra",
+    "subtitle": "Abogada constitucionalista",
+    "description": "Trayectoria académica, profesional e intervención pública.",
+    "indicators": [{ "label": "Derecho constitucional" }],
+    "cta_primary": { "route_id": "1", "btn_label": "Ver trayectoria" }
   }
 }
 ```
 
 ## Reglas de renderizado
 
-- Si no hay imagen, el hero se renderiza solo con texto sobre fondo de color.
-- El CTA es opcional; si no se define cta_label ni cta_route, no se muestra botón.
+- Las tres versiones renderizan el mismo contrato de contenido; `variant` solo cambia la composición.
+- La fotografía nunca lleva texto superpuesto y conserva color natural.
+- Si no hay fotografía, las versiones `editorial` e `institutional` mantienen una superficie editorial alternativa.
+- Los CTA sin URL o sin etiqueta no se renderizan.
+- Las rutas admiten destino interno, URL externa y descarga de archivo.
+- El título principal se renderiza como `h1`; usar el bloque una sola vez por página.
+- Las entradas respetan `prefers-reduced-motion` y se muestran inmediatamente si GSAP no está disponible.

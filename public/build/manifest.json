@@ -11,12 +11,20 @@
     "file": "assets/SourceSerif4_18pt-Medium-BF65EO5x.ttf",
     "src": "public/fonts/SourceSerif4_18pt-Medium.ttf"
   },
+  "public/fonts/WorkSans-Light.ttf": {
+    "file": "assets/WorkSans-Light-B3R6l1vV.ttf",
+    "src": "public/fonts/WorkSans-Light.ttf"
+  },
+  "public/fonts/WorkSans-Regular.ttf": {
+    "file": "assets/WorkSans-Regular-CEuwBnaA.ttf",
+    "src": "public/fonts/WorkSans-Regular.ttf"
+  },
+  "public/fonts/WorkSans-SemiBold.ttf": {
+    "file": "assets/WorkSans-SemiBold-Bidiy3ee.ttf",
+    "src": "public/fonts/WorkSans-SemiBold.ttf"
+  },
   "resources/css/app.css": {
-<<<<<<< HEAD
-    "file": "assets/app-Cz4STxL1.css",
-=======
-    "file": "assets/app-BvMnZ2iZ.css",
->>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
+    "file": "assets/app-BffdjiwK.css",
     "name": "app",
     "names": [
       "app.css"
@@ -26,7 +34,10 @@
     "assets": [
       "assets/BellotaText-Regular-CubwNl87.ttf",
       "assets/BellotaText-Bold-ZNBj0bsn.ttf",
-      "assets/SourceSerif4_18pt-Medium-BF65EO5x.ttf"
+      "assets/SourceSerif4_18pt-Medium-BF65EO5x.ttf",
+      "assets/WorkSans-Light-B3R6l1vV.ttf",
+      "assets/WorkSans-Regular-CEuwBnaA.ttf",
+      "assets/WorkSans-SemiBold-Bidiy3ee.ttf"
     ]
   },
   "resources/js/app.js": {

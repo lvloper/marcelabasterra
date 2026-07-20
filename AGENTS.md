@@ -4,9 +4,11 @@ Guia operativa para que cualquier agente del proyecto interprete comandos cortos
 
 ## Design system
 
-- Todo subagente de diseno debe consultar `DESIGN.md` como referencia obligatoria.
-- El design system es el unico punto de verdad para colores, tipografia, spacing, radios y reglas visuales.
-- Ningun subagente debe hardcodear valores de marca (colores, fuentes, etc.).
+- `DESIGN.md` contiene el design system oficial vigente del proyecto y debe ser consultado por todo agente de IA antes de diseñar, maquetar o modificar una interfaz.
+- El design system es el único punto de verdad para la dirección visual, colores, tipografía, espaciado, grillas, componentes, interacción, accesibilidad y reglas de transformación de bloques.
+- Todas las decisiones de diseño nuevas deben partir de `DESIGN.md`; no se deben introducir criterios visuales propios ni reutilizar la identidad original de una plantilla sin adaptarla al manual.
+- Ningún subagente debe hardcodear valores de marca (colores, fuentes, etc.) ni contradecir las reglas obligatorias del manual.
+- Si una solicitud, plantilla o referencia visual entra en conflicto con `DESIGN.md`, prevalece `DESIGN.md` y el agente debe adaptar o reemplazar esa decisión.
 - Para reutilizar este CMS en otro proyecto: reemplazar `DESIGN.md` y `tailwind.config.js`.
 
 ## Politica de modelo para diseno/UI

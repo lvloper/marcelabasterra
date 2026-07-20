@@ -11,7 +11,10 @@
     $relatedItems = [];
     foreach ($selectedTypes as $type) {
         if (!isset($typeMap[$type])) continue;
-        $models = $typeMap[$type]::whereHas('route', fn($q) => $q->where('status', 'published'))
+        $modelClass = $typeMap[$type];
+        if (!\Illuminate\Support\Facades\Schema::hasTable((new $modelClass)->getTable())) continue;
+
+        $models = $modelClass::whereHas('route', fn($q) => $q->where('status', 'published'))
             ->with('route')->limit($max)->get();
         foreach ($models as $model) {
             $relatedItems[] = [
