@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 674 96.36">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: .01em;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5 {
+        font-family: BellotaText-Regular, 'Bellota Text';
+      }
+
+      .cls-2 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-3 {
+        letter-spacing: -.11em;
+      }
+
+      .cls-4 {
+        letter-spacing: 0em;
+      }
+
+      .cls-6 {
+        letter-spacing: 0em;
+      }
+
+      .cls-6, .cls-7 {
+        font-family: BellotaText-Bold, 'Bellota Text';
+        font-weight: 700;
+      }
+
+      .cls-5 {
+        letter-spacing: 0em;
+      }
+
+      .cls-8 {
+        fill: #5c6b73;
+        font-size: 83.14px;
+      }
+
+      .cls-7 {
+        letter-spacing: .01em;
+      }
+    </style>
+  </defs>
+  <g id="Capa_1-2" data-name="Capa_1">
+    <text class="cls-8" transform="translate(0 70)"><tspan class="cls-4" x="0" y="0">M</tspan><tspan class="cls-5" x="68.59" y="0">a</tspan><tspan class="cls-2" x="109.16" y="0">r</tspan><tspan class="cls-1" x="138.26" y="0">c</tspan><tspan class="cls-4" x="179.58" y="0">ela I.</tspan><tspan class="cls-3" x="348.85" y="0"> </tspan><tspan class="cls-7" x="363.15" y="0">Bas</tspan><tspan class="cls-6" x="495.34" y="0">t</tspan><tspan class="cls-7" x="523.52" y="0">erra</tspan></text>
+  </g>
+</svg>
