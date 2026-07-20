@@ -34,7 +34,10 @@ class ModalTemplate
                 ->editAction(
                     fn (Action $action) => $action->closeModalByClickingAway(false)
                 )
+<<<<<<< HEAD
                 
+=======
+>>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
                 ->collapsible(),
         ];
     }

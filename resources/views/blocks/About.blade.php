@@ -14,8 +14,8 @@
             </div>
             <div class=" gap-4 pt-8 xl:w-[85%] col-span-2 lg:col-span-1 {{$position === 'right' ? 'lg:order-1' : ''}}">
                 <div class="flex mb-6">
-                    <div class="font-bold xl:col-span-4 text-primary font-poppins">
-                        <p class="mb-2 leading-snug text-xl font-futura-bold">{{ $title ?? '' }}</p>
+                    <div class="font-bold xl:col-span-4 text-primary font-source">
+                        <p class="mb-2 leading-snug text-xl font-font-bold">{{ $title ?? '' }}</p>
                         <p class="-mt-2 text-xl">{{ $title2 ?? '' }}</p>
                     </div>
                     {{-- <div class="hidden relative w-auto h-full lg:block">
@@ -23,19 +23,19 @@
                             src="{{ asset('img/zig-zag.svg') }}" alt="">
                     </div> --}}
                 </div>
-                <div class="grid gap-4 font-poppins text-base">
+                <div class="grid gap-4 font-source text-base">
                     {!! $text ?? '' !!}
                 </div>
 
                 @if( isset($moreText) && $moreText )
                 <div x-data="{ showMore: false, readMoreBtn: null }" x-init="readMoreBtn = $refs.readMoreBtn">
-                    <span class="cursor-pointer font-poppins text-base text-primary text-underline" x-show="!showMore"
+                    <span class="cursor-pointer font-source text-base text-primary text-underline" x-show="!showMore"
                         @click="showMore = !showMore" x-ref="readMoreBtn">Leer más</span>
 
-                    <div class="grid gap-4 font-poppins text-base" x-show="showMore" x-cloak>
+                    <div class="grid gap-4 font-source text-base" x-show="showMore" x-cloak>
                         {!! $moreText ?? '' !!}
                     </div>
-                    <span class="cursor-pointer font-poppins text-base text-primary text-underline" x-show="showMore"
+                    <span class="cursor-pointer font-source text-base text-primary text-underline" x-show="showMore"
                         @click="showMore = !showMore; $nextTick(() => readMoreBtn.scrollIntoView({ block: 'center' }))">Leer
                         menos</span>
                 </div>

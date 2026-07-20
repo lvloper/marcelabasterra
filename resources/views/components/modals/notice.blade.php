@@ -9,16 +9,16 @@
             </div>
             <div class="col-span-4 px-5 md:px-8 flex justify-center flex-col py-6">
                 <div class="text-xl sm:text-2xl font-bold text-primary">Nombre de la persona</div>
-                <div class="text-xs sm:text-md lg:text-lg leading-none md:w-[85%] font-poppins ">Cargo / Descripción</div>
+                <div class="text-xs sm:text-md lg:text-lg leading-none md:w-[85%] font-source ">Cargo / Descripción</div>
             </div>
         </div>
         <div>
-            <p class="text-md md:text-xl lg:text-lg font-poppins">
+            <p class="text-md md:text-xl lg:text-lg font-source">
                 Contenido del aviso. Este es un componente de demostración que puede ser personalizado.
             </p>
             <img class="w-full py-8"
                 src="https://img.freepik.com/foto-gratis/personaje-estilo-dibujos-animados-3d_23-2151034061.jpg" alt="">
-            <p class="text-md md:text-xl lg:text-lg font-poppins">
+            <p class="text-md md:text-xl lg:text-lg font-source">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </p>
 

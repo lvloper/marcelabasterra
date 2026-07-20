@@ -4,10 +4,10 @@ Guia operativa para que cualquier agente del proyecto interprete comandos cortos
 
 ## Design system
 
-- Todo subagente de diseno debe consultar `docs/ux/design-system.md` como referencia obligatoria.
+- Todo subagente de diseno debe consultar `DESIGN.md` como referencia obligatoria.
 - El design system es el unico punto de verdad para colores, tipografia, spacing, radios y reglas visuales.
 - Ningun subagente debe hardcodear valores de marca (colores, fuentes, etc.).
-- Para reutilizar este CMS en otro proyecto: reemplazar `docs/ux/design-system.md` y `tailwind.config.js`.
+- Para reutilizar este CMS en otro proyecto: reemplazar `DESIGN.md` y `tailwind.config.js`.
 
 ## Politica de modelo para diseno/UI
 
@@ -61,7 +61,7 @@ Guia operativa para que cualquier agente del proyecto interprete comandos cortos
 
 ## Referencias obligatorias
 
-- `docs/ux/design-system.md`
+- `DESIGN.md`
 - `docs/cms/blocks/draft.md`
 - `docs/cms/blocks/subagents/block-backend.md`
 - `docs/cms/blocks/subagents/data-validator.md`

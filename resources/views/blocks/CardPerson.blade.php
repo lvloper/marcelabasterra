@@ -5,8 +5,8 @@
                 imageClass=" rounded-ss-3xl rounded-es-3xl h-full w-full object-cover" />
         </div>
         <div class="flex flex-col col-span-4 justify-center px-4 py-6 md:px-4">
-            <div class="text-lg font-heavy md:font-bold text-primary">{{ $title ?? ''}}</div>
-            <div class="text-base mb-2 font-bold text-secondary font-poppins">{{ $work ?? ''}}
+            <div class="text-lg font-bold md:font-bold text-primary">{{ $title ?? ''}}</div>
+            <div class="text-base mb-2 font-bold text-secondary font-source">{{ $work ?? ''}}
             </div>
         </div>
     </div>

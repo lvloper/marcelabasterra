@@ -55,12 +55,12 @@
                             <div class="rounded-t-xl md:rounded-t-xl h-[180px] bg-image bg-gray-200 ">
                             </div>
                             <div class="px-4 py-4 space-y-3 md:py-6">
-                                <div class="text-lg leading-tight md:text-xl font-heavy">
+                                <div class="text-lg leading-tight md:text-xl font-bold">
                                     <br>
                                     <br>
                                     <br>
                                 </div>
-                                <div class="pr-4 text-sm lg:block font-poppins slideText"> <br>
+                                <div class="pr-4 text-sm lg:block font-source slideText"> <br>
                                     <br>
                                     <br>
                                 </div>

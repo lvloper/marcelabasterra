@@ -8,7 +8,7 @@
             <ul class="space-y-7">
                 @foreach ($items as $item)
                     <li
-                        class="flex justify-between pb-3 text-xl border-b-2 transition-all border-b-secondary futura-medium md:hover:border-b-primary md:hover:text-primary duration-400 group">
+                        class="flex justify-between pb-3 text-xl border-b-2 transition-all border-b-secondary font-bold md:hover:border-b-primary md:hover:text-primary duration-400 group">
                         <span class="ml-4">{{ $item['label'] }}</span>
 
                         <svg class="mr-4 transition-all text-secondary md:group-hover:text-primary duration-400 group-hover:rotate-45"

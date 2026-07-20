@@ -2,19 +2,31 @@
 .text-wysiwyg {
 
     p, p span, span, ol, ul li {
+<<<<<<< HEAD
         font-family: 'Work Sans', sans-serif !important;
+=======
+        font-family: 'Source Serif 4', serif !important;
+>>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
         @apply text-base;
     }
 
     h1 {
+<<<<<<< HEAD
         @apply font-heavy font-black text-pretty leading-tight mb-4 !important;
         font-family: 'Bellota Text', cursive !important;
+=======
+        @apply font-bold text-pretty leading-tight mb-4 !important;
+>>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
         font-size: 5rem !important;
     }
 
     h2 {
+<<<<<<< HEAD
         @apply font-heavy font-black text-pretty leading-tight text-3xl mb-4 !important;
         font-family: 'Bellota Text', cursive !important;
+=======
+        @apply font-bold text-pretty leading-tight text-3xl mb-4 !important;
+>>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
         color: var(--color-primary) !important;
         font-weight: bold !important;
     }
@@ -59,7 +71,11 @@
         position: absolute;
         top: -0.5rem;
         left: 0.5rem;
+<<<<<<< HEAD
             font-family: 'Bellota Text', cursive !important;
+=======
+        font-family: 'Bellota Text', sans-serif;
+>>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
     } */
 
     blockquote p {
@@ -118,7 +134,11 @@
             line-height: 1.25 !important;
         }
         p, span {
+<<<<<<< HEAD
             font-family: 'Work Sans', sans-serif !important;
+=======
+            font-family: 'Source Serif 4', serif !important;
+>>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
         }
 
         blockquote {
@@ -141,11 +161,19 @@
 @layer components {
 
     .font-sans {
+<<<<<<< HEAD
         font-family: 'Work Sans', sans-serif !important;
     }
 
     .font-poppins {
         font-family: 'Work Sans', sans-serif;
+=======
+        font-family: 'Bellota Text', sans-serif !important;
+    }
+
+    .font-source {
+        font-family: 'Source Serif 4', serif;
+>>>>>>> 85ac118f44c5d2c1cda44c274bef3d05c175fc3c
     }
 
     .text-primary {

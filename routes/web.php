@@ -27,6 +27,8 @@ Route::get('/preview-blocks-minimal', function () {
 })
 ->name('preview.blocks.minimal');
 
+Route::redirect('/login', '/admin/login')->name('login');
+
 Route::get('/home', function () {
     return redirect('/');
 });
@@ -34,6 +36,31 @@ Route::get('/home', function () {
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+
+Route::post('/contact/send', function (\Illuminate\Http\Request $request) {
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'phone' => 'nullable|string|max:50',
+        'subject' => 'nullable|string|max:255',
+        'message' => 'required|string|max:5000',
+        'recipient' => 'required|email',
+    ]);
+
+    \Illuminate\Support\Facades\Mail::raw(
+        "Nombre: {$validated['name']}\nEmail: {$validated['email']}\n"
+        . ($validated['phone'] ? "Telefono: {$validated['phone']}\n" : '')
+        . ($validated['subject'] ? "Asunto: {$validated['subject']}\n" : '')
+        . "\nMensaje:\n{$validated['message']}",
+        function ($message) use ($validated) {
+            $message->to($validated['recipient'])
+                    ->replyTo($validated['email'], $validated['name'])
+                    ->subject('Contacto web: ' . ($validated['subject'] ?? 'Sin asunto'));
+        }
+    );
+
+    return response()->json(['ok' => true]);
+})->name('contact.send');
 
 Route::get('/{slug?}', [RouteController::class, 'show'])
     ->where('slug', '.*')

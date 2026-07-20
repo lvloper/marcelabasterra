@@ -14,7 +14,7 @@ $longText = $titleLength > 8;
         <div class="pt-2 {{ $class ?? '' }} {{ $longText ? 'line-title-long' : '' }} overflow-hidden">
             <div class="{{ $containerClass ?? 'container' }}">
                 <h2
-                    class="font-bold leading-none uppercase title futura-medium text-{{ $color }} lg:max-w-none title-animate pb-2">
+                    class="font-bold leading-none uppercase title font-bold text-{{ $color }} lg:max-w-none title-animate pb-2">
                     {!! nl2br($title ?? '' ) !!}
                 </h2>
             </div>
