@@ -10,8 +10,8 @@
 
                 @foreach ($items as $index => $item)
                     <div class="relative flex flex-col md:flex-row items-start mb-12 last:mb-0 group
-                                {{ $index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse' }}">
-                        <div class="flex-1 {{ $index % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:pl-12' }} w-full md:w-1/2">
+                                {{ $loop->index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse' }}">
+                        <div class="flex-1 {{ $loop->index % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:pl-12' }} w-full md:w-1/2">
                             <div class="bg-white rounded-xl border border-gray-200 p-5 md:p-6 hover:border-gray-300 transition-colors">
                                 <span class="inline-block text-sm font-bold text-primary bg-primary/5 px-3 py-1 rounded-sm mb-3 font-sans">
                                     {{ $item['year'] ?? '' }}
@@ -26,7 +26,7 @@
                         <div class="hidden md:flex absolute left-1/2 top-6 w-3 h-3 bg-primary rounded-full -translate-x-1/2 border-2 border-white z-10
                                     group-hover:scale-125 transition-transform"></div>
 
-                        <div class="flex-1 w-full md:w-1/2 {{ $index % 2 === 0 ? 'md:pl-12' : 'md:pr-12 md:text-right' }}"></div>
+                        <div class="flex-1 w-full md:w-1/2 {{ $loop->index % 2 === 0 ? 'md:pl-12' : 'md:pr-12 md:text-right' }}"></div>
                     </div>
                 @endforeach
             </div>

@@ -3,7 +3,10 @@
     $mediaType = $media_type ?? 'image';
     $isLeft = $layout === 'left';
     $image = is_array($image ?? null) ? ($image[0] ?? null) : $image;
-    $video_file = is_array($video_file ?? null) ? ($video_file[0] ?? null) : $video_file;
+    $videoFile = is_array($video_file ?? null) ? ($video_file[0] ?? null) : $video_file;
+    $hasMedia = ($mediaType === 'youtube' && filled($youtube_id ?? null))
+        || ($mediaType === 'upload' && filled($videoFile))
+        || ($mediaType === 'image' && filled($image));
 
     $htmlContent = $content ?? '';
     if (is_array($htmlContent)) {
@@ -50,78 +53,98 @@
         }
         $htmlContent = $rendered;
     }
+
+    $ctaUrl = null;
+    $ctaTarget = null;
+    if (is_array($cta ?? null)) {
+        if (($cta['route_id'] ?? null) === '0' && filled($cta['external_url'] ?? null)) {
+            $ctaUrl = $cta['external_url'];
+            $ctaTarget = ($cta['new_window'] ?? true) ? '_blank' : null;
+        } elseif (($cta['route_id'] ?? null) === '-1' && filled($cta['file'] ?? null)) {
+            $ctaUrl = \Illuminate\Support\Facades\Storage::url($cta['file']);
+            $ctaTarget = ($cta['new_window'] ?? false) ? '_blank' : null;
+        } elseif (filled($cta['route_id'] ?? null)) {
+            $ctaRoute = \App\Models\Route::find($cta['route_id']);
+            if ($ctaRoute) {
+                $ctaUrl = url($ctaRoute->full_slug);
+                $ctaTarget = ($cta['new_window'] ?? false) ? '_blank' : null;
+
+                if (filled($cta['anchor'] ?? null)) {
+                    $ctaUrl .= '#' . $cta['anchor'];
+                }
+            }
+        }
+    }
 @endphp
 
-<x-block class="py-12 md:py-16">
-    <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <div class="{{ $isLeft ? 'md:order-1' : 'md:order-2' }}">
-                @if ($mediaType === 'youtube' && ($youtube_id ?? null))
-                    <div class="relative aspect-video overflow-hidden rounded-lg bg-gray-100">
+<x-block class="bg-[var(--color-surface-ivory)] py-16 md:py-20 lg:py-24">
+    <div class="container mx-auto">
+        <div class="grid items-start gap-10 lg:grid-cols-12 lg:gap-6">
+            @if ($hasMedia)
+                <div @class([
+                    'order-1 lg:col-span-7' => true,
+                    'lg:order-1' => $isLeft,
+                    'lg:order-2' => ! $isLeft,
+                ])>
+                    @if ($mediaType === 'youtube' && ($youtube_id ?? null))
+                    <div class="aspect-video border border-primary bg-gray-3">
                         <iframe
-                            src="https://www.youtube-nocookie.com/embed/{{ $youtube_id }}"
-                            title="YouTube video"
-                            class="absolute inset-0 h-full w-full"
+                            src="https://www.youtube-nocookie.com/embed/{{ rawurlencode($youtube_id) }}"
+                            title="{{ $title ? 'Video: ' . $title : 'Video de YouTube' }}"
+                            class="h-full w-full"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen
                         ></iframe>
                     </div>
-                @elseif ($mediaType === 'upload' && ($video_file ?? null))
-                    <div class="relative aspect-video overflow-hidden rounded-lg bg-gray-100">
+                @elseif ($mediaType === 'upload' && $videoFile)
+                    <div class="aspect-video border border-primary bg-gray-3">
                         <video controls class="h-full w-full" preload="metadata">
-                            <source src="{{ \Illuminate\Support\Facades\Storage::url($video_file) }}" type="video/mp4">
+                            <source src="{{ \Illuminate\Support\Facades\Storage::url($videoFile) }}" type="video/mp4">
+                            Tu navegador no admite la reproducción de video.
                         </video>
                     </div>
-                @elseif ($mediaType === 'image' && ($image ?? null))
-                    <div class="overflow-hidden rounded-lg bg-gray-100">
+                @elseif ($mediaType === 'image' && $image)
+                    <div class="border border-primary bg-gray-3">
                         <img
                             src="{{ \Illuminate\Support\Facades\Storage::url($image) }}"
                             alt="{{ $title ?? '' }}"
-                            class="h-full w-full object-cover"
+                            class="h-auto w-full object-cover"
                         >
                     </div>
-                @endif
-            </div>
+                    @endif
+                </div>
+            @endif
 
-            <div class="{{ $isLeft ? 'md:order-2' : 'md:order-1' }}">
+            <div @class([
+                'order-2' => true,
+                'lg:col-span-4 lg:col-start-9 lg:order-2' => $hasMedia && $isLeft,
+                'lg:col-span-4 lg:col-start-1 lg:order-1' => $hasMedia && ! $isLeft,
+                'lg:col-span-7 lg:col-start-1' => ! $hasMedia,
+            ])>
+                <span class="mb-6 block h-px w-16 bg-accent" aria-hidden="true"></span>
+
                 @if ($title ?? null)
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $title }}</h2>
+                    <h2 class="font-[var(--font-display)] text-4xl font-bold leading-[1.02] tracking-[-0.025em] text-primary sm:text-5xl lg:text-4xl xl:text-5xl">
+                        {{ $title }}
+                    </h2>
                 @endif
 
                 @if ($htmlContent)
-                    <div class="prose prose-lg max-w-none text-gray-700 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_a]:text-primary [&_a]:underline">
+                    <div class="text-wysiwyg mt-6 max-w-[68ch] text-gray [&_a]:text-primary [&_a]:decoration-accent [&_a]:underline [&_a]:underline-offset-4 [&_p:not(:last-child)]:mb-5">
                         {!! $htmlContent !!}
                     </div>
                 @endif
 
-                @if ($cta ?? null)
-                    @php
-                        $ctaUrl = '';
-                        $ctaTarget = '';
-                        if (($cta['route_id'] ?? null) === '0' && ($cta['external_url'] ?? null)) {
-                            $ctaUrl = $cta['external_url'];
-                            $ctaTarget = ($cta['new_window'] ?? false) ? '_blank' : '';
-                        } elseif ($cta['route_id'] ?? null) {
-                            $ctaRoute = \App\Models\Route::find($cta['route_id']);
-                            if ($ctaRoute) {
-                                $ctaUrl = url($ctaRoute->full_slug);
-                                $ctaTarget = ($cta['new_window'] ?? false) ? '_blank' : '';
-                                if ($cta['anchor'] ?? null) {
-                                    $ctaUrl .= '#' . $cta['anchor'];
-                                }
-                            }
-                        }
-                    @endphp
-                    @if ($ctaUrl)
-                        <a
-                            href="{{ $ctaUrl }}"
-                            @if ($ctaTarget) target="{{ $ctaTarget }}" rel="noopener noreferrer" @endif
-                            class="inline-flex items-center mt-6 px-6 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-hover transition-colors"
-                        >
-                            {{ $cta['btn_label'] ?? 'Ver más' }}
-                        </a>
-                    @endif
+                @if ($ctaUrl)
+                    <a
+                        href="{{ $ctaUrl }}"
+                        @if ($ctaTarget) target="{{ $ctaTarget }}" rel="noopener noreferrer" @endif
+                        class="group mt-8 inline-flex min-h-12 items-center gap-3 border border-primary bg-primary px-6 py-3 font-[var(--font-body)] text-base font-semibold text-white transition-colors duration-200 hover:bg-transparent hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none"
+                    >
+                        <span>{{ $cta['btn_label'] ?? 'Ver más' }}</span>
+                        <span class="transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
+                    </a>
                 @endif
             </div>
         </div>

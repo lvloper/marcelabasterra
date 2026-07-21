@@ -16,6 +16,8 @@ return [
 
     // IDs de rutas padre para recursos del CMS
     'publicaciones_parent_id' => 6,
+    'books_parent_id' => env('CMS_BOOKS_PARENT_ID'),
+    'academic_articles_parent_id' => env('CMS_ACADEMIC_ARTICLES_PARENT_ID'),
     'prensa_parent_id' => 7,
     'agenda_parent_id' => 8,
     'programas_parent_id' => 9,

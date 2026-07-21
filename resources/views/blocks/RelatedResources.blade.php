@@ -14,14 +14,16 @@
         $modelClass = $typeMap[$type];
         if (!\Illuminate\Support\Facades\Schema::hasTable((new $modelClass)->getTable())) continue;
 
-        $models = $modelClass::whereHas('route', fn($q) => $q->where('status', 'published'))
+        $routeStatuses = $type === 'articulo' ? ['published', 'hidden'] : ['published'];
+        $models = $modelClass::whereHas('route', fn($q) => $q->whereIn('status', $routeStatuses))
             ->with('route')->limit($max)->get();
         foreach ($models as $model) {
             $relatedItems[] = [
                 'type' => $type,
                 'title' => $model->title,
                 'description' => $model->descripcion ?? $model->resumen ?? $model->description ?? '',
-                'url' => $model->url,
+                'url' => $type === 'articulo' ? $model->document_url : $model->url,
+                'external' => $type === 'articulo',
                 'image' => $model->portada ?? $model->route?->image ?? null,
             ];
         }
@@ -37,7 +39,7 @@
         @endif
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach ($relatedItems as $item)
-                <a href="{{ $item['url'] }}" class="group rounded-xl border border-gray-200 bg-white overflow-hidden hover:shadow-lg transition-shadow">
+                <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener" @endif class="group rounded-xl border border-gray-200 bg-white overflow-hidden hover:shadow-lg transition-shadow">
                     @if ($item['image'])
                         <div class="aspect-[4/3] overflow-hidden bg-gray-100">
                             <img src="{{ Storage::url($item['image']) }}" alt="{{ $item['title'] }}"

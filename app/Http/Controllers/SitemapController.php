@@ -13,6 +13,8 @@ class SitemapController extends Controller
     {
         // Get all published routes using the scope
         $routes = Route::forSitemap()
+            // Academic articles are PDF links, not public HTML fichas.
+            ->where('routable_type', '!=', \App\Models\ArticuloAcademico::class)
             ->orderBy('full_slug')
             ->get();
 

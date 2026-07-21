@@ -6,7 +6,9 @@ use App\Enums\Status;
 use App\Models\Blog;
 use App\Models\Configuration;
 use App\Models\Menu;
+use App\Models\Libro;
 use App\Models\Page;
+use App\Models\PublicacionMedio;
 use App\Models\Route;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -40,6 +42,8 @@ class DatabaseSeeder extends Seeder
         $this->seedOrCreatePage('Exposicion Publica', 'exposicion-publica', [], 'default');
         $this->seedOrCreatePage('Dossier de Prensa', 'dossier-de-prensa', [], 'default');
         $this->seedOrCreatePage('Muestra de bloques', 'muestra-bloques', $this->sampleBlocks(), 'default');
+
+        $this->seedEditorialContent();
 
         // Now all routes exist, set blocks with resolved route references
         $home->update(['blocks' => $this->homeBlocks()]);
@@ -144,6 +148,73 @@ class DatabaseSeeder extends Seeder
         ];
     }
 
+    private function seedEditorialContent(): void
+    {
+        $bookRoute = Route::firstOrNew([
+            'routable_type' => Libro::class,
+            'slug' => 'teoria-general-derechos-economicos-sociales-culturales-ambientales',
+        ]);
+        $book = $bookRoute->routable instanceof Libro ? $bookRoute->routable : new Libro();
+        $book->fill([
+            'autoria' => 'Marcela I. Basterra',
+            'descripcion' => '<p>Obra integral dedicada a la teoría general y al desarrollo particular de los Derechos Económicos, Sociales, Culturales y Ambientales.</p>',
+            'fecha_publicacion' => '2025-01-01',
+            'editorial' => 'Rubinzal Culzoni – Santa Fe, Argentina',
+            'area_tematica' => 'Derecho Constitucional – Derechos Humanos – Derecho Público',
+            'isbn' => '978-987-30-5231-6',
+            'tomos' => [
+                ['nombre' => 'Tomo I – Parte General', 'paginas' => 411, 'isbn' => '978-987-30-5232-3'],
+                ['nombre' => 'Tomo II – Parte Especial', 'paginas' => 581, 'isbn' => '978-987-30-5233-0'],
+            ],
+            'destacado' => true,
+        ])->save();
+        $booksParent = Route::whereFullSlug('publicaciones/libros')->first();
+        $bookRoute->fill([
+            'title' => 'Teoría general de los Derechos Económicos, Sociales, Culturales y Ambientales',
+            'layout' => 'default',
+            'status' => Status::Published,
+            'parent_id' => $booksParent?->id,
+            'description' => 'Obra de Marcela I. Basterra publicada por Rubinzal Culzoni en 2025.',
+        ]);
+        $bookRoute->routable()->associate($book);
+        $bookRoute->save();
+
+        $importPath = storage_path('app/imports/wordpress-posts.json');
+        if (! is_file($importPath)) return;
+        $posts = json_decode((string) file_get_contents($importPath), true)['posts'] ?? [];
+        foreach ($posts as $post) {
+            if (! in_array('Medios', $post['categories'] ?? [], true)) continue;
+            $titleParts = array_map('trim', preg_split('~/~u', (string) ($post['title'] ?? ''), 2));
+            $title = $titleParts[0] ?: 'Publicación en medios';
+            $medium = $titleParts[1] ?? 'Medios';
+            $externalUrl = collect($post['external_links'] ?? [])->first() ?: ($post['url'] ?? null);
+            $type = preg_match('/entrevista|conversaciones|radio|programa/i', $title) ? 'entrevista' : 'articulo';
+
+            $press = PublicacionMedio::query()->where('enlace_externo', $externalUrl)->first() ?: new PublicacionMedio();
+            $press->fill([
+                'tipo' => $type,
+                'medio' => $medium,
+                'fecha' => substr((string) ($post['date'] ?? ''), 0, 10) ?: null,
+                'resumen' => '<p>'.e(\Illuminate\Support\Str::limit((string) ($post['plain_text'] ?? ''), 420)).'</p>',
+                'enlace_externo' => $externalUrl,
+                'autoria' => 'Marcela I. Basterra',
+                'destacado' => false,
+            ])->save();
+            $slug = 'prensa-'.($post['slug'] ?? \Illuminate\Support\Str::slug($title));
+            $route = $press->route ?: new Route();
+            $route->fill([
+                'title' => $title,
+                'slug' => $slug,
+                'layout' => 'default',
+                'status' => Status::Published,
+                'parent_id' => Route::where('slug', 'prensa')->value('id'),
+                'description' => \Illuminate\Support\Str::limit((string) ($post['plain_text'] ?? ''), 155),
+            ]);
+            $route->routable()->associate($press);
+            $route->save();
+        }
+    }
+
     private function routeAttrs(?Route $route, ?string $label = null): array
     {
         return [
@@ -192,20 +263,31 @@ class DatabaseSeeder extends Seeder
         ];
 
         return collect($posts)->map(function (array $post, int $index) use ($parentRoute): Blog {
-            $route = Route::updateOrCreate(
-                [
-                    'routable_type' => Blog::class,
-                    'slug' => $post['slug'],
-                    'parent_id' => $parentRoute->id,
-                ],
-                [
-                    'title' => $post['title'],
-                    'layout' => 'default',
-                    'status' => Status::Published,
-                    'full_slug' => $parentRoute->full_slug.'/'.$post['slug'],
-                    'description' => $post['description'],
-                ]
-            );
+            $route = Route::query()
+                ->where('routable_type', Blog::class)
+                ->where('slug', $post['slug'])
+                ->where('parent_id', $parentRoute->id)
+                ->first();
+
+            if (! $route) {
+                $blog = Blog::create([
+                    'description' => '<p>'.$post['description'].'</p>',
+                    'content' => '<p>'.$post['description'].'</p>',
+                    'image' => null,
+                ]);
+                $route = new Route();
+                $route->routable()->associate($blog);
+            }
+
+            $route->fill([
+                'title' => $post['title'],
+                'slug' => $post['slug'],
+                'layout' => 'default',
+                'status' => Status::Published,
+                'full_slug' => $parentRoute->full_slug.'/'.$post['slug'],
+                'parent_id' => $parentRoute->id,
+                'description' => $post['description'],
+            ])->save();
 
             if ($route->routable && $route->routable instanceof Blog) {
                 $blog = $route->routable;
@@ -429,6 +511,8 @@ class DatabaseSeeder extends Seeder
 
     private function homeBlocks(): array
     {
+        $featuredPositions = \App\Models\CargoInstitucional::query()->where('featured', true)->orderBy('id')->pluck('id')->all();
+
         return [
             // 1. Hero editorial
             $this->block('Hero', [
@@ -436,64 +520,73 @@ class DatabaseSeeder extends Seeder
                 'variant' => 'editorial',
                 'profile_photo' => null,
                 'image_alt' => '',
-                'badge' => 'Perfil institucional',
-                'name' => 'Marcela Basterra',
-                'subtitle' => 'Abogada constitucionalista',
-                'description' => 'Trayectoria académica, profesional e intervención pública.',
+                'badge' => 'Derecho constitucional · Universidad de Buenos Aires',
+                'name' => 'Marcela I. Basterra',
+                'subtitle' => 'Profesora Titular de Derecho Constitucional de la Facultad de Derecho, Universidad de Buenos Aires.',
+                'description' => 'Doctora en Derecho, referente en derecho constitucional y procesal constitucional, con una trayectoria académica e institucional de alcance internacional.',
                 'indicators' => [
                     ['label' => 'Derecho constitucional'],
                     ['label' => 'Actividad académica'],
                 ],
-                'cta_primary' => array_merge($this->routeRef('sobre-mi'), ['btn_label' => 'Conocer trayectoria']),
+                'featured_positions' => $featuredPositions,
+                'cta_primary' => array_merge($this->routeRef('sobre-mi'), ['btn_label' => 'CV']),
                 'cta_secondary' => array_merge($this->routeRef('publicaciones'), ['btn_label' => 'Ver publicaciones']),
                 'cta_tertiary' => array_merge($this->routeRef('actualidad-y-medios'), ['btn_label' => 'Actualidad']),
             ]),
-            // 2. Publicaciones destacadas
-            $this->block('PublicationsHighlight', [
-                'title' => 'Publicaciones destacadas',
-                'description' => 'Libros y articulos academicos',
-                'libros' => [],
-                'articulos' => [],
-                'max_items' => 6,
-                'show_type_label' => true,
-            ]),
-            // 3. Resumen biografico
+            // 2. Presentación
             $this->block('BiographySummary', [
-                'title' => 'Trayectoria',
-                'summary' => '<p>Doctora en Derecho por la Universidad de Buenos Aires. Investigadora del CONICET. Especialista en derecho constitucional y derechos humanos.</p>',
+                'title' => 'Presentación',
+                'summary' => '<p>Doctora en Derecho (UBA), Profesora Titular de Derecho Constitucional de la Universidad de Buenos Aires y referente en derecho constitucional y procesal constitucional. Ha ocupado destacados cargos institucionales, dictado conferencias en numerosos países y es autora de más de 50 libros y un centenar de publicaciones especializadas. Su labor ha sido distinguida por la Legislatura de la Ciudad Autónoma de Buenos Aires por su aporte a las Ciencias Jurídicas.</p>',
                 'photo' => null,
-                'cta_label' => 'Ver mas',
+                'cta_label' => 'Conocer trayectoria completa',
                 'cta_route' => $this->routeRef('sobre-mi'),
             ]),
-            // 4. Prensa / Medios destacados
-            $this->block('InterviewsHighlight', [
-                'title' => 'Prensa y medios',
-                'description' => 'Entrevistas y apariciones en medios',
-                'entrevistas' => [],
-                'max_items' => 6,
+            // 3. Libro más reciente
+            $this->block('PublicationsHighlight', [
+                'title' => 'Último libro',
+                'description' => 'La publicación más reciente de Marcela I. Basterra.',
+                'source_mode' => 'latest',
+                'libros' => [], 'articulos' => [],
+                'max_items' => 1,
+                'show_type_label' => true,
+                'cta_label' => 'Ver todas las publicaciones',
+                'cta_route' => $this->routeRef('publicaciones'),
             ]),
-            // 5. Agenda destacada
-            $this->block('EventsHighlight', [
-                'title' => 'Agenda',
-                'description' => 'Proximos eventos y actividades',
-                'eventos' => [],
+            // 4. Prensa y actualidad
+            $this->block('PressFeed', [
+                'title' => 'Actualidad y publicaciones recientes',
+                'description' => 'Artículos, entrevistas y noticias en medios.',
+                'content_types' => ['articulo', 'entrevista', 'noticia'],
+                'media' => '', 'selected_items' => [],
                 'max_items' => 6,
-                'show_past' => false,
+                'show_filters' => false, 'show_image' => true,
+                'empty_message' => 'Próximamente se incorporarán nuevas publicaciones.',
             ]),
-            // 6. CTA Contacto
+            // 5. Conferencias y exposiciones editoriales
+            $this->block('EventsListing', [
+                'title' => 'Conferencias y exposiciones',
+                'description' => 'Intervenciones públicas disponibles en YouTube y en la Facultad de Derecho de la UBA.',
+                'manual_items' => $this->homeConferenceItems(),
+            ]),
+            // 6. CTA
             $this->block('CTA', [
-                'title' => 'Contacto',
-                'text' => 'Escribime para consultas, conferencias o colaboraciones.',
-                'button_label' => 'Contactar',
+                'title' => 'Invitaciones académicas, institucionales y de prensa',
+                'text' => 'Para conferencias, entrevistas, actividades académicas y colaboraciones institucionales.',
+                'button_label' => 'Ponerse en contacto',
                 'button_route' => $this->routeRef('contacto'),
             ]),
-            // 7. CTA CV
-            $this->block('CTA', [
-                'title' => 'Curriculum Vitae',
-                'text' => 'Descarga mi CV completo con trayectoria academica y profesional.',
-                'button_label' => 'Descargar CV',
-                'button_route' => $this->routeAttrs(null),
-            ]),
+        ];
+    }
+
+    private function homeConferenceItems(): array
+    {
+        return [
+            ['title' => 'Ciclo “Diálogos y argumentación jurídica”: Fallo “Levinas”', 'type' => 'conferencia', 'institution' => 'Derecho UBA', 'date' => null, 'description' => 'Análisis y debate jurídico en la Facultad de Derecho de la Universidad de Buenos Aires.', 'image' => null, 'url' => 'https://www.youtube.com/watch?v=1pJwGJJjtV4&t=150s', 'link_label' => 'Ver conferencia'],
+            ['title' => 'La Emergencia y el Derecho Constitucional', 'type' => 'conferencia', 'institution' => 'Facultad de Derecho UNMdP', 'date' => null, 'description' => 'Conversatorio sobre emergencia y derecho constitucional.', 'image' => null, 'url' => 'https://www.youtube.com/watch?v=Dwmrhu54AG0&t=6474s', 'link_label' => 'Ver conversatorio'],
+            ['title' => 'Nuevos límites al derecho de acceso a la información pública', 'type' => 'exposicion', 'institution' => 'Derecho UBA', 'date' => null, 'description' => 'Intervención en el ciclo Derecho en Debate.', 'image' => null, 'url' => 'https://www.youtube.com/watch?v=_HYQrDw6F_E', 'link_label' => 'Ver exposición'],
+            ['title' => 'Entrevista a Marcela Basterra sobre Derecho Constitucional', 'type' => 'entrevista', 'institution' => 'Vorterix Litoral', 'date' => null, 'description' => 'Entrevista en el programa La Cúpula.', 'image' => null, 'url' => 'https://www.youtube.com/watch?v=tKX1ku8boLw', 'link_label' => 'Ver entrevista'],
+            ['title' => 'Comisión de Justicia', 'type' => 'exposicion', 'institution' => 'Senado Argentina', 'date' => '2020-11-10', 'description' => 'Exposición de Marcela Basterra ante la Comisión de Justicia.', 'image' => null, 'url' => 'https://www.youtube.com/watch?v=LnfLLvaGMRg', 'link_label' => 'Ver exposición'],
+            ['title' => 'Segundo encuentro internacional de mujeres constitucionalistas', 'type' => 'conferencia', 'institution' => 'Facultad de Derecho UBA', 'date' => '2020-09-10', 'description' => 'Encuentro organizado por Marcela I. Basterra y el Departamento de Derecho Público I.', 'image' => null, 'url' => 'https://www.derecho.uba.ar/noticias/2020/segundo-encuentro-internacional-de-mujeres-constitucionalistas', 'link_label' => 'Ver nota en UBA'],
         ];
     }
 
@@ -506,7 +599,7 @@ class DatabaseSeeder extends Seeder
             $this->block('BiographySummary', [
                 'blockAnchor' => 'biografia',
                 'title' => 'Marcela Basterra',
-                'summary' => '<p>Doctora en Derecho por la Universidad de Buenos Aires. Investigadora del CONICET. Profesora titular de Derecho Constitucional en la UBA y en la Universidad de Palermo. Autora de numerosos libros y articulos academicos sobre derecho constitucional, derechos humanos y genero.</p>',
+                'summary' => '<p>Doctora en Derecho (UBA). Magíster en Derecho Constitucional y Derechos Humanos (UP). Presidenta de la Asociación Argentina de Derecho Constitucional y Vicepresidenta de la Asociación Argentina de Derecho Procesal Constitucional. Ex Presidenta del Consejo de la Magistratura de la Ciudad Autónoma de Buenos Aires. Miembro del Instituto de Política Constitucional de la Academia Nacional de Ciencias Morales y Políticas y del Instituto de Derecho Constitucional de la Academia Nacional de Derecho y Ciencias Sociales.</p><p>Profesora Titular de Derecho Constitucional de la Universidad de Buenos Aires y profesora de grado, posgrado y doctorado en diversas universidades nacionales y extranjeras. Ha dictado clases y conferencias en España, Italia, Chile, Uruguay, Paraguay, Bolivia, Perú, Colombia, Guatemala, Estados Unidos y México. Fue declarada Personalidad Destacada en el ámbito de las Ciencias Jurídicas por la Legislatura de la Ciudad Autónoma de Buenos Aires.</p><p>Es Co-Directora Académica del Posgrado de Actualización en Derecho Constitucional y Procesal Constitucional (UBA). Es autora, coautora, directora y participante en 56 libros; ha publicado más de un centenar de artículos especializados y dictado más de un centenar de conferencias.</p>',
                 'photo' => null,
                 'cta_label' => null,
                 'cta_route' => $this->routeAttrs(null),

@@ -73,12 +73,15 @@ trait HasRoute
     {
         $modelClass = get_class($query->getModel());
         $checkDate = property_exists($modelClass, 'editDate') && $modelClass::$editDate;
-    
-        return $query->whereHas('route', function ($q) use ($checkDate) {
+
+        $query->whereHas('route', function ($q) {
             $q->where('status', Status::Published);
-            if ($checkDate) {
-                $q->where('published_at', '<=', now());
-            }
         });
+
+        if ($checkDate) {
+            $query->where('published_at', '<=', now());
+        }
+
+        return $query;
     }
 }

@@ -7,7 +7,8 @@
 
 @import "./view-transition.css";
 
-:root {
+:root,
+:host {
   --color-primary: #2a3461;
   --color-primary-hover: #1f2748;
   --color-secondary: #9499b0;
@@ -239,6 +240,124 @@ html {
 
 .container-notice {
   @apply mx-auto px-4 sm:px-16 xl:px-[10%] 2xl:px-[25%];
+}
+
+/* Long-form publication reading surface. */
+.article-content {
+  font-family: var(--font-editorial);
+  color: var(--color-gray);
+}
+
+.article-content > * + * {
+  margin-top: 1.5rem;
+}
+
+.article-content p,
+.article-content p span,
+.article-content li,
+.article-content li span {
+  padding-bottom: 0 !important;
+  font-family: var(--font-editorial) !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+  margin-top: 3.5rem !important;
+  margin-bottom: 1.25rem !important;
+  color: var(--color-primary) !important;
+  font-family: var(--font-display) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em;
+}
+
+.article-content h2 {
+  font-size: clamp(2rem, 4vw, 3.25rem) !important;
+  line-height: 1.05 !important;
+}
+
+.article-content h3 {
+  font-size: clamp(1.65rem, 3vw, 2.35rem) !important;
+  line-height: 1.1 !important;
+}
+
+.article-content h4 {
+  font-size: clamp(1.35rem, 2vw, 1.75rem) !important;
+  line-height: 1.15 !important;
+}
+
+.article-content a {
+  color: var(--color-primary);
+  text-decoration-color: var(--color-accent);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+.article-content a:hover {
+  color: var(--color-accent);
+}
+
+.article-content a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+.article-content blockquote {
+  margin: 3rem 0;
+  padding: 1.75rem 0 1.75rem 2rem;
+  border: 0;
+  border-left: 1px solid var(--color-primary);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-editorial);
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-style: normal;
+  line-height: 1.4;
+}
+
+.article-content ul,
+.article-content ol {
+  padding-left: 1.5rem;
+}
+
+.article-content li + li {
+  margin-top: 0.65rem;
+}
+
+.article-content img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: 2.5rem auto;
+}
+
+.article-content hr {
+  margin: 3.5rem 0;
+  border: 0;
+  border-top: 1px solid var(--color-gray-2);
+}
+
+.article-content iframe {
+  width: 100%;
+  max-width: 100%;
+  min-height: 360px;
+  margin: 2.5rem 0;
+  border: 0;
+}
+
+@media (max-width: 640px) {
+  .article-content blockquote {
+    margin: 2rem 0;
+    padding: 1.25rem 0 1.25rem 1.25rem;
+  }
+
+  .article-content iframe {
+    min-height: 220px;
+  }
 }
 
 

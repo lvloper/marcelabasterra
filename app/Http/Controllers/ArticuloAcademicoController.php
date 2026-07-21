@@ -10,9 +10,8 @@ class ArticuloAcademicoController extends Controller
 {
     public function show(Request $request, Route $route, ArticuloAcademico $articuloAcademico)
     {
-        return view('articulo-academico.show', [
-            'articuloAcademico' => $articuloAcademico,
-            'route' => $route,
-        ]);
+        abort_unless($articuloAcademico->document_url, 404);
+
+        return redirect()->away($articuloAcademico->document_url);
     }
 }

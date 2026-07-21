@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class CargoInstitucional extends Model
 {
-    use HasFactory, HasRoute;
+    use HasFactory;
+    use HasRoute;
+
+    protected $table = 'cargos_institucionales';
 
     public function getDefaultRouteParentId(): ?int
     {
@@ -16,11 +19,12 @@ class CargoInstitucional extends Model
     }
 
     protected $fillable = [
-        'cargo', 'institucion', 'fecha_inicio', 'fecha_fin', 'descripcion', 'blocks',
+        'cargo', 'institucion', 'institutional_url', 'featured', 'fecha_inicio', 'fecha_fin', 'descripcion', 'blocks',
     ];
 
     protected $casts = [
         'blocks' => 'collection',
+        'featured' => 'boolean',
         'fecha_inicio' => 'date',
         'fecha_fin' => 'date',
     ];

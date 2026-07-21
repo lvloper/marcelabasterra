@@ -12,6 +12,7 @@
 | `subtitle` | `text` | sí | | Área de especialización |
 | `description` | `textarea` | no | | Presentación breve, máximo 360 caracteres |
 | `indicators` | `repeater` | no | `[]` | Hasta cuatro cargos, áreas o hitos; cada ítem contiene `label` |
+| `featured_positions` | `multi-select` | no | `[]` | Cargos institucionales relacionados, mostrados en el orden editorial seleccionado |
 | `cta_primary` | `route` | no | | Acción principal con etiqueta integrada |
 | `cta_secondary` | `route` | no | | Acción secundaria con etiqueta integrada |
 | `cta_tertiary` | `route` | no | | Enlace editorial terciario con etiqueta integrada |
@@ -41,6 +42,7 @@
 - La fotografía nunca lleva texto superpuesto y conserva color natural.
 - Si no hay fotografía, las versiones `editorial` e `institutional` mantienen una superficie editorial alternativa.
 - Los CTA sin URL o sin etiqueta no se renderizan.
+- Los cargos se leen de `CargoInstitucional`; no se duplican sus textos dentro del bloque.
 - Las rutas admiten destino interno, URL externa y descarga de archivo.
 - El título principal se renderiza como `h1`; usar el bloque una sola vez por página.
 - Las entradas respetan `prefers-reduced-motion` y se muestran inmediatamente si GSAP no está disponible.

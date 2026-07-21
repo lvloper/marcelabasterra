@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\Components\Image;
 use App\Filament\Resources\Bases\ResourceBase;
 use App\Filament\Resources\EventoResource\Pages;
 use App\Models\Evento;
+use Filament\Actions;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -13,6 +15,8 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -58,22 +62,91 @@ class EventoResource extends ResourceBase
             \Filament\Schemas\Components\Grid::make(3)
                 ->schema([
                     TextInput::make('ubicacion')->label('Ubicación'),
+                    TextInput::make('institucion')->label('Institución'),
+                    TextInput::make('rol')->label('Rol o participación'),
+                ]),
+
+            \Filament\Schemas\Components\Grid::make(3)
+                ->schema([
                     Select::make('tipo')
                         ->label('Tipo')
                         ->options([
+                            'jornada' => 'Jornada',
+                            'congreso' => 'Congreso',
+                            'clase' => 'Clase',
                             'conferencia' => 'Conferencia',
+                            'exposicion' => 'Exposición',
+                            'panel' => 'Panel',
+                            'presentacion' => 'Presentación',
                             'seminario' => 'Seminario',
                             'taller' => 'Taller',
-                            'congreso' => 'Congreso',
                             'otro' => 'Otro',
                         ]),
-                    TextInput::make('enlace_inscripcion')->label('Enlace de inscripción')->url(),
+                    Select::make('modalidad')
+                        ->label('Modalidad')
+                        ->options([
+                            'presencial' => 'Presencial',
+                            'virtual' => 'Virtual',
+                            'hibrida' => 'Híbrida',
+                        ]),
+                    Select::make('estado_confirmacion')
+                        ->label('Estado de confirmación')
+                        ->options([
+                            'pendiente' => 'Pendiente',
+                            'confirmado' => 'Confirmado',
+                            'cancelado' => 'Cancelado',
+                        ])
+                        ->default('pendiente'),
                 ]),
+
+            \Filament\Schemas\Components\Grid::make(2)
+                ->schema([
+                    TextInput::make('enlace_inscripcion')->label('Enlace de inscripción')->url(),
+                    TextInput::make('video')->label('Video')->url()->maxLength(2048),
+                ]),
+
+            Image::make('imagen', 'Imagen de la actividad', '1200', '675', 'images/eventos', forceRatio: true),
 
             Toggle::make('destacado')
                 ->label('Destacado')
                 ->default(false),
         ];
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('route.title')
+                    ->label('Actividad')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('institucion')
+                    ->label('Institución')
+                    ->searchable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('tipo')
+                    ->label('Tipo')
+                    ->badge(),
+                Tables\Columns\TextColumn::make('fecha_inicio')
+                    ->label('Inicio')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('estado_confirmacion')
+                    ->label('Confirmación')
+                    ->badge()
+                    ->placeholder('—'),
+            ])
+            ->defaultSort('fecha_inicio')
+            ->actions([
+                Actions\EditAction::make(),
+                Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 
     public static function getPages(): array

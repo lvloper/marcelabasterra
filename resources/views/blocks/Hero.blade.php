@@ -16,6 +16,9 @@ $heroSubtitle = $subtitle ?? '';
 $heroDescription = $description ?? '';
 $heroImageAlt = $image_alt ?? '';
 $heroIndicators = array_values(array_filter($indicators ?? [], fn ($item) => filled($item['label'] ?? null)));
+$positionIds = collect($featured_positions ?? [])->map(fn ($id) => (int) $id);
+$heroPositions = \App\Models\CargoInstitucional::query()->whereIn('id', $positionIds)->get()
+    ->sortBy(fn ($position) => $positionIds->search($position->id))->values();
 
 $resolveRoute = function ($data) {
     if (! is_array($data) || ! $data) return null;
@@ -234,6 +237,26 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
             </div>
         @endif
     </div>
+
+    @if ($heroPositions->isNotEmpty())
+        <section class="border-t border-primary bg-white" aria-label="Cargos institucionales destacados">
+            <div class="mx-auto grid max-w-[1440px] lg:grid-cols-12">
+                <p class="px-5 py-7 font-source text-sm text-primary sm:px-8 lg:col-span-3 lg:px-12 xl:px-16">Cargos destacados</p>
+                <ul class="border-t border-gray-2 lg:col-span-9 lg:border-l lg:border-t-0">
+                    @foreach ($heroPositions as $position)
+                        <li class="grid gap-4 border-b border-gray-2 px-5 py-7 last:border-b-0 sm:px-8 md:grid-cols-[1fr_auto] lg:px-12">
+                            <div>
+                                <p class="font-sans text-2xl leading-tight text-primary">{{ $position->cargo }}</p>
+                                <p class="mt-2 font-source text-lg leading-snug text-gray">{{ $position->institucion }}</p>
+                                @if ($position->fecha_fin === null && $position->fecha_inicio)<p class="mt-2 font-body text-sm text-gray">Vigente desde {{ $position->fecha_inicio->year }}</p>@endif
+                            </div>
+                            @if ($position->institutional_url)<a href="{{ $position->institutional_url }}" target="_blank" rel="noopener noreferrer" class="self-end border-b border-primary font-body text-sm text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">Fuente ↗</a>@endif
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
+    @endif
 
     @pushOnce('scripts', 'block-hero')
         <style>

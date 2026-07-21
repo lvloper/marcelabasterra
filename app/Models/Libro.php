@@ -12,16 +12,19 @@ class Libro extends Model
 
     public function getDefaultRouteParentId(): ?int
     {
-        return config('cms-routes.publicaciones_parent_id');
+        return config('cms-routes.books_parent_id')
+            ?: Route::whereFullSlug('publicaciones/libros')->value('id')
+            ?: config('cms-routes.publicaciones_parent_id');
     }
 
     protected $fillable = [
-        'subtitulo', 'portada', 'descripcion', 'fecha_publicacion',
-        'editorial', 'isbn', 'enlaces', 'destacado', 'blocks',
+        'subtitulo', 'autoria', 'portada', 'descripcion', 'fecha_publicacion',
+        'editorial', 'area_tematica', 'isbn', 'tomos', 'enlaces', 'destacado', 'blocks',
     ];
 
     protected $casts = [
         'enlaces' => 'collection',
+        'tomos' => 'collection',
         'blocks' => 'collection',
         'destacado' => 'boolean',
         'fecha_publicacion' => 'date',

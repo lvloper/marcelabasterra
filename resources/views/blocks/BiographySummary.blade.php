@@ -56,12 +56,12 @@
     }
 @endphp
 
-<x-block class="py-12 md:py-20">
-    <div class="container mx-auto px-4">
-        <div class="flex flex-col {{ ($photo ?? null) ? 'md:flex-row gap-10 md:gap-16' : '' }} items-center">
+<x-block class="bg-white py-16 sm:py-20 lg:py-28">
+    <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
             @if ($photo ?? null)
-                <div class="w-full md:w-2/5 shrink-0">
-                    <div class="aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100">
+                <div class="lg:col-span-4">
+                    <div class="aspect-[3/4] overflow-hidden bg-gray-3">
                         <img
                             src="{{ \Illuminate\Support\Facades\Storage::url($photo) }}"
                             alt="{{ $title ?? '' }}"
@@ -71,13 +71,13 @@
                 </div>
             @endif
 
-            <div class="{{ ($photo ?? null) ? 'w-full md:w-3/5' : 'w-full max-w-3xl mx-auto' }}">
+            <div class="{{ ($photo ?? null) ? 'lg:col-span-8' : 'lg:col-span-10 lg:col-start-2' }} border-t border-primary pt-7">
                 @if ($title ?? null)
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-sans">{{ $title }}</h2>
+                    <h2 class="max-w-[12ch] font-sans text-[clamp(2.75rem,5vw,5rem)] font-normal leading-[.96] tracking-[-.035em] text-primary">{{ $title }}</h2>
                 @endif
 
                 @if ($bioHtml)
-                    <div class="prose prose-lg max-w-none text-gray-700 font-source [&_p]:mb-4 [&_p:last-child]:mb-0 [&_a]:text-primary [&_a]:underline [&_strong]:font-bold [&_em]:italic leading-relaxed">
+                    <div class="mt-8 max-w-[68ch] font-source text-xl leading-relaxed text-gray [&_p]:mb-5 [&_p:last-child]:mb-0 [&_a]:text-primary [&_a]:underline [&_strong]:font-bold">
                         {!! $bioHtml !!}
                     </div>
                 @endif
@@ -85,7 +85,7 @@
                 @if ($bioUrl && ($cta_label ?? null))
                     <a href="{{ $bioUrl }}"
                        @if ($bioRoute['new_window'] ?? false) target="_blank" rel="noopener noreferrer" @endif
-                       class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 font-bold rounded-sm mt-8 hover:bg-primary-hover transition-colors group">
+                       class="group mt-9 inline-flex min-h-12 items-center border border-primary bg-primary px-6 font-body text-base text-white hover:bg-white hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
                         {{ $cta_label }}
                         <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </a>

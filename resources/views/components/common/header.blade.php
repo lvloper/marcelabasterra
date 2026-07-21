@@ -42,17 +42,15 @@
             class="flex min-h-11 items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             aria-label="{{ config_text('site-name', 'Marcela Basterra') }} — Inicio"
         >
-            <img
-                x-show="!scrolled"
-                src="{{ asset('img/Logo-azul.svg') }}"
-                alt="{{ config_text('site-name', 'Marcela Basterra') }}"
-                class="h-10 w-auto transition-opacity duration-200 motion-reduce:transition-none lg:h-12"
+            <span
+                class="block h-10 overflow-hidden [clip-path:inset(0)] transition-[width,clip-path] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none lg:h-12"
+                :class="scrolled ? 'w-[68px]' : 'w-[11rem] lg:w-[12rem]'"
+                :aria-label="scrolled ? 'Monograma de Marcela Basterra' : null"
             >
-            <span x-show="scrolled" x-cloak class="block h-10 w-14 overflow-hidden" aria-hidden="true">
                 <img
-                    src="{{ asset('img/Logo-azul.svg') }}"
-                    alt=""
-                    class="h-10 w-auto max-w-none"
+                    src="{{ asset('img/Logos/logo-sin-tagline.svg') }}"
+                    alt="{{ config_text('site-name', 'Marcela Basterra') }}"
+                    class="h-10 w-auto max-w-none lg:h-12"
                 >
             </span>
         </a>

@@ -49,6 +49,9 @@ class LibroResource extends ResourceBase
             TextInput::make('subtitulo')
                 ->label('Subtítulo'),
 
+            TextInput::make('autoria')
+                ->label('Autoría'),
+
             Image::make('portada', 'Portada', '400', '600', 'libros'),
 
             RichEditor::make('descripcion')
@@ -61,6 +64,20 @@ class LibroResource extends ResourceBase
                     TextInput::make('editorial')->label('Editorial'),
                     TextInput::make('isbn')->label('ISBN'),
                 ]),
+
+            TextInput::make('area_tematica')
+                ->label('Área temática'),
+
+            Repeater::make('tomos')
+                ->label('Tomos')
+                ->schema([
+                    TextInput::make('nombre')->label('Nombre del tomo')->required(),
+                    TextInput::make('paginas')->label('Páginas')->numeric()->minValue(1),
+                    TextInput::make('isbn')->label('ISBN'),
+                ])
+                ->columns(3)
+                ->collapsible()
+                ->collapsed(),
 
             Repeater::make('enlaces')
                 ->label('Enlaces')

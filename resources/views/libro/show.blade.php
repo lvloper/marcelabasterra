@@ -1,84 +1,69 @@
 <x-layout :notLayout="false">
-    @php
-        $parentRoute = $libro->route->parent;
-    @endphp
-
-    <section class="relative bg-gray-3 overflow-hidden">
-        <div class="absolute inset-0 bg-grid pointer-events-none z-0"></div>
-        <div class="relative z-10 container mx-auto px-4 py-12 md:py-20">
-            @if ($parentRoute)
-                <a href="{{ url($parentRoute->full_slug) }}" class="inline-flex items-center gap-1.5 text-sm text-secondary hover:text-primary transition-colors mb-6 font-sans group">
-                    <x-lucide-arrow-left class="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-                    {{ $parentRoute->title }}
-                </a>
-            @endif
-
-            <div class="flex flex-col md:flex-row gap-8 md:gap-12">
-                <div class="w-full md:w-2/5 shrink-0">
-                    @if ($libro->portada)
-                        <div class="aspect-[3/4] rounded-2xl overflow-hidden bg-white border border-gray-200">
-                            <img src="{{ Storage::url($libro->portada) }}" alt="{{ $libro->title }}"
-                                 class="w-full h-full object-cover">
-                        </div>
-                    @else
-                        <div class="aspect-[3/4] rounded-2xl bg-white border border-gray-200 flex items-center justify-center">
-                            <x-lucide-book-open class="w-16 h-16 text-gray-300" />
-                        </div>
-                    @endif
-                </div>
-
-                <div class="w-full md:w-3/5">
-                    <span class="text-xs font-semibold tracking-widest uppercase text-secondary mb-3 block font-sans">Libro</span>
-                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-sans leading-tight">{{ $libro->title }}</h1>
+    <article>
+        <header class="border-b border-primary bg-[var(--color-surface-ivory)]">
+            <div class="container mx-auto grid grid-cols-1 gap-12 py-16 lg:grid-cols-12 lg:items-center lg:py-24">
+                <div class="order-2 lg:order-1 lg:col-span-7">
+                    <a href="{{ route('publications.books') }}" class="inline-flex min-h-11 items-center gap-2 font-body text-base text-gray focus:outline-none focus:ring-2 focus:ring-accent">← Volver a Libros</a>
+                    <p class="mt-10 font-source text-lg text-primary">Libro · {{ $libro->fecha_publicacion?->year }}</p>
+                    <h1 class="mt-5 font-sans text-4xl font-bold leading-[1.02] tracking-[-0.025em] text-primary sm:text-5xl lg:text-7xl">{{ $libro->title }}</h1>
 
                     @if ($libro->subtitulo)
-                        <p class="text-lg text-gray-600 mb-6 font-sans">{{ $libro->subtitulo }}</p>
+                        <p class="mt-8 max-w-3xl font-source text-2xl leading-relaxed text-gray">{{ $libro->subtitulo }}</p>
                     @endif
 
-                    <div class="flex flex-wrap gap-4 text-sm text-gray-500 mb-8 font-sans">
-                        @if ($libro->fecha_publicacion)
-                            <span class="flex items-center gap-1.5">
-                                <x-lucide-calendar class="w-3.5 h-3.5" />
-                                {{ $libro->fecha_publicacion->format('Y') }}
-                            </span>
-                        @endif
+                    <dl class="mt-10 grid grid-cols-1 border-y border-primary sm:grid-cols-3">
                         @if ($libro->editorial)
-                            <span class="flex items-center gap-1.5">
-                                <x-lucide-building class="w-3.5 h-3.5" />
-                                {{ $libro->editorial }}
-                            </span>
+                            <div class="py-5 sm:pr-6">
+                                <dt class="font-body text-sm text-gray">Editorial</dt>
+                                <dd class="mt-2 font-source text-lg text-primary">{{ $libro->editorial }}</dd>
+                            </div>
+                        @endif
+                        @if ($libro->fecha_publicacion)
+                            <div class="border-y border-primary py-5 sm:border-x sm:border-y-0 sm:px-6">
+                                <dt class="font-body text-sm text-gray">Año</dt>
+                                <dd class="mt-2 font-source text-lg text-primary">{{ $libro->fecha_publicacion->year }}</dd>
+                            </div>
                         @endif
                         @if ($libro->isbn)
-                            <span class="flex items-center gap-1.5">
-                                <x-lucide-barcode class="w-3.5 h-3.5" />
-                                ISBN: {{ $libro->isbn }}
-                            </span>
-                        @endif
-                    </div>
-
-                    @if ($libro->descripcion)
-                        <div class="prose prose-lg max-w-none text-gray-700 font-source leading-relaxed
-                                    [&_p]:mb-4 [&_p:last-child]:mb-0 [&_a]:text-primary [&_a]:underline">
-                            {!! $libro->descripcion !!}
-                        </div>
-                    @endif
-
-                    @if ($libro->enlaces && $libro->enlaces->isNotEmpty())
-                        <div class="mt-8 pt-6 border-t border-gray-2">
-                            <h3 class="text-sm font-bold text-gray-700 mb-3 font-sans uppercase tracking-wider">Enlaces</h3>
-                            <div class="flex flex-wrap gap-3">
-                                @foreach ($libro->enlaces as $enlace)
-                                    <a href="{{ $enlace['url'] ?? '#' }}" target="_blank" rel="noopener noreferrer"
-                                       class="inline-flex items-center gap-1.5 text-sm text-primary hover:underline font-sans">
-                                        <x-lucide-external-link class="w-3.5 h-3.5" />
-                                        {{ $enlace['label'] ?? 'Ver enlace' }}
-                                    </a>
-                                @endforeach
+                            <div class="py-5 sm:pl-6">
+                                <dt class="font-body text-sm text-gray">ISBN</dt>
+                                <dd class="mt-2 font-source text-lg text-primary">{{ $libro->isbn }}</dd>
                             </div>
+                        @endif
+                    </dl>
+                </div>
+
+                <div class="order-1 lg:order-2 lg:col-span-4 lg:col-start-9">
+                    @if ($libro->portada)
+                        <div class="border border-primary bg-white p-5">
+                            <img src="{{ Storage::url($libro->portada) }}" alt="Portada de {{ $libro->title }}" class="mx-auto max-h-[38rem] w-full object-contain">
                         </div>
                     @endif
                 </div>
             </div>
-        </div>
-    </section>
+        </header>
+
+        <section class="bg-white py-16 lg:py-24">
+            <div class="container mx-auto grid grid-cols-1 gap-12 lg:grid-cols-12">
+                <div class="lg:col-span-3">
+                    <p class="border-t border-primary pt-4 font-source text-lg text-primary">Sobre esta obra</p>
+                </div>
+                <div class="lg:col-span-7">
+                    @if ($libro->descripcion)
+                        <div class="max-w-[68ch] font-source text-xl leading-[1.7] text-gray [&_p]:mb-6">{!! $libro->descripcion !!}</div>
+                    @endif
+
+                    @if ($libro->enlaces && $libro->enlaces->isNotEmpty())
+                        <div class="mt-12 border-t border-primary pt-8">
+                            @foreach ($libro->enlaces as $enlace)
+                                <a href="{{ $enlace['url'] ?? '#' }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center gap-3 border border-primary bg-primary px-6 font-body text-base text-white transition-colors hover:bg-white hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-4">
+                                    {{ $enlace['label'] ?? 'Más información' }} <span>↗</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </section>
+    </article>
 </x-layout>

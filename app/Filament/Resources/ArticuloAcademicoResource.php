@@ -8,7 +8,6 @@ use App\Models\ArticuloAcademico;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Utilities\Get;
@@ -57,20 +56,18 @@ class ArticuloAcademicoResource extends ResourceBase
             \Filament\Schemas\Components\Grid::make(3)
                 ->schema([
                     DatePicker::make('fecha_publicacion')->label('Fecha de publicación'),
-                    Select::make('tematica')
-                        ->label('Temática')
-                        ->options([
-                            'derecho' => 'Derecho',
-                            'filosofia' => 'Filosofía',
-                            'politica' => 'Política',
-                            'educacion' => 'Educación',
-                            'otro' => 'Otro',
-                        ]),
+                    TextInput::make('tematica')
+                        ->label('Temática'),
                     FileUpload::make('archivo_pdf')
-                        ->label('Archivo PDF')
+                        ->label('Subir PDF')
                         ->acceptedFileTypes(['application/pdf'])
                         ->directory('pdfs/articulos'),
                 ]),
+
+            TextInput::make('archivo_pdf_url')
+                ->label('URL externa del PDF')
+                ->helperText('Alternativa al archivo subido. Si ambos existen, se utiliza esta URL.')
+                ->url(),
 
             Toggle::make('destacado')
                 ->label('Destacado')

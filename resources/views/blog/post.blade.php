@@ -1,221 +1,175 @@
+@php
+    $contentHtml = $blog->content ?? '';
+
+    if ($blog->id < 812) {
+        $contentHtml = preg_replace(
+            '/<p[^>]*>\s*La entrada .*? se publicó primero en .*?<\/p>/si',
+            '',
+            $contentHtml,
+        );
+    }
+
+    $primaryTag = $blog->tags->first();
+    $previous = $blog->previous();
+    $next = $blog->next();
+    $shareUrl = urlencode($blog->url);
+    $shareTitle = urlencode($blog->title);
+@endphp
+
 <x-layout>
-    <div id="post-container" class="relative">
-        <div class="relative bg-animate bg-white md:bg-primary fade-in">
-            <div class="pt-16 md:pt-[4rem] text-black md:text-white pb-[8rem] @if ($blog->image) md:pb-[22rem] @endif">
-                <div class="container-notice flex flex-col">
-
-                    <div class="md:justify-between md:flex order-2 md:order-1 mb-6 md:mb-0">
-                        <div class="flex gap-2 items-center">
-                            <svg class="w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-clock-5">
-                                <circle cx="12" cy="12" r="10" />
-                                <polyline points="12 6 12 12 14.5 16" />
-                            </svg>
-                            <div>{{ $blog->published_at ? $blog->published_at->diffForHumans() : 'Fecha no disponible'
-                                }}</div>
+    <article id="post-container" class="bg-white text-gray">
+        <header class="border-b border-gray-2 bg-[var(--color-surface-ivory)] pt-16 md:pt-24">
+            <div class="container pb-12 md:pb-20">
+                <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8">
+                    <div class="lg:col-span-9">
+                        <div class="mb-8 flex items-center gap-4 font-source text-md text-primary">
+                            <a wire:navigate href="{{ url('/novedades') }}"
+                                class="underline decoration-accent underline-offset-4 transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                Novedades
+                            </a>
+                            @if ($primaryTag)
+                                <span aria-hidden="true" class="h-px w-8 bg-accent"></span>
+                                <span>{{ $primaryTag->name }}</span>
+                            @endif
                         </div>
-                        <div class="text-sm">{{ $blog->formattedPublishedDate() }}</div>
-                    </div>
 
-                    <div x-cloak x-data
-                        class="overflow-hidden order-1 md:order-2 title-container text-xl md:text-5xl xl:text-5xl font-bold md:leading-tight md:py-8">
-                        <h1 class="title-animate mb-8 lg:mb-2  ">
+                        <h1 class="max-w-[18ch] text-balance font-sans text-[clamp(2.75rem,6.2vw,6rem)] font-bold leading-[0.98] tracking-[-0.035em] text-primary">
                             {{ Str::of($blog->title)->trim() }}
                         </h1>
+
+                        @if ($blog->description)
+                            <div class="mt-10 max-w-[68ch] font-source text-[1.35rem] leading-[1.45] text-gray md:text-[1.75rem]">
+                                {!! $blog->description !!}
+                            </div>
+                        @endif
                     </div>
 
+                    <aside class="border-t border-primary pt-5 lg:col-span-3 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0"
+                        aria-label="Datos de la publicación">
+                        <p class="font-body text-sm text-gray">Publicado</p>
+                        <time datetime="{{ $blog->published_at?->toDateString() }}"
+                            class="mt-2 block font-source text-2xl leading-tight text-primary md:text-3xl">
+                            {{ $blog->formattedPublishedDate() }}
+                        </time>
+                        <p class="mt-5 font-body text-sm text-gray">
+                            {{ $blog->published_at ? $blog->published_at->diffForHumans() : 'Fecha no disponible' }}
+                        </p>
+                    </aside>
+                </div>
+            </div>
+        </header>
 
+        @if ($blog->image)
+            <div class="container py-8 md:py-12">
+                <x-image :image="$blog->image" :alt="$blog->title"
+                    imageClass="w-full max-h-[76vh] object-cover object-center"
+                    class="w-full overflow-hidden bg-gray-3" />
+            </div>
+        @endif
 
-                    <div class="text-lg xl:text-xl md:leading-t fade-in2 description-container order-3">
-                        {!! $blog->description !!}
+        <div class="container border-t border-gray-2 py-14 md:py-20">
+            <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
+                <aside class="order-2 lg:order-1 lg:col-span-2" aria-label="Compartir publicación">
+                    <div class="border-t border-primary pt-5 lg:sticky lg:top-32">
+                        <p class="font-body text-sm text-primary">Compartir</p>
+                        <nav class="mt-4 flex flex-wrap gap-x-5 gap-y-3 font-body text-sm lg:flex-col" aria-label="Redes sociales">
+                            <a href="https://twitter.com/intent/tweet?url={{ $shareUrl }}&text={{ $shareTitle }}"
+                                target="_blank" rel="noopener noreferrer"
+                                class="w-fit border-b border-gray-2 py-1 text-gray transition-colors hover:border-primary hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                X / Twitter ↗
+                            </a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ $shareUrl }}"
+                                target="_blank" rel="noopener noreferrer"
+                                class="w-fit border-b border-gray-2 py-1 text-gray transition-colors hover:border-primary hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                Facebook ↗
+                            </a>
+                            <a href="https://wa.me/?text={{ $shareTitle }}%20{{ $shareUrl }}"
+                                target="_blank" rel="noopener noreferrer"
+                                class="w-fit border-b border-gray-2 py-1 text-gray transition-colors hover:border-primary hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                WhatsApp ↗
+                            </a>
+                            <a href="mailto:?subject={{ $shareTitle }}&body={{ $shareUrl }}"
+                                class="w-fit border-b border-gray-2 py-1 text-gray transition-colors hover:border-primary hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                Correo ↗
+                            </a>
+                        </nav>
                     </div>
+                </aside>
+
+                <div class="order-1 lg:order-2 lg:col-span-8 lg:col-start-4">
+                    <div class="article-content text-wysiwyg max-w-[68ch] font-source text-[1.125rem] leading-[1.7] text-gray md:text-[1.25rem]">
+                        {!! $contentHtml !!}
+                    </div>
+
+                    @if ($blog->tags->isNotEmpty())
+                        <div class="mt-14 border-t border-gray-2 pt-7">
+                            <x-blog.tags :blog="$blog" />
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
 
+        @if ($previous || $next)
+            <nav class="border-y border-gray-2 bg-[var(--color-surface-ivory)]" aria-label="Navegación entre publicaciones">
+                <div class="container grid grid-cols-1 md:grid-cols-2">
+                    @if ($previous)
+                        <a wire:navigate href="{{ $previous->url }}"
+                            class="group border-b border-gray-2 py-10 pr-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-accent md:border-b-0 md:border-r md:py-14">
+                            <span class="font-body text-sm text-gray">← Publicación anterior</span>
+                            <span class="mt-4 block max-w-[28ch] font-source text-xl leading-tight text-primary transition-colors group-hover:text-accent md:text-2xl">
+                                {{ $previous->title }}
+                            </span>
+                        </a>
+                    @else
+                        <div class="hidden md:block"></div>
+                    @endif
 
-        <div class="relative">
-            <div class="bg-trigger" x-cloak x-data>
-                @if ($blog->image)
-                <x-image :image="$blog->image" alt="{{ $blog->name }}"
-                    imageClass="max-h-[80dvh] w-full h-full object-contain"
-                    class="bigPicture container w-full h-img -mt-[4rem] sm:-mt-60 md:-mt-96 lg:-mt-72" />
-                @endif
-            </div>
+                    @if ($next)
+                        <a wire:navigate href="{{ $next->url }}"
+                            class="group py-10 md:py-14 md:pl-8 focus-visible:outline focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-accent">
+                            <span class="font-body text-sm text-gray">Publicación siguiente →</span>
+                            <span class="mt-4 block max-w-[28ch] font-source text-xl leading-tight text-primary transition-colors group-hover:text-accent md:text-2xl">
+                                {{ $next->title }}
+                            </span>
+                        </a>
+                    @endif
+                </div>
+            </nav>
+        @endif
+    </article>
 
-            <div class="grid pt-16 pb-16 container-notice main-container text-wysiwyg  mx-auto">
-                @php
-                    $contentHtml = $blog->content ?? '';
-
-                    if ($blog->id < 812) {
-                        $pattern = '/<p[^>]*>\s*La entrada .*? se publicó primero en .*?<\/p>/si';
-                        $contentHtml = preg_replace($pattern, '', $contentHtml);
-                    }
-                @endphp
-
-                {!! $contentHtml !!}
-                <br>
-                <x-blog.tags :blog="$blog" />
-            </div>
-
-
-
-            <div class="flex justify-between mb-16 container-notice">
-                @if($previous = $blog->previous())
-                <a wire:navigate href="{{ $previous->url }}"
-                    class="flex gap-2 text-sm text-primary font-bold max-w-[40%] place-items-center group">
-                    <x-lucide-move-left class="w-5 transition-transform group-hover:-translate-x-1" />
-                    <span>{{ $previous->title }}</span>
-                </a>
-                @endif
-
-                @if($next = $blog->next())
-                <a wire:navigate href="{{ $next->url }}"
-                    class="flex gap-2 text-sm text-right text-primary font-bold max-w-[40%] place-items-center group">
-                    <span>{{ $next->title }}</span>
-                    <x-lucide-move-right class="w-5 transition-transform group-hover:translate-x-1" />
-                </a>
-                @endif
-            </div>
-        </div>
-
-
-
-    </div>
-    <x-common.floating-share :url="$blog->url" />
     <x-blog.related-posts :blog="$blog" />
 
-    <div id="progress-bar" class="sticky bottom-0 left-0 z-50 w-[0] h-1 bg-primary"></div>
-
-
+    <div id="article-progress" aria-hidden="true"
+        class="fixed bottom-0 left-0 z-50 h-1 w-full origin-left scale-x-0 bg-accent"></div>
 </x-layout>
 
-
-@if ($blog->isOldBlog())
-<style>
-    .aligncenter {
-        display: block;
-        margin: 0 auto;
-    }
-
-    .alignnone {
-
-        float: left;
-        padding-right: 1rem;
-    }
-
-    .alignnone.size-medium {
-        width: 50%;
-        height: auto;
-        max-width: 100%;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .alignnone.size-medium:nth-child(odd) {
-        padding-left: 0.5rem;
-        padding-right: 0;
-    }
-
-    .alignnone.size-medium:nth-child(even) {
-        padding-right: 0.5rem;
-        padding-left: 0;
-    }
-
-    .title-animate {
-        transform: translateY(calc(100% + 100px));
-    }
-
-    .fade-in2 {
-        opacity: 0;
-    }
-</style>
-
 <script>
-    document.addEventListener('livewire:navigated', function() {
-        const BLOCK = document.getElementById('post-container');
+    (() => {
+        const initializeArticleProgress = () => {
+            const article = document.getElementById('post-container');
+            const progress = document.getElementById('article-progress');
 
-        const headerImage = document.querySelector('.bigPicture img');
-        const contentImages = document.querySelectorAll('.main-container img');
+            if (!article || !progress) return;
 
-        if (headerImage) {
-            const headerSrc = headerImage.src;
+            const update = () => {
+                const rect = article.getBoundingClientRect();
+                const distance = Math.max(article.offsetHeight - window.innerHeight, 1);
+                const value = Math.min(Math.max(-rect.top / distance, 0), 1);
+                progress.style.transform = `scaleX(${value})`;
+            };
 
-            contentImages.forEach(img => {
-                if (img.src === headerSrc) {
-                    img.parentElement.style.display = 'none';
-                }
-            });
-        }
+            if (window.__articleProgressHandler) {
+                window.removeEventListener('scroll', window.__articleProgressHandler);
+            }
 
+            window.__articleProgressHandler = update;
+            window.addEventListener('scroll', update, { passive: true });
+            update();
+        };
 
-
-    });
-
-
-</script>
-@endif
-
-
-<script>
-    console.dir('si')
-    document.addEventListener('livewire:navigated', function() {
-
-        const BLOCK = document.getElementById('post-container');
-
-        const title = BLOCK.querySelector('.title-animate');
-        const titleContainer = BLOCK.querySelector('.title-container');
-        const fadeIn2 = BLOCK.querySelector('.fade-in2');
-
-        setTimeout(() => {
-            gsap.to(title, {
-                scrollTrigger: {
-                    trigger: BLOCK,
-                    start: "top 80%",
-                    end: "bottom 20%",
-                    toggleActions: 'play reset play reset'
-                },
-                y: 0,
-                duration: 1,
-                ease: "power3.out"
-            });
-
-            gsap.to(fadeIn2, {
-                opacity: 1,
-                duration: 1,
-                delay: .5,
-                ease: "power3.out"
-            });
-
-        }, 300);
-
-
-        const bgAnimate = document.querySelector('.bg-animate');
-        const trigger = document.querySelector('.bg-trigger');
-        const progressBar = document.getElementById('progress-bar');
-        const postContainer = document.getElementById('post-container');
-
-        gsap.to(bgAnimate, {
-            backgroundColor: "#fff",
-            scrollTrigger: {
-                trigger: trigger,
-                start: "top top",
-                end: "bottom bottom",
-                scrub: .5,
-                toggleActions: 'play none none reverse',
-            },
-        });
-
-        gsap.to(progressBar, {
-            width: "100%",
-            ease: "none",
-            scrollTrigger: {
-                trigger: postContainer,
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 0.3,
-            },
-        });
-    });
+        document.addEventListener('livewire:navigated', initializeArticleProgress);
+        initializeArticleProgress();
+    })();
 </script>

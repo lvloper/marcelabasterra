@@ -10,6 +10,8 @@ class ProgramaAcademico extends Model
 {
     use HasFactory, HasRoute;
 
+    protected $table = 'programas_academicos';
+
     public function getDefaultRouteParentId(): ?int
     {
         return config('cms-routes.programas_parent_id');

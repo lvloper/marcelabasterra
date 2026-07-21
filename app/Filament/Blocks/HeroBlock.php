@@ -3,6 +3,8 @@
 namespace App\Filament\Blocks;
 
 use App\Filament\Forms\Components\Field;
+use App\Models\CargoInstitucional;
+use Filament\Forms\Components\Select;
 
 class HeroBlock extends PageBlock
 {
@@ -38,6 +40,18 @@ class HeroBlock extends PageBlock
                 ->helperText('Cargos, áreas o hitos breves. Se recomienda usar entre 2 y 4.')
                 ->maxItems(4)
                 ->collapsible(),
+            Select::make('featured_positions')
+                ->label('Cargos institucionales destacados')
+                ->multiple()
+                ->options(fn (): array => CargoInstitucional::query()
+                    ->orderByDesc('featured')
+                    ->orderBy('cargo')
+                    ->get()
+                    ->mapWithKeys(fn (CargoInstitucional $position): array => [
+                        $position->id => trim($position->cargo.' · '.$position->institucion),
+                    ])->all())
+                ->searchable()
+                ->helperText('Se muestran desde el recurso Cargos institucionales, en el orden seleccionado.'),
             Field::route('cta_primary', 'Ver CV')->buttonLabel(),
             Field::route('cta_secondary', 'Ver publicaciones')->buttonLabel(),
             Field::route('cta_tertiary', 'Actualidad')->buttonLabel(),

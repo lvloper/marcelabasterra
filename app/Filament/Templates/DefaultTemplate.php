@@ -26,6 +26,10 @@ class DefaultTemplate
             \App\Filament\Blocks\PublicationsHighlightBlock::make(),
             \App\Filament\Blocks\InterviewsHighlightBlock::make(),
             \App\Filament\Blocks\EventsHighlightBlock::make(),
+            \App\Filament\Blocks\EventsListingBlock::make(),
+            \App\Filament\Blocks\ContentListBlock::make(),
+            \App\Filament\Blocks\PressFeedBlock::make(),
+            \App\Filament\Blocks\CVAccessBlock::make(),
             \App\Filament\Blocks\RelatedResourcesBlock::make(),
         ];
 
@@ -51,15 +55,18 @@ class DefaultTemplate
         return [
             Builder::make('blocks')
                 ->label('Bloques')
-                ->blockPreviews(areInteractive: true)
+                ->blockPreviews(areInteractive: false)
                 ->default($defaultTemplate)
                 ->blocks($blocks)
                 ->columnSpan('full')
                 ->reorderableWithButtons()
                 ->cloneable()
                 ->editAction(
-                    fn(Action $action) => $action->closeModalByClickingAway(false)
-                ),
+                    fn(Action $action) => $action
+                        ->closeModalByClickingAway(false)
+                        ->modalSubmitActionLabel('Actualizar cambios')
+                )
+                ->view('filament-forms::components.editor'),
             
             // Hidden input for paste functionality
             \Filament\Forms\Components\Hidden::make('blocks_pastable')

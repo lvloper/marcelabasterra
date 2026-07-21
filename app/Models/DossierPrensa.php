@@ -10,6 +10,8 @@ class DossierPrensa extends Model
 {
     use HasFactory, HasRoute;
 
+    protected $table = 'dossiers_prensa';
+
     public function getDefaultRouteParentId(): ?int
     {
         return config('cms-routes.prensa_parent_id');

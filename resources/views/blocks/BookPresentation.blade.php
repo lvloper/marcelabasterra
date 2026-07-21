@@ -37,8 +37,8 @@
                         $itemImage = $item['image'] ?? null;
                         $itemImage = is_array($itemImage) ? ($itemImage[0] ?? null) : $itemImage;
                         $imageUrl = $itemImage ? \Illuminate\Support\Facades\Storage::url($itemImage) : null;
-                        $num = str_pad($i + 1, 2, '0', STR_PAD_LEFT);
-                        $isReverse = $i === 1;
+                        $num = str_pad($loop->iteration, 2, '0', STR_PAD_LEFT);
+                        $isReverse = $loop->iteration === 2;
                     @endphp
 
                     <div class="anim-card p-10 flex flex-col gap-8 {{ $isReverse ? '' : '' }}">
