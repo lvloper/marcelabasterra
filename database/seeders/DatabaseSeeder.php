@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\Status;
 use App\Models\Blog;
+use App\Models\Conferencia;
 use App\Models\Configuration;
 use App\Models\Menu;
 use App\Models\Libro;
@@ -13,6 +14,8 @@ use App\Models\Route;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -180,8 +183,9 @@ class DatabaseSeeder extends Seeder
         $bookRoute->save();
 
         $importPath = storage_path('app/imports/wordpress-posts.json');
-        if (! is_file($importPath)) return;
-        $posts = json_decode((string) file_get_contents($importPath), true)['posts'] ?? [];
+        $posts = is_file($importPath)
+            ? (json_decode((string) file_get_contents($importPath), true)['posts'] ?? [])
+            : [];
         foreach ($posts as $post) {
             if (! in_array('Medios', $post['categories'] ?? [], true)) continue;
             $titleParts = array_map('trim', preg_split('~/~u', (string) ($post['title'] ?? ''), 2));
@@ -213,6 +217,55 @@ class DatabaseSeeder extends Seeder
             $route->routable()->associate($press);
             $route->save();
         }
+
+        foreach ($this->homeConferenceItems() as $position => $item) {
+            $conference = Conferencia::query()->where('external_url', $item['url'])->first() ?: new Conferencia();
+            $conferenceImage = $conference->imagen ?: $this->downloadYoutubeThumbnail($item['url']);
+            $conference->fill([
+                'tipo' => $item['type'],
+                'institucion' => $item['institution'],
+                'fecha' => $item['date'],
+                'descripcion' => '<p>'.e($item['description']).'</p>',
+                'imagen' => $conferenceImage ?: $item['image'],
+                'external_url' => $item['url'],
+                'link_label' => $item['link_label'],
+                'destacado' => true,
+            ])->save();
+            $route = $conference->route ?: new Route();
+            $route->fill([
+                'title' => $item['title'],
+                'slug' => \Illuminate\Support\Str::slug($item['title']),
+                'layout' => 'default',
+                'status' => Status::Published,
+                'parent_id' => config('cms-routes.agenda_parent_id'),
+                'description' => $item['description'],
+            ]);
+            $route->routable()->associate($conference);
+            $route->save();
+        }
+    }
+
+    private function downloadYoutubeThumbnail(string $url): ?string
+    {
+        if (! preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/))([^&?/]+)~', $url, $matches)) {
+            return null;
+        }
+
+        $videoId = $matches[1];
+        $path = "images/conferencias/youtube-{$videoId}.jpg";
+        if (Storage::disk('public')->exists($path)) {
+            return $path;
+        }
+
+        foreach (["https://i.ytimg.com/vi/{$videoId}/maxresdefault.jpg", "https://i.ytimg.com/vi/{$videoId}/hqdefault.jpg"] as $thumbnailUrl) {
+            $response = Http::timeout(15)->retry(2, 250)->get($thumbnailUrl);
+            if ($response->successful() && strlen($response->body()) > 10_000) {
+                Storage::disk('public')->put($path, $response->body());
+                return $path;
+            }
+        }
+
+        return null;
     }
 
     private function routeAttrs(?Route $route, ?string $label = null): array
@@ -566,7 +619,8 @@ class DatabaseSeeder extends Seeder
             $this->block('EventsListing', [
                 'title' => 'Conferencias y exposiciones',
                 'description' => 'Intervenciones públicas disponibles en YouTube y en la Facultad de Derecho de la UBA.',
-                'manual_items' => $this->homeConferenceItems(),
+                'conferencias' => Conferencia::query()->where('destacado', true)->orderBy('id')->pluck('id')->all(),
+                'manual_items' => [],
             ]),
             // 6. CTA
             $this->block('CTA', [

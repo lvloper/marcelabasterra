@@ -4,11 +4,11 @@ namespace App\Filament\Blocks;
 
 use App\Filament\Forms\Components\Field;
 use App\Models\Evento;
+use App\Models\Conferencia;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Utilities\Get;
 
 class EventsListingBlock extends PageBlock
@@ -24,21 +24,13 @@ class EventsListingBlock extends PageBlock
         return [
             Field::text('title', 'Título de la sección'),
             Field::textarea('description', 'Introducción')->rows(3),
-            Field::repeater('manual_items', 'Conferencias y exposiciones', [
-                Field::text('title', 'Título')->required(),
-                Field::select('type', 'Tipo', [
-                    'conferencia' => 'Conferencia',
-                    'exposicion' => 'Exposición',
-                    'entrevista' => 'Entrevista',
-                    'panel' => 'Panel',
-                ])->required(),
-                Field::text('institution', 'Institución o medio'),
-                DatePicker::make('date')->label('Fecha'),
-                Field::textarea('description', 'Descripción')->rows(3),
-                Field::image('image', 'Imagen', '1200', '675', 'images/conferencias', true),
-                Field::text('url', 'URL de YouTube o UBA')->url()->required(),
-                Field::text('link_label', 'Texto del enlace')->default('Ver conferencia'),
-            ])->collapsible()->itemLabel(fn (array $state): ?string => $state['title'] ?? null),
+            Select::make('conferencias')
+                ->label('Conferencias seleccionadas')
+                ->multiple()
+                ->options(fn (): array => Conferencia::query()->with('route')->get()
+                    ->mapWithKeys(fn (Conferencia $item): array => [$item->id => $item->title ?: "Conferencia #{$item->id}"])->all())
+                ->searchable()
+                ->helperText('Si queda vacío, muestra automáticamente las conferencias destacadas.'),
             Select::make('status')
                 ->label('Estado a mostrar')
                 ->options([

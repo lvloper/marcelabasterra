@@ -1,5 +1,22 @@
 @php
-    $manualItems = collect($manual_items ?? [])->filter(fn ($item) => filled($item['title'] ?? null) && filled($item['url'] ?? null));
+    $conferenceIds = collect($conferencias ?? [])->filter()->map(fn ($id) => (int) $id)->values();
+    $conferenceQuery = \App\Models\Conferencia::query()->with('route')->isPublished();
+    $conferenceRecords = $conferenceIds->isNotEmpty()
+        ? $conferenceQuery->whereIn('id', $conferenceIds)->get()->sortBy(fn ($item) => $conferenceIds->search($item->id))->values()
+        : $conferenceQuery->where('destacado', true)->orderByDesc('fecha')->get();
+    $resourceItems = $conferenceRecords->map(fn ($item) => [
+        'title' => $item->title,
+        'type' => $item->tipo,
+        'institution' => $item->institucion,
+        'date' => $item->fecha?->toDateString(),
+        'description' => \Illuminate\Support\Str::squish(strip_tags((string) $item->descripcion)),
+        'image' => $item->imagen,
+        'url' => $item->external_url,
+        'link_label' => $item->link_label,
+    ]);
+    $manualItems = $resourceItems->isNotEmpty()
+        ? $resourceItems
+        : collect($manual_items ?? [])->filter(fn ($item) => filled($item['title'] ?? null) && filled($item['url'] ?? null));
     $timezone = config('app.timezone', 'America/Argentina/Buenos_Aires');
     $today = now($timezone)->startOfDay();
     $selectedIds = collect($selected_events ?? [])

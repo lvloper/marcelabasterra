@@ -6,7 +6,8 @@
 |---|---|---:|---|---|
 | `title` | text | no | — | Título de la sección. |
 | `description` | textarea | no | — | Introducción de la sección. |
-| `manual_items` | repeater | no | `[]` | Piezas editoriales con título, tipo, institución, fecha, descripción, imagen, URL y etiqueta. |
+| `conferencias` | select multiple | no | `[]` | IDs del recurso `Conferencia`; vacío consulta automáticamente las destacadas. |
+| `manual_items` | repeater legado | no | `[]` | Compatibilidad temporal con páginas guardadas antes de crear el recurso. |
 | `status` | select | sí | `upcoming` | Consulta automática: `upcoming`, `past` o `all`. |
 | `event_types` | checkbox list | no | — | Filtro opcional por tipos de actividad. |
 | `selected_events` | select multiple | no | — | IDs de `Evento`; si existe, tiene prioridad sobre la consulta automática. |
@@ -44,7 +45,8 @@ Además de los campos existentes, cada actividad puede incluir `institucion`, `r
 
 ## Reglas de consulta y renderizado
 
-- El repeater `manual_items` prevalece sobre los recursos `Evento`; permite ordenar conferencias y exposiciones directamente desde el bloque.
+- Los recursos `Conferencia` seleccionados prevalecen y conservan el orden editorial; sin selección se consultan los destacados por fecha.
+- El repeater legado sólo se usa cuando no existen conferencias relacionadas.
 - La selección manual de recursos (`selected_events`) prevalece sobre cualquier consulta automática cuando el repeater está vacío.
 - `upcoming` consulta desde el día actual y ordena por `fecha_inicio` ascendente.
 - `past` consulta fechas anteriores al día actual y ordena por `fecha_inicio` descendente.
