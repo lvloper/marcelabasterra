@@ -23,6 +23,10 @@ class PublicationsHighlightBlock extends PageBlock
         return [
             Field::text('title', 'Título de la sección'),
             Field::textarea('description', 'Texto introductorio')->rows(3),
+            Field::select('layout', 'Presentación', [
+                'featured' => 'Publicación protagonista',
+                'library_grid' => 'Biblioteca en grilla',
+            ])->default('featured')->required(),
             ToggleButtons::make('source_mode')
                 ->label('Fuente')
                 ->options(['latest' => 'Más recientes', 'manual' => 'Selección manual'])

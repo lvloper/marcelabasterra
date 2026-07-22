@@ -1,111 +1,84 @@
 @php
-    $conferenceIds = collect($conferencias ?? [])->filter()->map(fn ($id) => (int) $id)->values();
-    $conferenceQuery = \App\Models\Conferencia::query()->with('route')->isPublished();
-    $conferenceRecords = $conferenceIds->isNotEmpty()
-        ? $conferenceQuery->whereIn('id', $conferenceIds)->get()->sortBy(fn ($item) => $conferenceIds->search($item->id))->values()
-        : $conferenceQuery->where('destacado', true)->orderByDesc('fecha')->get();
-    $resourceItems = $conferenceRecords->map(fn ($item) => [
-        'title' => $item->title,
-        'type' => $item->tipo,
-        'institution' => $item->institucion,
-        'date' => $item->fecha?->toDateString(),
-        'description' => \Illuminate\Support\Str::squish(strip_tags((string) $item->descripcion)),
-        'image' => $item->imagen,
-        'url' => $item->external_url,
-        'link_label' => $item->link_label,
-    ]);
-    $manualItems = $resourceItems->isNotEmpty()
-        ? $resourceItems
-        : collect($manual_items ?? [])->filter(fn ($item) => filled($item['title'] ?? null) && filled($item['url'] ?? null));
-    $timezone = config('app.timezone', 'America/Argentina/Buenos_Aires');
-    $today = now($timezone)->startOfDay();
-    $selectedIds = collect($selected_events ?? [])
-        ->filter(fn ($id) => filled($id))
-        ->map(fn ($id) => (int) $id)
-        ->values();
+    use App\Models\Conferencia;
+    use App\Support\AcademicProductionCatalog;
+    use App\Support\EventCatalog;
+    use Illuminate\Support\Carbon;
+    use Illuminate\Support\Facades\Storage;
+    use Illuminate\Support\Str;
+
+    $conferenceIds = collect($conferencias ?? [])->filter()->map(fn ($id): int => (int) $id)->values();
+    $displayMode = $display_mode ?? ($conferenceIds->isNotEmpty() ? 'videos' : 'activities');
     $limit = min(max((int) ($max_items ?? 12), 1), 50);
+    $imageUrl = static fn (?string $image): ?string => blank($image)
+        ? null
+        : (filter_var($image, FILTER_VALIDATE_URL) ? $image : Storage::url($image));
 
-    $eventsQuery = \App\Models\Evento::query()->with('route');
-
-    if ($selectedIds->isNotEmpty()) {
-        $events = $eventsQuery
-            ->whereIn('id', $selectedIds)
-            ->get()
-            ->sortBy(fn (\App\Models\Evento $event) => $selectedIds->search($event->id))
-            ->take($limit)
-            ->values();
+    if ($displayMode === 'videos') {
+        if ($conferenceIds->isNotEmpty()) {
+            $videoItems = Conferencia::query()->with('route')->isPublished()->whereIn('id', $conferenceIds)->get()
+                ->sortBy(fn (Conferencia $item): int => $conferenceIds->search($item->id))
+                ->map(fn (Conferencia $item): array => [
+                    'title' => $item->title,
+                    'type_label' => EventCatalog::TYPE_LABELS[$item->tipo] ?? Str::headline($item->tipo),
+                    'institution' => $item->institucion,
+                    'date' => $item->fecha?->toDateString(),
+                    'image' => $item->imagen,
+                    'url' => $item->external_url,
+                ])->filter(fn (array $item): bool => filled($item['url']))->take($limit)->values();
+        } else {
+            $videoItems = app(AcademicProductionCatalog::class)->all()
+                ->filter(fn (array $item): bool => in_array('videos', $item['categories'], true) && filled($item['url']))
+                ->take($limit)->map(fn (array $item): array => [
+                    'title' => $item['title'],
+                    'type_label' => $item['category_label'],
+                    'institution' => $item['institution'] ?: $item['medium'],
+                    'date' => $item['date'],
+                    'image' => $item['image'],
+                    'url' => $item['url'],
+                ])->values();
+        }
     } else {
-        $events = match ($status ?? 'upcoming') {
-            'past' => $eventsQuery->where('fecha_inicio', '<', $today)->orderByDesc('fecha_inicio'),
-            'all' => $eventsQuery->orderByDesc('fecha_inicio'),
-            default => $eventsQuery->where('fecha_inicio', '>=', $today)->orderBy('fecha_inicio'),
-        };
-
-        $events = $events
-            ->when(filled($event_types ?? []), fn ($query) => $query->whereIn('tipo', $event_types))
-            ->limit($limit)
-            ->get();
+        $catalog = app(EventCatalog::class);
+        $eventIds = collect($selected_events ?? [])->filter()->map(fn ($id): int => (int) $id)->values();
+        $activityItems = $catalog->all(
+            $eventIds->isNotEmpty() ? $eventIds : null,
+            $conferenceIds->isNotEmpty() ? $conferenceIds : null,
+            (bool) ($include_conferences ?? true),
+        );
+        $activityItems = $catalog->filter($activityItems, $status ?? 'all', array_values($event_types ?? []))->take($limit)->values();
+        $years = $catalog->years($activityItems);
+        $countries = $catalog->countries($activityItems);
+        $types = $catalog->types($activityItems);
+        $filterId = 'event-filters-'.Str::uuid();
     }
-
-    $statusLabels = [
-        'upcoming' => 'Próximas actividades',
-        'past' => 'Actividades realizadas',
-        'all' => 'Agenda y archivo',
-    ];
-    $typeLabels = [
-        'jornada' => 'Jornada',
-        'congreso' => 'Congreso',
-        'clase' => 'Clase',
-        'conferencia' => 'Conferencia',
-        'exposicion' => 'Exposición',
-        'panel' => 'Panel',
-        'presentacion' => 'Presentación',
-        'seminario' => 'Seminario',
-        'taller' => 'Taller',
-        'otro' => 'Actividad',
-    ];
-    $confirmationLabels = [
-        'pendiente' => 'Confirmación pendiente',
-        'confirmado' => 'Participación confirmada',
-        'cancelado' => 'Actividad cancelada',
-    ];
-    $fallbackRoute = is_array($fallback_route ?? null) ? $fallback_route : [];
-    $fallbackRouteId = $fallbackRoute['route_id'] ?? null;
-    $hasFallbackDestination = (! empty($fallbackRoute['external_url']))
-        || ((is_numeric($fallbackRouteId) && (int) $fallbackRouteId >= 1))
-        || ((string) $fallbackRouteId === '-1' && ! empty($fallbackRoute['file']));
-    $showFallback = (bool) ($show_empty_fallback ?? false) && $hasFallbackDestination;
 @endphp
 
-@if ($manualItems->isNotEmpty())
-    <x-block class="border-y border-gray-2 bg-white py-16 sm:py-20 lg:py-24">
+@if ($displayMode === 'videos' && ($videoItems ?? collect())->isNotEmpty())
+    <x-block class="border-y border-gray-2 bg-primary py-16 sm:py-20 lg:py-24">
         <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
-            <header class="grid gap-6 lg:grid-cols-12 lg:items-end">
-                <div class="lg:col-span-8">
-                    <p class="mb-5 font-source text-sm text-primary"><span class="mr-3 text-accent" aria-hidden="true">—</span>Archivo audiovisual</p>
-                    @if ($title ?? null)<h2 class="max-w-[15ch] font-sans text-[clamp(2.75rem,5vw,4.75rem)] font-normal leading-[.96] tracking-[-.035em] text-primary">{{ $title }}</h2>@endif
+            <header class="grid gap-6 border-t border-white/40 pt-6 lg:grid-cols-12 lg:items-end lg:gap-12">
+                <div class="lg:col-span-7">
+                    <p class="mb-4 font-source text-sm text-white"><span class="mr-3 text-accent" aria-hidden="true">—</span>Archivo audiovisual</p>
+                    @if ($title ?? null)<h2 class="max-w-[14ch] font-sans text-[clamp(2.75rem,5vw,4.75rem)] font-normal leading-[0.96] tracking-[-0.035em] text-white">{{ $title }}</h2>@endif
                 </div>
-                @if ($description ?? null)<p class="font-source text-xl leading-snug text-gray lg:col-span-4">{{ $description }}</p>@endif
+                @if ($description ?? null)<p class="max-w-[46ch] font-source text-xl leading-relaxed text-gray-3 lg:col-span-4 lg:col-start-9">{{ $description }}</p>@endif
             </header>
-            <ol class="mt-10 grid gap-x-7 gap-y-10 md:grid-cols-2 lg:grid-cols-6">
-                @foreach ($manualItems as $item)
-                    @php
-                        $image = is_array($item['image'] ?? null) ? ($item['image'][0] ?? null) : ($item['image'] ?? null);
-                        $youtubeId = null;
-                        if (preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/))([^&?/]+)~', $item['url'], $match)) $youtubeId = $match[1];
-                        $imageUrl = $image ? \Illuminate\Support\Facades\Storage::url($image) : ($youtubeId ? "https://i.ytimg.com/vi/{$youtubeId}/hqdefault.jpg" : null);
-                    @endphp
+
+            <ol class="mt-10 grid gap-x-7 gap-y-10 md:grid-cols-2 lg:grid-cols-6" aria-label="Videos">
+                @foreach ($videoItems as $item)
+                    @php($poster = $imageUrl($item['image']))
                     <li class="{{ $loop->index < 2 ? 'lg:col-span-3' : 'lg:col-span-2' }}">
-                        <article class="group h-full">
-                            @if ($imageUrl)<a href="{{ $item['url'] }}" target="_blank" rel="noopener noreferrer" class="block overflow-hidden bg-gray-3"><img src="{{ $imageUrl }}" alt="" class="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none" loading="lazy"></a>@endif
-                            <div class="pt-4">
-                                <p class="font-source text-sm text-primary">{{ ucfirst($item['type'] ?? 'conferencia') }}@if ($item['institution'] ?? null) · {{ $item['institution'] }}@endif</p>
-                                <h3 class="mt-2 font-sans text-2xl font-normal leading-[1.05] tracking-[-.02em] text-primary">{{ $item['title'] }}</h3>
-                                @if ($item['description'] ?? null)<p class="mt-3 line-clamp-2 font-body text-sm leading-relaxed text-gray">{{ $item['description'] }}</p>@endif
-                                <div class="mt-4 flex items-center justify-between gap-4">
-                                    @if ($item['date'] ?? null)<time datetime="{{ $item['date'] }}" class="font-source text-sm text-gray">{{ \Illuminate\Support\Carbon::parse($item['date'])->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</time>@endif
-                                    <a href="{{ $item['url'] }}" target="_blank" rel="noopener noreferrer" class="border-b border-primary font-body text-sm text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">{{ $item['link_label'] ?? 'Ver conferencia' }} ↗</a>
-                                </div>
+                        <article class="group h-full border-t border-white/40 pt-5">
+                            @if ($poster)
+                                <a href="{{ $item['url'] }}" target="_blank" rel="noopener noreferrer" class="block overflow-hidden bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent" aria-label="Reproducir {{ $item['title'] }} (se abre en una pestaña nueva)">
+                                    <img src="{{ $poster }}" alt="" class="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none" loading="lazy">
+                                </a>
+                            @endif
+                            <p class="mt-5 font-source text-sm text-gray-3">{{ $item['type_label'] }}@if($item['institution']) · {{ $item['institution'] }}@endif</p>
+                            <h3 class="mt-2 font-sans text-[1.75rem] font-normal leading-[1.05] tracking-[-0.02em] text-white">{{ $item['title'] }}</h3>
+                            <div class="mt-4 flex items-center justify-between gap-4">
+                                @if($item['date'])<time datetime="{{ $item['date'] }}" class="font-source text-sm text-gray-3">{{ Carbon::parse($item['date'])->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</time>@endif
+                                <a href="{{ $item['url'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center border-b border-white font-body text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">Reproducir ↗</a>
                             </div>
                         </article>
                     </li>
@@ -113,140 +86,89 @@
             </ol>
         </div>
     </x-block>
-@elseif ($events->isNotEmpty() || $showFallback)
+@elseif ($displayMode === 'activities')
     <x-block class="border-y border-gray-2 bg-[var(--color-surface-ivory)] py-16 sm:py-20 lg:py-24">
-        <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
-            @if ($title ?? $description ?? false)
-                <div class="grid grid-cols-1 gap-8 border-b border-primary pb-10 lg:grid-cols-12 lg:items-end lg:gap-12">
-                    <div class="lg:col-span-7">
-                        <p class="mb-5 flex items-center gap-3 font-source text-sm leading-none text-primary">
-                            <span class="h-px w-10 bg-accent" aria-hidden="true"></span>
-                            {{ $statusLabels[$status ?? 'upcoming'] ?? $statusLabels['upcoming'] }}
-                        </p>
-                        @if ($title ?? false)
-                            <h2 class="max-w-[15ch] font-sans text-[clamp(2.5rem,5vw,4.5rem)] font-normal leading-[0.98] tracking-[-0.03em] text-primary">{{ $title }}</h2>
-                        @endif
+        <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16"
+             @if (($show_filters ?? true) && $activityItems->isNotEmpty())
+                 x-data="{ status: 'all', year: '', country: '', type: '', visible: {{ $activityItems->count() }}, matches(item) { return (this.status === 'all' || item.dataset.status === this.status) && (!this.year || item.dataset.year === this.year) && (!this.country || item.dataset.country === this.country) && (!this.type || item.dataset.type === this.type) } }"
+             @endif>
+            <header class="grid gap-6 border-t border-primary pt-6 lg:grid-cols-12 lg:items-end lg:gap-12">
+                <div class="lg:col-span-7">
+                    <p class="mb-4 font-source text-sm text-primary"><span class="mr-3 text-accent" aria-hidden="true">—</span>Agenda y archivo</p>
+                    @if ($title ?? null)<h2 class="max-w-[15ch] font-sans text-[clamp(2.5rem,5vw,4.5rem)] font-normal leading-[0.98] tracking-[-0.03em] text-primary">{{ $title }}</h2>@endif
+                </div>
+                @if ($description ?? null)<p class="max-w-[48ch] font-source text-xl leading-relaxed text-gray lg:col-span-4 lg:col-start-9">{{ $description }}</p>@endif
+            </header>
+
+            @if (($show_filters ?? true) && $activityItems->isNotEmpty())
+                <div id="{{ $filterId }}" class="mt-10 border-y border-primary py-6" aria-label="Filtros de eventos">
+                    <div class="grid gap-6 lg:grid-cols-12 lg:items-end">
+                        <fieldset class="lg:col-span-5">
+                            <legend class="mb-3 font-body text-sm font-semibold text-primary">Estado</legend>
+                            <div class="grid grid-cols-3">
+                                @foreach (['all' => 'Todos', 'upcoming' => 'Próximos', 'past' => 'Realizados'] as $value => $label)
+                                    <button type="button" @click="status = '{{ $value }}'" :aria-pressed="status === '{{ $value }}'" :class="status === '{{ $value }}' ? 'bg-primary text-white' : 'bg-transparent text-primary'" class="min-h-12 border border-primary px-3 font-body text-sm font-semibold transition-colors duration-200 first:border-r-0 last:border-l-0 focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">{{ $label }}</button>
+                                @endforeach
+                            </div>
+                        </fieldset>
+
+                        <div class="grid gap-5 sm:grid-cols-3 lg:col-span-7">
+                            <label class="font-body text-sm font-semibold text-primary">Año
+                                <select x-model="year" class="mt-3 min-h-12 w-full border border-primary bg-transparent px-3 font-body text-base font-normal text-primary focus:border-primary focus:ring-2 focus:ring-accent">
+                                    <option value="">Todos los años</option>
+                                    @foreach ($years as $year)<option value="{{ $year }}">{{ $year }}</option>@endforeach
+                                </select>
+                            </label>
+                            <label class="font-body text-sm font-semibold text-primary">País
+                                <select x-model="country" class="mt-3 min-h-12 w-full border border-primary bg-transparent px-3 font-body text-base font-normal text-primary focus:border-primary focus:ring-2 focus:ring-accent">
+                                    <option value="">Todos los países</option>
+                                    @foreach ($countries as $country)<option value="{{ $country }}">{{ $country }}</option>@endforeach
+                                </select>
+                            </label>
+                            <label class="font-body text-sm font-semibold text-primary">Tipo de actividad
+                                <select x-model="type" class="mt-3 min-h-12 w-full border border-primary bg-transparent px-3 font-body text-base font-normal text-primary focus:border-primary focus:ring-2 focus:ring-accent">
+                                    <option value="">Todos los tipos</option>
+                                    @foreach ($types as $type)<option value="{{ $type }}">{{ EventCatalog::TYPE_LABELS[$type] ?? Str::headline($type) }}</option>@endforeach
+                                </select>
+                            </label>
+                        </div>
                     </div>
-                    @if ($description ?? false)
-                        <p class="max-w-[48ch] font-source text-xl leading-snug text-gray sm:text-2xl lg:col-span-4 lg:col-start-9">{{ $description }}</p>
-                    @endif
                 </div>
             @endif
 
-            @if ($events->isNotEmpty())
-                <ol class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:mt-12 lg:grid-cols-12 lg:gap-8">
-                    @foreach ($events as $event)
-                        @php
-                            $eventTitle = $event->title ?: 'Actividad';
-                            $eventUrl = $event->route ? $event->url : null;
-                            $eventImage = $event->imagen ?: $event->route?->image;
-                            $eventImageUrl = $eventImage ? \Illuminate\Support\Facades\Storage::url($eventImage) : null;
-                            $eventDescription = \Illuminate\Support\Str::squish(strip_tags($event->descripcion ?? ''));
-                            $meta = array_filter([
-                                $event->institucion,
-                                $event->ubicacion,
-                                $event->modalidad ? ucfirst($event->modalidad) : null,
-                            ]);
-                            $columnClass = $loop->first
-                                ? 'md:col-span-2 lg:col-span-7'
-                                : 'lg:col-span-5';
-                        @endphp
-                        <li class="{{ $columnClass }}">
-                            <article class="group flex h-full flex-col border border-gray-2 bg-white transition-colors duration-300 motion-reduce:transition-none {{ $eventUrl ? 'hover:border-primary' : '' }}">
-                                @if ($show_image ?? true)
-                                    @if ($eventImageUrl)
-                                        <div class="aspect-[16/9] overflow-hidden bg-gray-3">
-                                            <img
-                                                src="{{ $eventImageUrl }}"
-                                                alt="{{ $eventTitle }}"
-                                                class="h-full w-full object-cover transition-transform duration-500 motion-reduce:transition-none {{ $eventUrl ? 'group-hover:scale-[1.02]' : '' }}"
-                                                loading="lazy"
-                                            >
-                                        </div>
-                                    @endif
+            @if ($activityItems->isNotEmpty())
+                <ol x-ref="list" @if (($show_filters ?? true)) x-effect="visible = Array.from($refs.list.children).filter(item => matches(item)).length" @endif class="{{ ($show_filters ?? true) ? 'mt-4' : 'mt-10' }} border-b border-primary" aria-label="Congresos, jornadas, seminarios y conferencias">
+                    @foreach ($activityItems as $item)
+                        <li data-status="{{ $item['is_upcoming'] ? 'upcoming' : 'past' }}" data-year="{{ $item['year'] }}" data-country="{{ $item['country'] }}" data-type="{{ $item['type'] }}" @if (($show_filters ?? true)) x-show="matches($el)" @endif class="grid gap-5 border-t border-primary py-7 md:grid-cols-12 md:gap-8 md:py-9">
+                            <div class="md:col-span-2">
+                                @if ($item['date'])
+                                    <time datetime="{{ $item['date'] }}" class="font-source text-[clamp(1.75rem,3vw,3rem)] leading-none text-primary">{{ Carbon::parse($item['date'])->locale('es')->translatedFormat('d M Y') }}</time>
+                                @else
+                                    <p class="font-source text-lg text-gray">Fecha a confirmar</p>
                                 @endif
-
-                                <div class="flex flex-1 flex-col p-6 sm:p-8">
-                                    <div class="flex items-start justify-between gap-5 border-b border-gray-2 pb-5">
-                                        <p class="font-source text-xl leading-none text-primary sm:text-2xl">
-                                            @if ($event->fecha_inicio)
-                                                <time datetime="{{ $event->fecha_inicio->toDateString() }}">{{ $event->fecha_inicio->locale('es')->isoFormat('D MMM') }}</time>
-                                            @else
-                                                <span>Sin fecha</span>
-                                            @endif
-                                        </p>
-                                        @if ($event->tipo)
-                                            <p class="font-body text-sm leading-snug text-gray">{{ $typeLabels[$event->tipo] ?? $event->tipo }}</p>
-                                        @endif
-                                    </div>
-
-                                    <div class="pt-6">
-                                        @if ($eventUrl)
-                                            <a href="{{ $eventUrl }}" class="group inline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                                                <h3 class="font-sans text-3xl font-normal leading-[1.04] tracking-[-0.02em] text-primary transition-colors duration-300 group-hover:text-gray motion-reduce:transition-none">{{ $eventTitle }}</h3>
-                                            </a>
-                                        @else
-                                            <h3 class="font-sans text-3xl font-normal leading-[1.04] tracking-[-0.02em] text-primary">{{ $eventTitle }}</h3>
-                                        @endif
-
-                                        @if ($event->rol)
-                                            <p class="mt-4 font-source text-lg leading-snug text-primary">{{ $event->rol }}</p>
-                                        @endif
-
-                                        @if ($meta)
-                                            <p class="mt-4 font-body text-base leading-relaxed text-gray">{{ implode(' · ', $meta) }}</p>
-                                        @endif
-
-                                        @if (($show_description ?? true) && $eventDescription)
-                                            <p class="mt-5 max-w-[58ch] font-body text-base leading-relaxed text-gray">{{ $eventDescription }}</p>
-                                        @endif
-                                    </div>
-
-                                    <div class="mt-8 flex flex-wrap items-end justify-between gap-x-5 gap-y-4 border-t border-gray-2 pt-5">
-                                        <div class="font-body text-sm leading-snug text-gray">
-                                            @if ($event->fecha_inicio)
-                                                <p>
-                                                    <time datetime="{{ $event->fecha_inicio->toIso8601String() }}">{{ $event->fecha_inicio->locale('es')->isoFormat('dddd D [de] MMMM [de] YYYY, HH:mm') }}</time>
-                                                    @if ($event->fecha_fin)
-                                                        <span aria-hidden="true"> — </span>
-                                                        <time datetime="{{ $event->fecha_fin->toIso8601String() }}">{{ $event->fecha_fin->locale('es')->isoFormat($event->fecha_inicio->isSameDay($event->fecha_fin) ? 'HH:mm' : 'D [de] MMMM, HH:mm') }}</time>
-                                                    @endif
-                                                </p>
-                                            @endif
-                                            @if ($event->estado_confirmacion)
-                                                <p class="mt-2 text-primary">{{ $confirmationLabels[$event->estado_confirmacion] ?? $event->estado_confirmacion }}</p>
-                                            @endif
-                                        </div>
-
-                                        <div class="flex flex-wrap gap-4 font-body text-base">
-                                            @if ($eventUrl)
-                                                <a href="{{ $eventUrl }}" class="group inline-flex min-h-11 items-center border-b border-primary text-primary transition-colors duration-300 hover:text-gray focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none">
-                                                    Ver actividad <span class="ml-2 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
-                                                </a>
-                                            @endif
-                                            @if ($event->enlace_inscripcion)
-                                                <a href="{{ $event->enlace_inscripcion }}" target="_blank" rel="noopener noreferrer" class="group inline-flex min-h-11 items-center border-b border-primary text-primary transition-colors duration-300 hover:text-gray focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none">
-                                                    Inscripción <span class="ml-2 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">↗</span>
-                                                </a>
-                                            @endif
-                                            @if ($event->video)
-                                                <a href="{{ $event->video }}" target="_blank" rel="noopener noreferrer" class="group inline-flex min-h-11 items-center border-b border-primary text-primary transition-colors duration-300 hover:text-gray focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none">
-                                                    Ver video <span class="ml-2 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">↗</span>
-                                                </a>
-                                            @endif
-                                        </div>
-                                    </div>
+                                @if ($item['is_upcoming'])<p class="mt-3 border-l border-accent pl-3 font-body text-sm font-semibold text-primary">Próximo</p>@endif
+                            </div>
+                            <div class="md:col-span-7 lg:col-span-8">
+                                <p class="font-source text-sm text-primary">{{ $item['type_label'] }}@if($item['institution']) · {{ $item['institution'] }}@endif</p>
+                                <h3 class="mt-2 max-w-[36ch] font-sans text-[clamp(1.75rem,3vw,2.75rem)] font-normal leading-[1.04] tracking-[-0.02em] text-primary">{{ $item['title'] }}</h3>
+                                @if ($item['location'])<p class="mt-3 font-body text-base text-gray">{{ $item['location'] }}</p>@endif
+                                @if ($item['topic'])<p class="mt-2 font-body text-base text-gray"><span class="font-semibold text-primary">Tema:</span> {{ $item['topic'] }}</p>@endif
+                                @if (($show_description ?? true) && $item['summary'])<p class="mt-4 max-w-[68ch] font-body text-base leading-relaxed text-gray">{{ $item['summary'] }}</p>@endif
+                            </div>
+                            @if ($item['url'])
+                                <div class="self-end md:col-span-3 md:text-right lg:col-span-2">
+                                    <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="group inline-flex min-h-12 items-center border border-primary px-4 font-body text-sm font-semibold text-primary transition-colors duration-200 hover:bg-primary hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">Ver detalles <span class="ml-2 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">{{ $item['external'] ? '↗' : '→' }}</span></a>
                                 </div>
-                            </article>
+                            @endif
                         </li>
                     @endforeach
                 </ol>
-            @elseif ($showFallback)
-                <div class="mt-10 max-w-[720px] border-l border-accent pl-6 sm:mt-12 sm:pl-8">
-                    <x-link :attrs="array_merge($fallbackRoute, ['hideIfNull' => true])" class="group inline-flex min-h-12 items-center border-b border-primary font-body text-base text-primary transition-colors duration-300 hover:text-gray focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none">
-                        {{ $fallback_label ?: 'Ver actividades realizadas' }} <span class="ml-3 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
-                    </x-link>
-                </div>
+
+                @if (($show_filters ?? true))
+                    <p x-show="visible === 0" x-cloak class="border-b border-primary py-10 font-source text-xl text-gray" aria-live="polite">{{ $empty_message ?? 'No hay actividades que coincidan con los filtros seleccionados.' }}</p>
+                @endif
+            @elseif ($show_empty_fallback ?? false)
+                <p class="mt-10 border-y border-primary py-10 font-source text-xl text-gray">{{ $fallback_label ?? 'No hay actividades publicadas en este momento.' }}</p>
             @endif
         </div>
     </x-block>

@@ -12,41 +12,57 @@
     ];
 
     $resources = [];
-    foreach (($items ?? []) as $item) {
-        $type = $item['resource_type'] ?? null;
-        $id = $item['resource_id'] ?? null;
+    if (($source_mode ?? 'manual') === 'latest') {
+        $resources = app(\App\Support\AcademicProductionCatalog::class)->all()
+            ->take(min(max((int) ($max_items ?? 4), 1), 4))
+            ->map(fn (array $item): array => [
+                'type' => $item['category'],
+                'type_label' => $item['category_label'],
+                'title' => $item['title'],
+                'description' => $item['summary'],
+                'url' => $item['url'],
+                'external' => $item['external'],
+                'image' => $item['image'],
+                'publisher' => $item['institution'] ?: $item['medium'],
+                'published_at' => $item['date'],
+            ])->all();
+    } else {
+        foreach (($items ?? []) as $item) {
+            $type = $item['resource_type'] ?? null;
+            $id = $item['resource_id'] ?? null;
 
-        if (! $type || ! $id || ! isset($typeMap[$type])) {
-            continue;
+            if (! $type || ! $id || ! isset($typeMap[$type])) {
+                continue;
+            }
+
+            $model = $typeMap[$type]::find($id);
+            $status = $model?->route?->status;
+            $statusValue = is_object($status) ? $status->value : $status;
+
+            $isAvailable = $type === 'articulo'
+                ? in_array($statusValue, ['published', 'hidden'], true)
+                : $statusValue === 'published';
+
+            if (! $model || ! $model->route || ! $isAvailable) {
+                continue;
+            }
+
+            $publishedAt = $type === 'entrevista'
+                ? $model->fecha
+                : $model->fecha_publicacion;
+
+            $resources[] = [
+                'type' => $type,
+                'type_label' => $typeLabels[$type],
+                'title' => $model->title,
+                'description' => $model->descripcion ?? $model->resumen ?? $model->description ?? '',
+                'url' => $type === 'articulo' ? ($model->document_url ?: $model->url) : $model->url,
+                'external' => $type === 'articulo' && filled($model->document_url),
+                'image' => $model->portada ?? $model->route?->image,
+                'publisher' => $model->editorial ?? $model->medio ?? null,
+                'published_at' => $publishedAt,
+            ];
         }
-
-        $model = $typeMap[$type]::find($id);
-        $status = $model?->route?->status;
-        $statusValue = is_object($status) ? $status->value : $status;
-
-        $isAvailable = $type === 'articulo'
-            ? in_array($statusValue, ['published', 'hidden'], true)
-            : $statusValue === 'published';
-
-        if (! $model || ! $model->route || ! $isAvailable) {
-            continue;
-        }
-
-        $publishedAt = $type === 'entrevista'
-            ? $model->fecha
-            : $model->fecha_publicacion;
-
-        $resources[] = [
-            'type' => $type,
-            'type_label' => $typeLabels[$type],
-            'title' => $model->title,
-            'description' => $model->descripcion ?? $model->resumen ?? $model->description ?? '',
-            'url' => $type === 'articulo' ? $model->document_url : $model->url,
-            'external' => $type === 'articulo',
-            'image' => $model->portada ?? $model->route?->image,
-            'publisher' => $model->editorial ?? $model->medio ?? null,
-            'published_at' => $publishedAt,
-        ];
     }
 
     $featuredResource = $resources[0] ?? null;

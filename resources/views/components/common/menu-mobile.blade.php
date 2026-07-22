@@ -34,7 +34,7 @@ $menu = App\Models\Menu::query()->where('slug', 'header')->first();
         <div class="flex justify-between items-center h-[80px] md:h-[60px] mb-20">
             <div class="xl:pl-6">
                 <a href="/" class="block">
-                    <img src="{{ asset('img/Logo-blanco.svg') }}" alt="{{ config_text('site-name', 'CMS Base') }}" class="h-8">
+                    <img src="{{ asset('img/Logos/monograma.svg') }}" alt="{{ config_text('site-name', 'Marcela Basterra') }}" class="h-8">
                 </a>
             </div>
 

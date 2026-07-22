@@ -1,5 +1,6 @@
 @php
     $bioHtml = $summary ?? '';
+    $headingTag = ($heading_level ?? 'h2') === 'h1' ? 'h1' : 'h2';
     if (is_array($bioHtml)) {
         $renderTiptap = function ($node) use (&$renderTiptap): string {
             if (! is_array($node)) return e((string) $node);
@@ -73,7 +74,7 @@
 
             <div class="{{ ($photo ?? null) ? 'lg:col-span-8' : 'lg:col-span-10 lg:col-start-2' }} border-t border-primary pt-7">
                 @if ($title ?? null)
-                    <h2 class="max-w-[12ch] font-sans text-[clamp(2.75rem,5vw,5rem)] font-normal leading-[.96] tracking-[-.035em] text-primary">{{ $title }}</h2>
+                    <{{ $headingTag }} class="max-w-[12ch] font-sans text-[clamp(2.75rem,5vw,5rem)] font-normal leading-[.96] tracking-[-.035em] text-primary">{{ $title }}</{{ $headingTag }}>
                 @endif
 
                 @if ($bioHtml)

@@ -3,6 +3,8 @@
 namespace App\Filament\Blocks;
 
 use App\Filament\Forms\Components\Field;
+use App\Models\CargoInstitucional;
+use Filament\Forms\Components\Select;
 
 class ContentListBlock extends PageBlock
 {
@@ -17,6 +19,40 @@ class ContentListBlock extends PageBlock
         return [
             Field::text('title', 'Título de la sección'),
             Field::textarea('description', 'Introducción breve')->rows(3),
+            Field::select('variant', 'Presentación', [
+                'editorial' => 'Listado editorial',
+                'metrics' => 'Indicadores destacados',
+                'chronological' => 'Archivo cronológico',
+            ])
+                ->default('editorial')
+                ->required(),
+            Field::select('source_mode', 'Origen del contenido', [
+                'manual' => 'Carga manual',
+                'institutional_positions' => 'Cargos institucionales',
+                'academic_articles' => 'Artículos académicos',
+                'academic_publications' => 'Libros y artículos académicos',
+            ])
+                ->default('manual')
+                ->required()
+                ->reactive(),
+            Select::make('institutional_positions')
+                ->label('Cargos institucionales')
+                ->multiple()
+                ->options(fn (): array => CargoInstitucional::query()
+                    ->orderByDesc('featured')
+                    ->orderBy('cargo')
+                    ->get()
+                    ->mapWithKeys(fn (CargoInstitucional $position): array => [
+                        $position->id => trim($position->cargo.' · '.$position->institucion),
+                    ])->all())
+                ->searchable()
+                ->visible(fn (callable $get): bool => $get('source_mode') === 'institutional_positions')
+                ->helperText('Los textos y enlaces se consultan desde el recurso Cargos institucionales.'),
+            Field::number('items_per_page', 'Publicaciones por página o carga')
+                ->default(12)
+                ->minValue(6)
+                ->maxValue(24)
+                ->visible(fn (callable $get): bool => in_array($get('source_mode'), ['academic_articles', 'academic_publications'], true)),
             Field::repeater('items', 'Ítems', [
                 Field::text('meta', 'Etiqueta o metadato'),
                 Field::text('title', 'Título'),
@@ -27,7 +63,8 @@ class ContentListBlock extends PageBlock
                 ->addActionLabel('Agregar ítem')
                 ->reorderable()
                 ->columns(1)
-                ->defaultItems(2),
+                ->defaultItems(2)
+                ->visible(fn (callable $get): bool => ($get('source_mode') ?? 'manual') === 'manual'),
         ];
     }
 }

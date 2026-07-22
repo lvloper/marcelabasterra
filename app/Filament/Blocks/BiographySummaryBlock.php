@@ -16,6 +16,10 @@ class BiographySummaryBlock extends PageBlock
     {
         return [
             Field::text('title', 'Título'),
+            Field::select('heading_level', 'Nivel del título', [
+                'h1' => 'H1 · Título principal de página',
+                'h2' => 'H2 · Título de sección',
+            ])->default('h2')->required(),
             Field::rich('summary', 'Resumen biográfico', 'basic')->required(),
             Field::image('photo', 'Foto de perfil', '400', '400', 'images/biography'),
             Field::text('cta_label', 'Texto del botón'),

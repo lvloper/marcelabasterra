@@ -11,7 +11,7 @@ class Conferencia extends Model
     use HasFactory, HasRoute;
 
     protected $fillable = [
-        'tipo', 'institucion', 'fecha', 'descripcion', 'imagen', 'external_url',
+        'tipo', 'institucion', 'ubicacion', 'ciudad', 'pais', 'tematica', 'fecha', 'descripcion', 'imagen', 'external_url',
         'link_label', 'destacado', 'blocks',
     ];
 
@@ -23,7 +23,11 @@ class Conferencia extends Model
 
     public function getDefaultRouteParentId(): ?int
     {
-        return config('cms-routes.conferences_parent_id')
+        return Route::query()
+            ->where('slug', 'jornadas-y-congresos')
+            ->where('routable_type', Page::class)
+            ->value('id')
+            ?: config('cms-routes.conferences_parent_id')
             ?: Route::whereFullSlug('actividad-academica/conferencias')->value('id')
             ?: config('cms-routes.agenda_parent_id');
     }

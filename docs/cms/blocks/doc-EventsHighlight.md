@@ -6,8 +6,11 @@
 |------|------|-----------|---------|-------------|
 | `title` | `text` | no | | Título de la sección |
 | `description` | `textarea` | no | | Texto introductorio |
+| `source_mode` | `select` | sí | `automatic` | Automático o selección editorial |
 | `eventos` | `multi-select` | no | | Eventos seleccionados |
-| `max_items` | `number` | no | `6` | Máximo de items a mostrar |
+| `conferencias` | `multi-select` | no | | Conferencias seleccionadas |
+| `include_conferences` | `toggle` | no | `true` | Unifica conferencias y eventos |
+| `max_items` | `number` | no | `1` | Máximo de items a mostrar (hasta 3) |
 | `show_past` | `toggle` | no | `false` | Mostrar eventos pasados |
 
 ## Contrato de datos
@@ -17,8 +20,11 @@
   "type": "EventsHighlight",
   "data": {
     "title": "Próximos eventos",
-    "eventos": [1, 3],
-    "max_items": 6,
+    "source_mode": "automatic",
+    "eventos": [],
+    "conferencias": [],
+    "include_conferences": true,
+    "max_items": 1,
     "show_past": false
   }
 }
@@ -26,5 +32,6 @@
 
 ## Reglas de renderizado
 
-- Por defecto filtra eventos con fecha_inicio >= now().
-- La vista muestra fecha, ubicación y título.
+- En modo automático selecciona el próximo registro con fecha; si no existe, muestra el realizado más reciente.
+- Consulta el catálogo backend unificado de `Evento` y `Conferencia`.
+- La vista muestra imagen, fecha, nombre, institución, ciudad/país, tema, descripción y acceso al detalle.

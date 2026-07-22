@@ -22,6 +22,10 @@ class PressFeedBlock extends PageBlock
         return [
             Field::text('title', 'Título de la sección'),
             Field::textarea('description', 'Texto introductorio')->rows(3),
+            Field::select('source_mode', 'Origen del contenido', [
+                'media_publications' => 'Publicaciones en medios',
+                'unified_news' => 'Noticias, prensa y entrevistas',
+            ])->default('media_publications')->required(),
             CheckboxList::make('content_types')
                 ->label('Tipos de contenido')
                 ->options([

@@ -28,6 +28,7 @@ class DefaultTemplate
             \App\Filament\Blocks\EventsHighlightBlock::make(),
             \App\Filament\Blocks\EventsListingBlock::make(),
             \App\Filament\Blocks\ContentListBlock::make(),
+            \App\Filament\Blocks\TeachingListingBlock::make(),
             \App\Filament\Blocks\PressFeedBlock::make(),
             \App\Filament\Blocks\CVAccessBlock::make(),
             \App\Filament\Blocks\RelatedResourcesBlock::make(),

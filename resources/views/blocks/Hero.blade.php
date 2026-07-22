@@ -1,5 +1,5 @@
 @php
-$id = $id ?? 'hero-' . uniqid();
+$id = ($id ?? 'hero-' . uniqid()) . '-content';
 $heroVariant = in_array($variant ?? 'editorial', ['editorial', 'institutional', 'portrait'], true)
     ? ($variant ?? 'editorial')
     : 'editorial';
@@ -60,7 +60,7 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
 <x-block class="block-Hero overflow-hidden bg-white">
     <div id="{{ $id }}" data-hero-variant="{{ $heroVariant }}">
         @if ($heroVariant === 'editorial')
-            <div class="mx-auto grid min-h-[calc(100svh-5rem)] max-w-[1440px] grid-cols-1 lg:grid-cols-12">
+            <div class="mx-auto grid max-w-[1440px] grid-cols-1 lg:min-h-[calc(100svh-5rem)] lg:grid-cols-12">
                 <div class="order-1 flex flex-col justify-center px-5 py-16 sm:px-8 lg:col-span-7 lg:px-12 lg:py-24 xl:px-16">
                     @if ($heroBadge)
                         <p class="hero-reveal mb-8 flex items-center gap-4 font-source text-sm text-primary">
@@ -119,7 +119,7 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
                             <img src="{{ $profilePhoto }}" alt="{{ $heroImageAlt }}" class="hero-photo h-full w-full object-cover object-center transition-transform duration-700 hover:scale-[1.025]" fetchpriority="high">
                         </div>
                     @else
-                        <div class="flex min-h-[22rem] h-full items-end p-8 lg:p-12" aria-hidden="true">
+                        <div class="flex min-h-28 items-end p-6 lg:min-h-[28rem] lg:p-12" aria-hidden="true">
                             <span class="font-source text-7xl text-primary/20">MB</span>
                         </div>
                     @endif
@@ -288,8 +288,12 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
                     return;
                 }
 
-                window.gsap.to(reveals, { opacity: 1, y: 0, duration: 0.8, stagger: 0.09, ease: 'power3.out', delay: 0.1 });
-                window.gsap.to(masks, { opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: 1.1, ease: 'power3.inOut', delay: 0.15 });
+                if (reveals.length > 0) {
+                    window.gsap.to(reveals, { opacity: 1, y: 0, duration: 0.8, stagger: 0.09, ease: 'power3.out', delay: 0.1 });
+                }
+                if (masks.length > 0) {
+                    window.gsap.to(masks, { opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: 1.1, ease: 'power3.inOut', delay: 0.15 });
+                }
             };
 
             document.readyState === 'loading'

@@ -5,6 +5,7 @@
 | Prop | Tipo | Requerido | Default | Descripción |
 |------|------|-----------|---------|-------------|
 | `title` | `text` | no | | Título (ej: "Sobre mí") |
+| `heading_level` | `select` | sí | `h2` | `h1` para apertura principal de página; `h2` para sección |
 | `summary` | `rich` (basic) | sí | | Resumen biográfico |
 | `photo` | `image` | no | | Foto de perfil (400x400) |
 | `cta_label` | `text` | no | | Texto del CTA |

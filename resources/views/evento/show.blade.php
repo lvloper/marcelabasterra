@@ -1,85 +1,82 @@
 <x-layout :notLayout="false">
     @php
-        $parentRoute = $evento->route->parent;
-        $isPast = $evento->fecha_fin && $evento->fecha_fin->isPast();
+        $parentRoute = $evento->route?->parent;
+        $isPast = ($evento->fecha_fin ?: $evento->fecha_inicio)?->isPast() ?? false;
+        $image = $evento->imagen ?: $evento->route?->image;
+        $imageUrl = $image ? (filter_var($image, FILTER_VALIDATE_URL) ? $image : \Illuminate\Support\Facades\Storage::url($image)) : null;
+        $location = implode(' · ', array_filter([
+            $evento->ubicacion,
+            implode(', ', array_filter([$evento->ciudad, $evento->pais])),
+        ]));
     @endphp
 
-    <section class="relative bg-gray-3 overflow-hidden">
-        <div class="absolute inset-0 bg-grid pointer-events-none z-0"></div>
-        <div class="relative z-10 container mx-auto px-4 py-12 md:py-20">
-            @if ($parentRoute)
-                <a href="{{ url($parentRoute->full_slug) }}" class="inline-flex items-center gap-1.5 text-sm text-secondary hover:text-primary transition-colors mb-6 font-sans group">
-                    <x-lucide-arrow-left class="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-                    {{ $parentRoute->title }}
-                </a>
+    <article class="bg-white">
+        <header class="border-b border-primary bg-[var(--color-surface-ivory)]">
+            <div class="mx-auto grid max-w-[1440px] lg:grid-cols-12">
+                <div class="px-5 py-14 sm:px-8 sm:py-20 lg:col-span-7 lg:px-12 lg:py-24 xl:px-16">
+                    @if ($parentRoute)
+                        <a href="{{ url($parentRoute->full_slug) }}#agenda-y-archivo" class="group inline-flex min-h-11 items-center border-b border-primary font-body text-sm font-semibold text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                            <span class="mr-2 transition-transform duration-200 group-hover:-translate-x-1" aria-hidden="true">←</span> Jornadas y Congresos
+                        </a>
+                    @endif
+
+                    <p class="mt-10 font-source text-sm text-primary"><span class="mr-3 text-accent" aria-hidden="true">—</span>{{ \App\Support\EventCatalog::TYPE_LABELS[$evento->tipo] ?? 'Actividad académica' }} · {{ $isPast ? 'Realizado' : 'Próximo' }}</p>
+                    <h1 class="mt-5 max-w-[14ch] font-sans text-[clamp(3rem,6vw,6rem)] font-normal leading-[0.95] tracking-[-0.035em] text-primary">{{ $evento->title }}</h1>
+
+                    @if ($evento->institucion)
+                        <p class="mt-8 max-w-[44ch] font-source text-[clamp(1.4rem,2.4vw,2rem)] leading-tight text-primary">{{ $evento->institucion }}</p>
+                    @endif
+                </div>
+
+                <dl class="border-t border-primary bg-primary p-6 text-white sm:p-10 lg:col-span-5 lg:border-l lg:border-t-0 lg:p-12">
+                    @if ($evento->fecha_inicio)
+                        <div class="border-t border-white/40 py-5">
+                            <dt class="font-body text-sm text-gray-3">Fecha</dt>
+                            <dd class="mt-2 font-source text-2xl leading-tight">
+                                {{ $evento->fecha_inicio->locale('es')->translatedFormat('d \d\e F \d\e Y · H:i') }}
+                                @if ($evento->fecha_fin)
+                                    <span class="mt-1 block text-lg text-gray-3">hasta {{ $evento->fecha_fin->locale('es')->translatedFormat('d \d\e F \d\e Y · H:i') }}</span>
+                                @endif
+                            </dd>
+                        </div>
+                    @endif
+                    @if ($location)
+                        <div class="border-t border-white/40 py-5"><dt class="font-body text-sm text-gray-3">Lugar</dt><dd class="mt-2 font-source text-xl">{{ $location }}</dd></div>
+                    @endif
+                    @if ($evento->tema ?: $evento->rol)
+                        <div class="border-t border-white/40 py-5"><dt class="font-body text-sm text-gray-3">Tema o participación</dt><dd class="mt-2 font-source text-xl">{{ $evento->tema ?: $evento->rol }}</dd></div>
+                    @endif
+                    @if ($evento->modalidad)
+                        <div class="border-y border-white/40 py-5"><dt class="font-body text-sm text-gray-3">Modalidad</dt><dd class="mt-2 font-source text-xl">{{ ucfirst($evento->modalidad) }}</dd></div>
+                    @endif
+                </dl>
+            </div>
+        </header>
+
+        <div class="mx-auto max-w-[1440px] px-5 py-16 sm:px-8 lg:px-12 lg:py-24 xl:px-16">
+            @if ($imageUrl)
+                <img src="{{ $imageUrl }}" alt="" class="aspect-[16/9] w-full object-cover" loading="eager">
             @endif
 
-            <div class="max-w-3xl mx-auto">
-                <div class="flex items-start gap-4 mb-6">
-                    <div class="shrink-0 w-20 h-20 rounded-xl bg-primary/5 flex flex-col items-center justify-center text-center border border-primary/10">
-                        @if ($evento->fecha_inicio)
-                            <span class="text-xs font-bold text-primary uppercase leading-none font-sans">{{ $evento->fecha_inicio->shortLocaleMonth }}</span>
-                            <span class="text-2xl font-bold text-primary leading-none font-sans">{{ $evento->fecha_inicio->day }}</span>
-                        @else
-                            <x-lucide-calendar class="w-8 h-8 text-primary" />
-                        @endif
-                    </div>
-                    <div>
-                        <span class="text-xs font-semibold tracking-widest uppercase text-secondary mb-1 block font-sans">
-                            Evento {{ $isPast ? 'pasado' : '' }}
-                        </span>
-                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 font-sans leading-tight">{{ $evento->title }}</h1>
-                    </div>
-                </div>
-
-                <div class="flex flex-wrap gap-4 text-sm text-gray-500 mb-8 font-sans">
-                    @if ($evento->fecha_inicio)
-                        <span class="flex items-center gap-1.5">
-                            <x-lucide-clock class="w-3.5 h-3.5" />
-                            {{ $evento->fecha_inicio->format('d/m/Y H:i') }}
-                            @if ($evento->fecha_fin && $evento->fecha_fin->format('d/m/Y') != $evento->fecha_inicio->format('d/m/Y'))
-                                → {{ $evento->fecha_fin->format('d/m/Y H:i') }}
-                            @elseif ($evento->fecha_fin)
-                                → {{ $evento->fecha_fin->format('H:i') }}
-                            @endif
-                        </span>
-                    @endif
-                    @if ($evento->ubicacion)
-                        <span class="flex items-center gap-1.5">
-                            <x-lucide-map-pin class="w-3.5 h-3.5" />
-                            {{ $evento->ubicacion }}
-                        </span>
-                    @endif
-                    @if ($evento->tipo)
-                        <span class="bg-primary/5 text-primary px-3 py-1 rounded-sm text-xs font-bold">{{ $evento->tipo }}</span>
-                    @endif
-                </div>
-
-                @if ($evento->route->image)
-                    <div class="aspect-video rounded-2xl overflow-hidden bg-white border border-gray-200 mb-8">
-                        <img src="{{ Storage::url($evento->route->image) }}" alt="{{ $evento->title }}"
-                             class="w-full h-full object-cover">
-                    </div>
-                @endif
-
+            <div class="mt-12 grid gap-10 lg:grid-cols-12">
                 @if ($evento->descripcion)
-                    <div class="prose prose-lg max-w-none text-gray-700 font-source leading-relaxed
-                                [&_p]:mb-4 [&_p:last-child]:mb-0 [&_a]:text-primary [&_a]:underline">
-                        {!! $evento->descripcion !!}
-                    </div>
+                    <div class="article-content max-w-[68ch] font-source text-xl leading-relaxed text-gray lg:col-span-8 [&_a]:text-primary [&_a]:underline">{!! $evento->descripcion !!}</div>
                 @endif
 
-                @if ($evento->enlace_inscripcion && !$isPast)
-                    <div class="mt-8 pt-6 border-t border-gray-2">
-                        <a href="{{ $evento->enlace_inscripcion }}" target="_blank" rel="noopener noreferrer"
-                           class="inline-flex items-center gap-2 bg-accent text-white px-8 py-4 font-bold rounded-sm hover:bg-accent-hover transition-colors group">
-                            <x-lucide-ticket class="w-4 h-4" />
-                            Inscribirse
-                            <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </a>
+                @if (($evento->enlace_inscripcion && ! $isPast) || $evento->video)
+                    <div class="border-t border-primary pt-6 lg:col-span-3 lg:col-start-10">
+                        <p class="font-source text-lg text-primary">Accesos</p>
+                        <div class="mt-5 grid gap-3">
+                            @if ($evento->enlace_inscripcion && ! $isPast)
+                                <a href="{{ $evento->enlace_inscripcion }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center justify-between border border-primary bg-primary px-5 font-body text-base font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">Inscribirse <span aria-hidden="true">↗</span></a>
+                            @endif
+                            @if ($evento->video)
+                                <a href="{{ $evento->video }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center justify-between border border-primary px-5 font-body text-base font-semibold text-primary transition-colors duration-200 hover:bg-primary hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">Ver video <span aria-hidden="true">↗</span></a>
+                            @endif
+                        </div>
                     </div>
                 @endif
             </div>
         </div>
-    </section>
+    </article>
 </x-layout>

@@ -12,6 +12,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
@@ -44,8 +45,12 @@ class EventoResource extends ResourceBase
                 ->required()
                 ->live(onBlur: true)
                 ->afterStateUpdated(function (Get $get, Set $set, ?string $operation, ?string $old, ?string $state, ?Model $record) {
-                    if ($operation === 'edit' && $record?->isPublished()) return;
-                    if (($get('route.slug') ?? '') !== Str::slug($old)) return;
+                    if ($operation === 'edit' && $record?->isPublished()) {
+                        return;
+                    }
+                    if (($get('route.slug') ?? '') !== Str::slug($old)) {
+                        return;
+                    }
                     $set('route.slug', Str::slug($state));
                 }),
 
@@ -53,20 +58,27 @@ class EventoResource extends ResourceBase
                 ->label('Descripción')
                 ->toolbarButtons(config('admin.richEditor.minimal', config('admin.richEditor.basic'))),
 
-            \Filament\Schemas\Components\Grid::make(2)
+            Grid::make(2)
                 ->schema([
                     DateTimePicker::make('fecha_inicio')->label('Fecha de inicio')->required()->seconds(false),
                     DateTimePicker::make('fecha_fin')->label('Fecha de fin')->seconds(false),
                 ]),
 
-            \Filament\Schemas\Components\Grid::make(3)
+            Grid::make(3)
                 ->schema([
-                    TextInput::make('ubicacion')->label('Ubicación'),
-                    TextInput::make('institucion')->label('Institución'),
-                    TextInput::make('rol')->label('Rol o participación'),
+                    TextInput::make('ubicacion')->label('Sede o espacio'),
+                    TextInput::make('ciudad')->label('Ciudad'),
+                    TextInput::make('pais')->label('País'),
                 ]),
 
-            \Filament\Schemas\Components\Grid::make(3)
+            Grid::make(3)
+                ->schema([
+                    TextInput::make('institucion')->label('Institución'),
+                    TextInput::make('rol')->label('Rol o participación'),
+                    TextInput::make('tema')->label('Tema o eje'),
+                ]),
+
+            Grid::make(3)
                 ->schema([
                     Select::make('tipo')
                         ->label('Tipo')
@@ -99,7 +111,7 @@ class EventoResource extends ResourceBase
                         ->default('pendiente'),
                 ]),
 
-            \Filament\Schemas\Components\Grid::make(2)
+            Grid::make(2)
                 ->schema([
                     TextInput::make('enlace_inscripcion')->label('Enlace de inscripción')->url(),
                     TextInput::make('video')->label('Video')->url()->maxLength(2048),

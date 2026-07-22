@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\Status;
 use App\Models\Blog;
+use App\Models\CargoInstitucional;
 use App\Models\Conferencia;
 use App\Models\Configuration;
 use App\Models\Menu;
@@ -66,6 +67,8 @@ class DatabaseSeeder extends Seeder
         $this->seedConfig();
         $this->seedHomeConfig($home);
         $this->seedErrorConfig($errorPage);
+        $this->call(AcademicActivitySeeder::class);
+        $this->call(JornadasCongresosSeeder::class);
     }
 
     // ─── Super Admin ───────────────────────────────────────────
@@ -153,6 +156,8 @@ class DatabaseSeeder extends Seeder
 
     private function seedEditorialContent(): void
     {
+        $this->seedInstitutionalPositions();
+
         $bookRoute = Route::firstOrNew([
             'routable_type' => Libro::class,
             'slug' => 'teoria-general-derechos-economicos-sociales-culturales-ambientales',
@@ -241,6 +246,55 @@ class DatabaseSeeder extends Seeder
                 'description' => $item['description'],
             ]);
             $route->routable()->associate($conference);
+            $route->save();
+        }
+    }
+
+    private function seedInstitutionalPositions(): void
+    {
+        $positions = [
+            [
+                'cargo' => 'Presidenta',
+                'institucion' => 'Asociación Argentina de Derecho Constitucional',
+                'institutional_url' => 'https://aadconst.org.ar/la-asociacion-argentina-de-derecho-constitucional-renovo-sus-autoridades/',
+                'legacy_url' => 'https://aadconst.org.ar/autoridades/',
+                'featured' => true,
+                'fecha_inicio' => '2025-01-01',
+                'fecha_fin' => '2027-12-31',
+                'descripcion' => '<p>Reelecta para el período 2025–2027.</p>',
+            ],
+            [
+                'cargo' => 'Miembro del Consejo Directivo',
+                'institucion' => 'Facultad de Derecho · Universidad de Buenos Aires',
+                'institutional_url' => 'https://www.derecho.uba.ar/institucional/autoridades-derecho.php',
+                'legacy_url' => 'https://www.derecho.uba.ar/institucional/consejo-directivo/autoridades-consejo-directivo.php',
+                'featured' => true,
+                'fecha_inicio' => null,
+                'fecha_fin' => null,
+                'descripcion' => '<p>Integrante del Consejo Directivo de la Facultad de Derecho de la Universidad de Buenos Aires.</p>',
+            ],
+        ];
+
+        foreach ($positions as $data) {
+            $legacyUrl = $data['legacy_url'];
+            unset($data['legacy_url']);
+
+            $position = CargoInstitucional::query()
+                ->whereIn('institutional_url', [$data['institutional_url'], $legacyUrl])
+                ->orWhere('institucion', $data['institucion'])
+                ->first() ?: new CargoInstitucional();
+            $position->fill($data)->save();
+
+            $route = $position->route ?: new Route();
+            $route->fill([
+                'title' => $position->cargo.' · '.$position->institucion,
+                'slug' => \Illuminate\Support\Str::slug($position->cargo.'-'.$position->institucion),
+                'layout' => 'default',
+                'status' => Status::Published,
+                'parent_id' => config('cms-routes.trayectoria_parent_id'),
+                'description' => trim(strip_tags((string) $position->descripcion)),
+            ]);
+            $route->routable()->associate($position);
             $route->save();
         }
     }
@@ -648,43 +702,69 @@ class DatabaseSeeder extends Seeder
 
     private function sobreMiBlocks(): array
     {
+        $institutionalPositions = CargoInstitucional::query()
+            ->whereIn('institutional_url', [
+                'https://aadconst.org.ar/la-asociacion-argentina-de-derecho-constitucional-renovo-sus-autoridades/',
+                'https://www.derecho.uba.ar/institucional/autoridades-derecho.php',
+            ])
+            ->orderBy('id')
+            ->pluck('id')
+            ->all();
+
         return [
             // 1. Bio / Presentacion
             $this->block('BiographySummary', [
                 'blockAnchor' => 'biografia',
-                'title' => 'Marcela Basterra',
-                'summary' => '<p>Doctora en Derecho (UBA). Magíster en Derecho Constitucional y Derechos Humanos (UP). Presidenta de la Asociación Argentina de Derecho Constitucional y Vicepresidenta de la Asociación Argentina de Derecho Procesal Constitucional. Ex Presidenta del Consejo de la Magistratura de la Ciudad Autónoma de Buenos Aires. Miembro del Instituto de Política Constitucional de la Academia Nacional de Ciencias Morales y Políticas y del Instituto de Derecho Constitucional de la Academia Nacional de Derecho y Ciencias Sociales.</p><p>Profesora Titular de Derecho Constitucional de la Universidad de Buenos Aires y profesora de grado, posgrado y doctorado en diversas universidades nacionales y extranjeras. Ha dictado clases y conferencias en España, Italia, Chile, Uruguay, Paraguay, Bolivia, Perú, Colombia, Guatemala, Estados Unidos y México. Fue declarada Personalidad Destacada en el ámbito de las Ciencias Jurídicas por la Legislatura de la Ciudad Autónoma de Buenos Aires.</p><p>Es Co-Directora Académica del Posgrado de Actualización en Derecho Constitucional y Procesal Constitucional (UBA). Es autora, coautora, directora y participante en 56 libros; ha publicado más de un centenar de artículos especializados y dictado más de un centenar de conferencias.</p>',
+                'title' => 'Sobre mí',
+                'heading_level' => 'h1',
+                'summary' => '<p>Doctora en Derecho (UBA) y Magíster en Derecho Constitucional y Derechos Humanos (UP). Presidenta de la Asociación Argentina de Derecho Constitucional y Vicepresidenta de la Asociación Argentina de Derecho Procesal Constitucional. Ex Presidenta del Consejo de la Magistratura de la Ciudad Autónoma de Buenos Aires. Miembro del Instituto de Política Constitucional de la Academia Nacional de Ciencias Morales y Políticas y del Instituto de Derecho Constitucional de la Academia Nacional de Derecho y Ciencias Sociales.</p><p>Profesora Titular de Derecho Constitucional de la Universidad de Buenos Aires y profesora de grado, posgrado y doctorado en diversas universidades nacionales y extranjeras. Ha dictado clases y conferencias en España, Italia, Chile, Uruguay, Paraguay, Bolivia, Perú, Colombia, Guatemala, Estados Unidos y México.</p><p>Co-Directora Académica del Posgrado de Actualización en Derecho Constitucional y Procesal Constitucional (UBA). Es autora, coautora, directora y participante en 56 libros; ha publicado más de un centenar de artículos especializados y dictado más de un centenar de conferencias.</p>',
                 'photo' => null,
                 'cta_label' => null,
                 'cta_route' => $this->routeAttrs(null),
             ]),
-            // 2. Trayectoria (Timeline)
-            $this->block('Timeline', [
-                'title' => 'Trayectoria profesional',
+            // 2. Indicadores de trayectoria
+            $this->block('ContentList', [
+                'blockAnchor' => 'trayectoria-en-cifras',
+                'title' => 'Trayectoria en cifras',
+                'description' => 'Una síntesis de la actividad académica, editorial e institucional desarrollada a lo largo de su carrera.',
+                'variant' => 'metrics',
+                'source_mode' => 'manual',
+                'institutional_positions' => [],
                 'items' => [
-                    ['year' => '2020', 'title' => 'Investigadora Principal CONICET', 'description' => ''],
-                    ['year' => '2015', 'title' => 'Profesora Titular UBA', 'description' => ''],
-                    ['year' => '2010', 'title' => 'Doctorado en Derecho', 'description' => 'Universidad de Buenos Aires'],
+                    ['meta' => '56', 'title' => 'Libros publicados', 'text' => 'Como autora, coautora o directora.', 'url' => null, 'link_label' => null],
+                    ['meta' => '+100', 'title' => 'Artículos especializados', 'text' => null, 'url' => null, 'link_label' => null],
+                    ['meta' => '+100', 'title' => 'Conferencias', 'text' => 'Nacionales e internacionales.', 'url' => null, 'link_label' => null],
+                    ['meta' => '+10', 'title' => 'Universidades', 'text' => 'Nacionales e internacionales donde dicta clases.', 'url' => null, 'link_label' => null],
+                    ['meta' => 'UBA', 'title' => 'Profesora Titular de Derecho Constitucional', 'text' => null, 'url' => null, 'link_label' => null],
+                    ['meta' => 'Posgrado', 'title' => 'Co-Directora Académica', 'text' => 'Actualización en Derecho Constitucional y Procesal Constitucional · UBA.', 'url' => null, 'link_label' => null],
                 ],
             ]),
-            // 3. Cargos institucionales (Cards)
-            $this->block('Cards', [
+            // 3. Cargos institucionales reutilizables
+            $this->block('ContentList', [
                 'blockAnchor' => 'cargos',
-                'title' => 'Cargos institucionales',
-                'description' => '',
-                'items' => [
-                    ['title' => 'CONICET', 'description' => 'Investigadora Principal', 'image' => null, 'route' => []],
-                    ['title' => 'UBA', 'description' => 'Profesora Titular de Derecho Constitucional', 'image' => null, 'route' => []],
-                    ['title' => 'Universidad de Palermo', 'description' => 'Profesora Titular', 'image' => null, 'route' => []],
-                ],
+                'title' => 'Responsabilidades institucionales actuales',
+                'description' => 'Funciones vigentes respaldadas por sus fuentes institucionales.',
+                'source_mode' => 'institutional_positions',
+                'institutional_positions' => $institutionalPositions,
+                'items' => [],
             ]),
-            // 4. CTA CV
-            $this->block('CTA', [
+            // 4. Reconocimiento en video
+            $this->block('MediaText', [
+                'layout' => 'left',
+                'media_type' => 'youtube',
+                'youtube_id' => '0QQH1t2nLWU',
+                'video_file' => null,
+                'image' => null,
+                'title' => 'Personalidad Destacada en Ciencias Jurídicas',
+                'content' => '<p>La Legislatura de la Ciudad Autónoma de Buenos Aires declaró a la Dra. Marcela I. Basterra Personalidad Destacada de la Cultura en el ámbito de las Ciencias Jurídicas (Expte. 1774-D-2022).</p>',
+                'cta' => $this->routeAttrs(null),
+            ]),
+            // 5. Acceso al CV; los archivos se cargan desde el CMS.
+            $this->block('CVAccess', [
                 'blockAnchor' => 'cv',
-                'title' => 'Curriculum Vitae',
-                'text' => 'Descarga mi CV completo con trayectoria academica y profesional.',
-                'button_label' => 'Descargar CV',
-                'button_route' => $this->routeAttrs(null),
+                'title' => 'Currículum vitae',
+                'description' => 'Trayectoria académica, institucional y profesional en dos versiones de consulta.',
+                'documents' => [],
             ]),
         ];
     }

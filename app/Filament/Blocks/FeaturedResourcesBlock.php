@@ -22,6 +22,14 @@ class FeaturedResourcesBlock extends PageBlock
         return [
             Field::text('title', 'Título de la sección'),
             Field::textarea('description', 'Texto introductorio')->rows(3),
+            Field::select('source_mode', 'Origen del contenido', [
+                'manual' => 'Selección manual',
+                'latest' => 'Contenido más reciente',
+            ])->default('manual')->required(),
+            Field::number('max_items', 'Máximo de recursos')
+                ->default(4)
+                ->minValue(1)
+                ->maxValue(4),
             Repeater::make('items')
                 ->label('Recursos')
                 ->schema([

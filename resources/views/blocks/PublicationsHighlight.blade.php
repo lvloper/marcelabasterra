@@ -5,6 +5,7 @@
     use Illuminate\Support\Str;
 
     $limit = min(max((int) ($max_items ?? 6), 1), 12);
+    $layout = $layout ?? 'featured';
     $items = collect();
 
     if (($source_mode ?? 'manual') === 'latest') {
@@ -27,6 +28,47 @@
 @endphp
 
 @if ($items->isNotEmpty())
+@if ($layout === 'library_grid')
+<x-block class="border-y border-gray-2 bg-[var(--color-surface-ivory)] py-16 sm:py-20 lg:py-24">
+    <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
+        <header class="grid gap-6 border-t border-primary pt-6 lg:grid-cols-12 lg:items-end lg:gap-12">
+            <div class="lg:col-span-7">
+                <p class="mb-4 font-[var(--font-editorial)] text-sm text-primary"><span class="mr-3 text-accent" aria-hidden="true">—</span>Biblioteca digital</p>
+                @if ($title ?? null)<h2 class="max-w-[14ch] font-[var(--font-display)] text-[clamp(2.5rem,5vw,4.5rem)] font-normal leading-[0.98] tracking-[-0.03em] text-primary">{{ $title }}</h2>@endif
+            </div>
+            <div class="lg:col-span-4 lg:col-start-9">
+                @if ($description ?? null)<p class="max-w-[46ch] font-[var(--font-editorial)] text-xl leading-relaxed text-gray">{{ $description }}</p>@endif
+                @if ($cta_label ?? null)
+                    <x-link :attrs="array_merge($cta, ['hideIfNull' => true])" class="group mt-6 inline-flex min-h-12 items-center border border-primary bg-primary px-6 font-[var(--font-body)] text-[1rem] font-semibold text-white hover:bg-white hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                        {{ $cta_label }} <span class="ml-3 transition-transform group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
+                    </x-link>
+                @endif
+            </div>
+        </header>
+
+        <ol class="mt-10 grid gap-7 sm:grid-cols-2 lg:grid-cols-4" aria-label="Libros destacados">
+            @foreach ($items->filter(fn ($item) => $item instanceof Libro) as $book)
+                <li>
+                    <article class="group flex h-full flex-col border-t border-primary pt-5">
+                        <a href="{{ $book->url }}" class="block bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent" tabindex="-1" aria-hidden="true">
+                            @if ($book->portada)
+                                <img src="{{ Storage::url($book->portada) }}" alt="" class="aspect-[4/5] w-full object-contain p-5 transition-transform duration-500 group-hover:scale-[1.015] motion-reduce:transition-none" loading="lazy">
+                            @else
+                                <span class="block aspect-[4/5] border border-gray-2" aria-hidden="true"></span>
+                            @endif
+                        </a>
+                        <p class="mt-5 font-[var(--font-editorial)] text-sm text-primary">{{ $book->fecha_publicacion?->year ?: 'Sin año' }}@if($book->autoria) · {{ $book->autoria }}@endif</p>
+                        <h3 class="mt-3 font-[var(--font-display)] text-[1.75rem] font-normal leading-[1.05] tracking-[-0.02em] text-primary">
+                            <a href="{{ $book->url }}" class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">{{ $book->title }}</a>
+                        </h3>
+                        <a href="{{ $book->url }}" class="group/link mt-auto inline-flex min-h-12 w-fit items-center border-b border-primary pt-6 font-[var(--font-body)] text-sm font-semibold text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">Ver información <span class="ml-2 transition-transform group-hover/link:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span></a>
+                    </article>
+                </li>
+            @endforeach
+        </ol>
+    </div>
+</x-block>
+@else
 <x-block class="border-y border-gray-2 bg-[var(--color-surface-ivory)] py-14 sm:py-16 lg:py-20">
     <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
         <div class="grid gap-12 lg:grid-cols-2 lg:items-stretch lg:gap-16">
@@ -80,4 +122,5 @@
         </div>
     </div>
 </x-block>
+@endif
 @endif

@@ -12,12 +12,15 @@ class Evento extends Model
 
     public function getDefaultRouteParentId(): ?int
     {
-        return config('cms-routes.agenda_parent_id');
+        return Route::query()
+            ->where('slug', 'jornadas-y-congresos')
+            ->where('routable_type', Page::class)
+            ->value('id') ?: config('cms-routes.agenda_parent_id');
     }
 
     protected $fillable = [
-        'descripcion', 'fecha_inicio', 'fecha_fin', 'ubicacion',
-        'institucion', 'rol', 'modalidad', 'estado_confirmacion', 'imagen', 'video',
+        'descripcion', 'fecha_inicio', 'fecha_fin', 'ubicacion', 'ciudad', 'pais',
+        'institucion', 'rol', 'tema', 'modalidad', 'estado_confirmacion', 'imagen', 'video',
         'tipo', 'enlace_inscripcion', 'destacado', 'blocks',
     ];
 

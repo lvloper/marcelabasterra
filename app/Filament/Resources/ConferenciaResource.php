@@ -21,19 +21,32 @@ use Illuminate\Support\Str;
 class ConferenciaResource extends ResourceBase
 {
     protected static ?string $model = Conferencia::class;
+
     protected static ?string $modelLabel = 'Conferencia';
+
     protected static ?string $pluralModelLabel = 'Conferencias';
 
-    public static function getNavigationGroup(): ?string { return 'Actividad académica'; }
-    public static function getNavigationIcon(): string { return 'heroicon-o-video-camera'; }
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Actividad académica';
+    }
+
+    public static function getNavigationIcon(): string
+    {
+        return 'heroicon-o-video-camera';
+    }
 
     protected static function mainTab(Schema $schema): array
     {
         return [
             TextInput::make('route.title')->label('Título')->required()->live(onBlur: true)
                 ->afterStateUpdated(function (Get $get, Set $set, ?string $operation, ?string $old, ?string $state, ?Model $record): void {
-                    if ($operation === 'edit' && $record?->isPublished()) return;
-                    if (($get('route.slug') ?? '') !== Str::slug($old)) return;
+                    if ($operation === 'edit' && $record?->isPublished()) {
+                        return;
+                    }
+                    if (($get('route.slug') ?? '') !== Str::slug($old)) {
+                        return;
+                    }
                     $set('route.slug', Str::slug($state));
                 }),
             Grid::make(3)->schema([
@@ -43,6 +56,12 @@ class ConferenciaResource extends ResourceBase
                 ])->default('conferencia')->required(),
                 TextInput::make('institucion')->label('Institución o medio'),
                 DatePicker::make('fecha')->label('Fecha'),
+            ]),
+            Grid::make(4)->schema([
+                TextInput::make('ubicacion')->label('Sede o espacio')->maxLength(255),
+                TextInput::make('ciudad')->label('Ciudad')->maxLength(120),
+                TextInput::make('pais')->label('País')->maxLength(120),
+                TextInput::make('tematica')->label('Tema')->maxLength(255),
             ]),
             RichEditor::make('descripcion')->label('Descripción')
                 ->toolbarButtons(config('admin.richEditor.minimal', config('admin.richEditor.basic'))),

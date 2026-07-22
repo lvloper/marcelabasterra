@@ -5,9 +5,12 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\Bases\ResourceBase;
 use App\Filament\Resources\DocenciaResource\Pages;
 use App\Models\Docencia;
+use App\Models\InstitucionAcademica;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
@@ -43,9 +46,19 @@ class DocenciaResource extends ResourceBase
                     $set('route.slug', Str::slug($state));
                 }),
 
-            \Filament\Schemas\Components\Grid::make(2)
+            Grid::make(2)
                 ->schema([
-                    TextInput::make('institucion')->label('Institución'),
+                    Select::make('institucion_academica_id')
+                        ->label('Institución académica')
+                        ->options(fn (): array => InstitucionAcademica::query()
+                            ->with('route')
+                            ->orderBy('orden')
+                            ->get()
+                            ->mapWithKeys(fn (InstitucionAcademica $institution): array => [
+                                $institution->id => $institution->title ?: ($institution->sigla ?: "Institución #{$institution->id}"),
+                            ])->all())
+                        ->searchable()
+                        ->required(),
                     Select::make('nivel')
                         ->label('Nivel')
                         ->options([
@@ -57,10 +70,36 @@ class DocenciaResource extends ResourceBase
                         ]),
                 ]),
 
-            \Filament\Schemas\Components\Grid::make(2)
+            Grid::make(2)
                 ->schema([
-                    TextInput::make('materia')->label('Materia'),
+                    TextInput::make('facultad')->label('Facultad / unidad académica'),
+                    TextInput::make('programa')->label('Carrera / programa')->required(),
+                ]),
+
+            Grid::make(2)
+                ->schema([
+                    TextInput::make('materia')->label('Materia / tema'),
                     TextInput::make('catedra')->label('Cátedra'),
+                ]),
+
+            Grid::make(3)
+                ->schema([
+                    TextInput::make('rol')->label('Rol docente'),
+                    Select::make('modalidad')
+                        ->label('Modalidad')
+                        ->options([
+                            'presencial' => 'Presencial',
+                            'distancia' => 'A distancia',
+                            'hibrida' => 'Híbrida',
+                        ]),
+                    TextInput::make('periodo')->label('Período')->placeholder('2025/2026'),
+                ]),
+
+            Grid::make(3)
+                ->schema([
+                    TextInput::make('enlace')->label('Enlace institucional')->url(),
+                    TextInput::make('orden')->label('Orden')->numeric()->default(0),
+                    Toggle::make('vigente')->label('Actividad vigente')->default(true),
                 ]),
 
             RichEditor::make('descripcion')

@@ -73,7 +73,7 @@
                 aria-label="{{ config_text('site-name', 'Marcela Basterra') }} — Inicio"
             >
                 <img
-                    src="{{ asset('img/Logo-blanco.svg') }}"
+                    src="{{ asset('img/Logos/monograma.svg') }}"
                     alt="{{ config_text('site-name', 'Marcela Basterra') }}"
                     class="h-12 w-auto sm:h-14"
                 >

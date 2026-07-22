@@ -7,13 +7,17 @@
 
 <body class="font-sans text-base tracking-normal leading-normal text-gray-800 ">
 
+  <a href="#main" class="sr-only fixed left-4 top-4 z-[100] min-h-12 items-center border border-primary bg-white px-4 font-body text-[16px] font-semibold text-primary focus:not-sr-only focus:inline-flex focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+    Saltar al contenido principal
+  </a>
+
   <x-common.header />
 
   @php
   $index = isset($index) ? $index : false;
   @endphp
 
-  <div id="main" class="{{ $index ? 'has-sidebar' : '' }}">
+  <main id="main" class="{{ $index ? 'has-sidebar' : '' }}" tabindex="-1">
 
     @if($index)
     <x-common.sidebar />
@@ -30,7 +34,7 @@
     @endif
 
 
-  </div>
+  </main>
 
   <x-common.footer />
 

@@ -23,6 +23,7 @@ return [
     'agenda_parent_id' => 8,
     'conferences_parent_id' => env('CMS_CONFERENCES_PARENT_ID'),
     'programas_parent_id' => 9,
-    'docencia_parent_id' => 10,
+    'docencia_parent_id' => env('CMS_DOCENCIA_PARENT_ID', 12),
+    'academic_institutions_parent_id' => env('CMS_ACADEMIC_INSTITUTIONS_PARENT_ID', 12),
     'trayectoria_parent_id' => 11,
 ];

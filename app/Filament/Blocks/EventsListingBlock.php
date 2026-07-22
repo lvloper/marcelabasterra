@@ -3,8 +3,8 @@
 namespace App\Filament\Blocks;
 
 use App\Filament\Forms\Components\Field;
-use App\Models\Evento;
 use App\Models\Conferencia;
+use App\Models\Evento;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -24,6 +24,13 @@ class EventsListingBlock extends PageBlock
         return [
             Field::text('title', 'Título de la sección'),
             Field::textarea('description', 'Introducción')->rows(3),
+            Field::select('display_mode', 'Presentación', [
+                'activities' => 'Listado cronológico de actividades',
+                'videos' => 'Galería de videos',
+            ])->default('activities')->required(),
+            Toggle::make('include_conferences')
+                ->label('Incluir conferencias en el listado')
+                ->default(true),
             Select::make('conferencias')
                 ->label('Conferencias seleccionadas')
                 ->multiple()
@@ -50,6 +57,9 @@ class EventsListingBlock extends PageBlock
                     'exposicion' => 'Exposición',
                     'panel' => 'Panel',
                     'presentacion' => 'Presentación',
+                    'seminario' => 'Seminario',
+                    'taller' => 'Taller',
+                    'otro' => 'Otro',
                 ])
                 ->columns(2),
             Select::make('selected_events')
@@ -79,6 +89,11 @@ class EventsListingBlock extends PageBlock
                 ->label('Mostrar resumen')
                 ->default(true)
                 ->required(),
+            Toggle::make('show_filters')
+                ->label('Mostrar filtros públicos')
+                ->helperText('Habilita filtros por estado, año, país y tipo de actividad.')
+                ->default(true)
+                ->required(),
             Toggle::make('show_empty_fallback')
                 ->label('Mostrar enlace alternativo si no hay resultados')
                 ->default(false)
@@ -88,6 +103,8 @@ class EventsListingBlock extends PageBlock
             Field::text('fallback_label', 'Texto del enlace alternativo')
                 ->default('Ver actividades realizadas')
                 ->visible(fn (Get $get): bool => (bool) $get('show_empty_fallback')),
+            Field::text('empty_message', 'Mensaje sin resultados')
+                ->default('No hay actividades que coincidan con los filtros seleccionados.'),
         ];
     }
 }

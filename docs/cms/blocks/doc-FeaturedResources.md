@@ -6,6 +6,8 @@
 |------|------|-----------|---------|-------------|
 | `title` | `text` | no | | Título de la sección |
 | `description` | `textarea` | no | | Texto introductorio |
+| `source_mode` | `select` | sí | `manual` | `manual` o `latest` |
+| `max_items` | `number` | no | `4` | Entre 1 y 4 recursos |
 | `items` | `repeater` | no | | Recursos destacados manuales |
 | `→ resource_type` | `select` | sí | | Libro / Artículo / Entrevista |
 | `→ resource_id` | `select` (dinámico) | sí | | ID del recurso según tipo |
@@ -29,3 +31,4 @@
 
 - `resource_id` se filtra dinámicamente según `resource_type` seleccionado.
 - La vista consulta el modelo correspondiente y muestra thumbnail + título + link.
+- `latest` consulta el catálogo académico normalizado y se mantiene actualizado automáticamente.
