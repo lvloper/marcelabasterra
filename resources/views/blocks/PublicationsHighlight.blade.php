@@ -26,7 +26,7 @@
     $ctaRoute = $cta_route ?? ['routeName' => 'publications.books'];
 
     $otherBooks = Libro::with('route')
-        ->when($libro_id, fn ($q) => $q->where('id', '!=', (int) $libro_id))
+        ->when($libro_id ?? null, fn ($q) => $q->where('id', '!=', (int) $libro_id))
         ->isPublished()
         ->orderByDesc('fecha_publicacion')
         ->limit(4)

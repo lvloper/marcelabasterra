@@ -70,6 +70,7 @@ Guia operativa para que cualquier agente del proyecto interprete comandos cortos
 - `docs/cms/blocks/subagents/design-prompt.md`
 - `docs/cms/blocks/subagents/design-from-html.md`
 - `docs/cms/blocks/subagents/block-preview-capturer.md`
+- `docs/cms/blocks/subagents/block-variants.md`
 
 ## Triggers recomendados (lenguaje natural)
 
@@ -82,6 +83,7 @@ Guia operativa para que cualquier agente del proyecto interprete comandos cortos
 - `genera la preview` / `genera la miniatura` -> ejecuta `block-preview-capturer` sobre el bloque
 - `te paso una maqueta` / `usa este HTML` -> infiere schema, crea draft para revisar (paso 1)
 - `mejora la interfaz`, `mejorar UI`, `mejorar UX`, `mejorar diseno` (o similar) -> usar `docs/cms/blocks/subagents/design-prompt.md`
+- `genera versiones de [bloque/componente]` / `genera variantes de X` / `no me gusta la estetica de X` -> subagente `block-variants`: crea 4 opciones alternativas (`-v1..-v4`) apiladas con la misma data, elige y queda una sola vista
 
 ## Inventario de bloques
 
@@ -93,6 +95,14 @@ Guia operativa para que cualquier agente del proyecto interprete comandos cortos
 
 - Despues de cualquier cambio de diseno (bloques, vistas, CSS, Tailwind, etc.), ejecutar `npm run build` para compilar assets.
 - No esperar a que el usuario lo pida; hacerlo automaticamente al finalizar el cambio de diseno.
+
+## Verificacion post-entrega obligatoria
+
+- Despues de entregar cualquier cambio (data, backend, diseno, fixes), navegar el sitio y verificar que no haya errores antes de dar por cerrada la tarea.
+- Comando basico: `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8082/<ruta>` (o el puerto de desarrollo vigente).
+- Revisar al menos: `/` (home) y las paginas afectadas por el cambio; si una devuelve 5xx, leer el error (log en `storage/logs/laravel.log` o el body de la respuesta) y corregirlo.
+- Verificar tambien 200 en paginas secundarias clave (`sobre-mi`, `publicaciones`, `contacto`) para detectar regresiones.
+- No entregar hasta que las rutas afectadas respondan sin errores.
 
 ## Acceso al panel
 

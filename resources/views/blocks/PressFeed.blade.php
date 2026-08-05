@@ -77,11 +77,11 @@
             <header class="grid gap-6 border-t border-primary pt-6 lg:grid-cols-12 lg:gap-12">
                 <div class="lg:col-span-5">
                     @if ($title ?? null)
-                        <h2 class="whitespace-nowrap font-[var(--font-display)] text-[clamp(2rem,3.5vw,3.5rem)] font-normal leading-[1] tracking-[-0.03em] text-primary">{!! $title !!}</h2>
+                        <h2 class="whitespace-nowrap font-[var(--font-display)] text-[clamp(1.75rem,2.75vw,2.75rem)] font-normal leading-[1] tracking-[-0.03em] text-primary">{!! $title !!}</h2>
                     @endif
                 </div>
                 @if ($description ?? null)
-                    <p class="max-w-[52ch] font-[var(--font-editorial)] text-xl leading-relaxed text-gray lg:col-span-5 lg:col-start-8">{{ $description }}</p>
+                    <p class="max-w-[52ch] font-[var(--font-editorial)] text-lg leading-relaxed text-gray lg:col-span-5 lg:col-start-8">{{ $description }}</p>
                 @endif
             </header>
 
@@ -125,7 +125,7 @@
                                 <p class="font-[var(--font-editorial)] text-sm text-primary">
                                     {{ $typeLabels[$first['type']] ?? ucfirst($first['type']) }}@if($first['medium']) · {{ $first['medium'] }}@endif
                                 </p>
-                                <h3 class="mt-3 max-w-[28ch] font-[var(--font-display)] text-[clamp(1.75rem,3vw,2.75rem)] font-normal leading-[1.04] tracking-[-0.02em] text-primary">
+                                <h3 class="mt-3 max-w-[28ch] font-[var(--font-display)] text-[clamp(1.375rem,2.25vw,2rem)] font-normal leading-[1.04] tracking-[-0.02em] text-primary">
                                     <a href="{{ $first['url'] }}" @if($first['external']) target="_blank" rel="noopener noreferrer" @endif class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">{{ $first['title'] }}</a>
                                 </h3>
                                 @if ($first['summary'])
@@ -159,7 +159,7 @@
                                             <p class="font-[var(--font-editorial)] text-sm text-primary">
                                                 {{ $typeLabels[$item['type']] ?? ucfirst($item['type']) }}@if($item['medium']) · {{ $item['medium'] }}@endif
                                             </p>
-                                            <h3 class="mt-3 max-w-[28ch] font-[var(--font-display)] text-[clamp(1.75rem,3vw,2.75rem)] font-normal leading-[1.04] tracking-[-0.02em] text-primary">
+                                            <h3 class="mt-3 max-w-[28ch] font-[var(--font-display)] text-[clamp(1.125rem,1.75vw,1.5rem)] font-normal leading-[1.1] tracking-[-0.02em] text-primary">
                                                 <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">{{ $item['title'] }}</a>
                                             </h3>
                                             @if ($item['summary'])
@@ -181,7 +181,7 @@
                     @endif
                 </div>
             @else
-                <p class="mt-8 border-y border-gray-2 py-6 font-[var(--font-editorial)] text-xl leading-relaxed text-gray">{{ $empty_message }}</p>
+                <p class="mt-8 border-y border-gray-2 py-6 font-[var(--font-editorial)] text-lg leading-relaxed text-gray">{{ $empty_message }}</p>
             @endif
         </div>
     </x-block>
