@@ -4,35 +4,23 @@
 
 | Prop | Tipo | Requerido | Default | Descripción |
 |------|------|-----------|---------|-------------|
-| `title` | `text` | no | | Título de la sección |
-| `description` | `textarea` | no | | Texto introductorio |
-| `layout` | `select` | sí | `featured` | `featured` o `library_grid` |
-| `source_mode` | `toggleButtons` | sí | `manual` | `latest` ordena libros publicados por fecha; `manual` conserva la selección editorial |
-| `libros` | `multi-select` | no | | Libros destacados a mostrar |
-| `articulos` | `multi-select` | no | | Artículos destacados a mostrar |
-| `max_items` | `number` | no | `6` | Máximo de items a mostrar |
-| `show_type_label` | `toggle` | no | `true` | Mostrar etiqueta "Libro" / "Artículo" |
-| `cta_label` | `text` | no | | Texto del enlace al índice general |
-| `cta_route` | `route` | no | | Página de publicaciones |
+| `libro_id` | `select` | sí | | Libro a destacar |
+| `image` | `image` | no | | Portada principal (si no se sube, usa la del libro) |
+| `image_2` | `image` | no | | Portada secundaria |
+| `title` | `text` | no | | Título de sección |
+| `date` | `text` | no | | Año (si no se completa, usa el del libro) |
+| `subtitle` | `text` | no | | Subtítulo (si no se completa, usa el del libro) |
+| `publisher` | `text` | no | | Editorial (si no se completa, usa la del libro) |
+| `cta_label` | `text` | no | `Ver publicación` | Texto del botón de acción |
+| `cta_route` | `route` | no | | Enlace del botón de acción |
 
-## Contrato de datos
+## Estructura
 
-```json
-{
-  "type": "PublicationsHighlight",
-  "data": {
-    "title": "Publicaciones",
-    "libros": [1, 3],
-    "articulos": [2],
-    "max_items": 6,
-    "show_type_label": true
-  }
-}
-```
+Tres columnas en desktop:
+1. **Información del libro**: año, autor, título, subtítulo, editorial y botón de acción
+2. **Portada**: imagen del libro centrada y destacada
+3. **Otros libros**: lista de hasta 4 publicaciones recientes con miniatura, año y título
 
-## Reglas de renderizado
+Debajo: enlace centrado al listado completo de libros.
 
-- Los multi-select consultan los modelos Libro y ArticuloAcademico.
-- El primer registro recibe tratamiento protagonista; `latest` selecciona automáticamente el libro más reciente.
-- `library_grid` muestra portadas, título, año, rol y acceso a la ficha en una grilla responsive.
-- El CTA general sólo se muestra cuando tiene texto y una ruta válida.
+En mobile el orden es: información → otros libros → portada.

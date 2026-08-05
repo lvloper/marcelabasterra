@@ -89,6 +89,11 @@ Guia operativa para que cualquier agente del proyecto interprete comandos cortos
 - Opciones: `--orphans` (solo vistas sin clase PHP), `--unregistered` (solo clases no registradas en templates), `--json` (salida JSON para consumo agente).
 - Los bloques sin clase PHP son vistas frontend reutilizables pero no tienen backend en el CMS.
 
+## Post-diseno: build obligatorio
+
+- Despues de cualquier cambio de diseno (bloques, vistas, CSS, Tailwind, etc.), ejecutar `npm run build` para compilar assets.
+- No esperar a que el usuario lo pida; hacerlo automaticamente al finalizar el cambio de diseno.
+
 ## Acceso al panel
 
 - En desarrollo, las credenciales por defecto del panel `/admin` se definen via variables de entorno o seeders. Consultar `README.md` o `.env.example` para credenciales de desarrollo.

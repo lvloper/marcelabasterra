@@ -27,7 +27,7 @@
   --font-body: 'Work Sans', sans-serif;
   --font-editorial: 'Source Serif 4', serif;
   --scrollbar-color: var(--color-secondary);
-  --header-height: 80px;
+  --header-height: 64px;
   --side-bar-width: 260px;
   --side-bar-height: calc(100dvh - var(--header-height));
   --swiper-theme-color: var(--color-primary);
@@ -877,6 +877,15 @@ lite-youtube > iframe {
   background-image:
     linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
+  mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+}
+
+.bg-grid-light {
+  background-size: 80px 80px;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
   mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
   -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
 }

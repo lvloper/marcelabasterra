@@ -661,7 +661,7 @@ class DatabaseSeeder extends Seeder
             ]),
             // 4. Prensa y actualidad
             $this->block('PressFeed', [
-                'title' => 'Actualidad y publicaciones recientes',
+                'title' => 'Actualidad y<br>publicaciones recientes',
                 'description' => 'Artículos, entrevistas y noticias en medios.',
                 'content_types' => ['articulo', 'entrevista', 'noticia'],
                 'media' => '', 'selected_items' => [],

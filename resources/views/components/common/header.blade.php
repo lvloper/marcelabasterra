@@ -114,9 +114,19 @@
     x-data="{
         menuOpen: false,
         scrolled: false,
+        logoReady: false,
         init() {
             this.scrolled = window.scrollY > 24;
             window.addEventListener('scroll', () => this.scrolled = window.scrollY > 24, { passive: true });
+
+            const logoImg = this.$refs.headerLogo;
+            if (logoImg) {
+                if (logoImg.complete && logoImg.naturalWidth > 0) {
+                    this.logoReady = true;
+                } else {
+                    logoImg.addEventListener('load', () => { this.logoReady = true; }, { once: true });
+                }
+            }
         },
         openMenu() {
             this.menuOpen = true;
@@ -134,8 +144,8 @@
     wire:ignore
 >
     <div
-        class="container mx-auto flex h-20 items-center justify-between transition-[height] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none lg:h-24"
-        :class="scrolled ? '!h-16' : ''"
+        class="container mx-auto flex h-14 items-center justify-between transition-[height] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none lg:h-16"
+        :class="scrolled ? '!h-12 lg:!h-14' : ''"
     >
         <a
             href="/"
@@ -143,19 +153,12 @@
             class="flex min-h-11 items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             aria-label="{{ config_text('site-name', 'Marcela Basterra') }} — Inicio"
         >
-            <span class="relative block h-10 w-44 transition-[width] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none lg:h-12 lg:w-48" :class="scrolled ? '!w-10 lg:!w-12' : ''">
+            <span class="relative block" x-cloak x-show="logoReady">
                 <img
+                    x-ref="headerLogo"
                     src="{{ asset('img/Logos/logo-sin-tagline.svg') }}"
                     alt="{{ config_text('site-name', 'Marcela Basterra') }}"
-                    class="absolute left-0 top-0 h-10 w-auto max-w-none transition-opacity duration-300 motion-reduce:transition-none lg:h-12"
-                    :class="scrolled ? 'opacity-0' : 'opacity-100'"
-                >
-                <img
-                    src="{{ asset('img/Logos/monograma.svg') }}"
-                    alt=""
-                    aria-hidden="true"
-                    class="absolute left-0 top-0 h-10 w-10 object-contain transition-opacity duration-300 motion-reduce:transition-none lg:h-12 lg:w-12"
-                    :class="scrolled ? 'opacity-100' : 'opacity-0'"
+                    class="h-9 w-auto lg:h-10"
                 >
             </span>
         </a>
@@ -203,7 +206,7 @@
         x-transition:leave-start="translate-y-0 opacity-100"
         x-transition:leave-end="-translate-y-2 opacity-0"
         class="archive-menu-panel fixed inset-x-0 overflow-y-auto border-y border-primary/30 bg-[var(--color-surface-ivory)]"
-        :class="scrolled ? 'top-16' : 'top-20 lg:top-24'"
+        :class="scrolled ? 'top-12 lg:top-14' : 'top-14 lg:top-16'"
         role="dialog"
         aria-modal="true"
         aria-labelledby="site-menu-title"

@@ -17,8 +17,7 @@
 
             $allClasses = implode(' ', array_merge([$mb, $mdMb], $clases));
         @endphp
-        <div id="{{ $uid }}" class="block block-{{ $block['type'] }} {{ $allClasses }}"
-        >
+        <div id="{{ $uid }}" class="block block-{{ $block['type'] }} {{ $allClasses }}">
 
             @component($componentPath, [...$block['data'], 'id' => $uid])
             @endcomponent

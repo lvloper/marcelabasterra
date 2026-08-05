@@ -20,16 +20,7 @@ class Image
         bool $forceRatio = false,
     ): FileUpload | Tabs {
         $image = self::upload($name, $label, $width, $height, $directory, $forceRatio)
-            ->required($required)
-            ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'])
-            ->rules([
-                'mimes:jpeg,jpg,png,webp,gif',
-                'mimetypes:image/jpeg,image/jpg,image/png,image/webp,image/gif',
-            ])
-            ->validationMessages([
-                'mimes' => 'Por favor, sube una imagen válida. Los formatos permitidos son: JPG, JPEG, PNG, WEBP y GIF.',
-                'mimetypes' => 'Por favor, sube una imagen válida. Los formatos permitidos son: JPG, JPEG, PNG, WEBP y GIF. Verifica que tu archivo tenga la extensión correcta.',
-            ]);
+            ->required($required);
 
         if (! $hasMobile) {
             return $image;

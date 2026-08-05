@@ -136,7 +136,7 @@ $id = 'sidebar';
                     this.$nextTick(() => {
                         const targetElement = document.getElementById(hash);
                         if (targetElement) {
-                            const headerOffset = 80;
+                            const headerOffset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 64;
                             const elementPosition = targetElement.getBoundingClientRect().top;
                             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
                             window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
@@ -147,7 +147,7 @@ $id = 'sidebar';
                      this.$nextTick(() => {
                         const firstSectionElement = document.getElementById(this.sections[0]);
                         if(window.scrollY > 0 && firstSectionElement) {
-                            const headerOffset = 80;
+                            const headerOffset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 64;
                             const elementPosition = firstSectionElement.getBoundingClientRect().top;
                             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
                             window.scrollTo({ top: offsetPosition, behavior: 'smooth'});
@@ -159,7 +159,7 @@ $id = 'sidebar';
                     this.scrolled = window.scrollY > 16;
                     let current = '';
                     const scrollY = window.scrollY;
-                    const offset = 80 + 20;
+                    const offset = (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 64) + 20;
 
                     this.sections.forEach((sectionId, index) => {
                         const sectionElement = document.getElementById(sectionId);
@@ -194,7 +194,7 @@ $id = 'sidebar';
                 this.activeSection = sectionId;
                 const targetElement = document.getElementById(sectionId);
                 if (targetElement) {
-                    const headerOffset = 80;
+                    const headerOffset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 64;
                     const elementPosition = targetElement.getBoundingClientRect().top;
                     const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 

@@ -25,7 +25,7 @@ class HeroBlock extends PageBlock
                 ->default('editorial')
                 ->inline()
                 ->required(),
-            Field::image('profile_photo', 'Retrato principal', '1200', '1500', 'images/hero', true),
+            Field::image('profile_photo', 'Retrato principal', '1200', '1500', 'images/hero'),
             Field::text('image_alt', 'Texto alternativo del retrato')
                 ->helperText('Describe la fotografía sin repetir el título visible.'),
             Field::text('badge', 'Etiqueta editorial'),

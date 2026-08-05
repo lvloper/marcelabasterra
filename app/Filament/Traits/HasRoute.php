@@ -119,7 +119,6 @@ trait HasRoute
                         column: 'slug', 
                         ignorable: fn ($record) => $record->id === $record->route->routable_id ? $record->route : null
                     )**/
-                        ->required()
                         ->suffixAction(
                             Action::make('go')
                                 ->icon('heroicon-o-eye')
@@ -132,7 +131,6 @@ trait HasRoute
                         ->options(Status::class)
                         ->inline()
                         ->default(Status::Draft)
-                        ->required()
                         ->hiddenLabel()
                         ->hidden(fn (?Model $record) => static::isProtectedRoute($record))
                         ->default(fn (?Model $record) => static::isProtectedRoute($record) ? Status::Published : Status::Draft),
@@ -154,7 +152,6 @@ trait HasRoute
                     Component\DateTimePicker::make('published_at')
                         ->label('Fecha de publicación')
                         ->default(now())
-                        ->required()
                 ])
                 ->columns(3),
 

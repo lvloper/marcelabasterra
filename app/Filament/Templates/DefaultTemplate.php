@@ -31,6 +31,7 @@ class DefaultTemplate
             \App\Filament\Blocks\TeachingListingBlock::make(),
             \App\Filament\Blocks\PressFeedBlock::make(),
             \App\Filament\Blocks\CVAccessBlock::make(),
+            \App\Filament\Blocks\BiographySummaryBlock::make(),
             \App\Filament\Blocks\RelatedResourcesBlock::make(),
         ];
 

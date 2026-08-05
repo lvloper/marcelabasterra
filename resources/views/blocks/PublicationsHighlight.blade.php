@@ -1,126 +1,116 @@
 @php
-    use App\Models\ArticuloAcademico;
     use App\Models\Libro;
     use Illuminate\Support\Facades\Storage;
-    use Illuminate\Support\Str;
 
-    $limit = min(max((int) ($max_items ?? 6), 1), 12);
-    $layout = $layout ?? 'featured';
-    $items = collect();
+    $libro = null;
+    $imageUrl = null;
 
-    if (($source_mode ?? 'manual') === 'latest') {
-        $items = Libro::query()->with('route')->isPublished()
-            ->orderByDesc('fecha_publicacion')->limit($limit)->get();
-    } else {
-        $bookIds = collect($libros ?? [])->map(fn ($id) => (int) $id);
-        $articleIds = collect($articulos ?? [])->map(fn ($id) => (int) $id);
-        $items = Libro::with('route')->whereIn('id', $bookIds)->get()
-            ->sortBy(fn (Libro $book) => $bookIds->search($book->id))->values()
-            ->concat(ArticuloAcademico::with('route')->whereIn('id', $articleIds)->get()
-                ->sortBy(fn (ArticuloAcademico $article) => $articleIds->search($article->id)))
-            ->take($limit);
+    if (isset($libro_id) && $libro_id) {
+        $libro = Libro::with('route')->find((int) $libro_id);
     }
 
-    $cta = is_array($cta_route ?? null) ? $cta_route : [];
-    $booksCount = Libro::query()->isPublished()->count();
-    $articlesCount = ArticuloAcademico::query()->has('route')->count();
-    $topicsCount = ArticuloAcademico::query()->has('route')->whereNotNull('tematica')->distinct()->count('tematica');
+    $rawImage = $image ?? $libro?->portada;
+    if (is_array($rawImage)) {
+        $rawImage = $rawImage[0] ?? null;
+    }
+
+    $imageUrl = $rawImage ? Storage::url($rawImage) : null;
+
+    $displayDate = $date ?? $libro?->fecha_publicacion?->year;
+    $bookTitle = $libro?->title;
+    $bookAuthor = $libro?->autoria;
+    $bookSubtitle = $subtitle ?? $libro?->subtitulo;
+    $bookPublisher = $publisher ?? $libro?->editorial;
+
+    $ctaLabel = $cta_label ?? 'Ver publicación';
+    $ctaRoute = $cta_route ?? ['routeName' => 'publications.books'];
+
+    $otherBooks = Libro::with('route')
+        ->when($libro_id, fn ($q) => $q->where('id', '!=', (int) $libro_id))
+        ->isPublished()
+        ->orderByDesc('fecha_publicacion')
+        ->limit(4)
+        ->get();
 @endphp
 
-@if ($items->isNotEmpty())
-@if ($layout === 'library_grid')
-<x-block class="border-y border-gray-2 bg-[var(--color-surface-ivory)] py-16 sm:py-20 lg:py-24">
-    <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
-        <header class="grid gap-6 border-t border-primary pt-6 lg:grid-cols-12 lg:items-end lg:gap-12">
-            <div class="lg:col-span-7">
-                <p class="mb-4 font-[var(--font-editorial)] text-sm text-primary"><span class="mr-3 text-accent" aria-hidden="true">—</span>Biblioteca digital</p>
-                @if ($title ?? null)<h2 class="max-w-[14ch] font-[var(--font-display)] text-[clamp(2.5rem,5vw,4.5rem)] font-normal leading-[0.98] tracking-[-0.03em] text-primary">{{ $title }}</h2>@endif
-            </div>
-            <div class="lg:col-span-4 lg:col-start-9">
-                @if ($description ?? null)<p class="max-w-[46ch] font-[var(--font-editorial)] text-xl leading-relaxed text-gray">{{ $description }}</p>@endif
-                @if ($cta_label ?? null)
-                    <x-link :attrs="array_merge($cta, ['hideIfNull' => true])" class="group mt-6 inline-flex min-h-12 items-center border border-primary bg-primary px-6 font-[var(--font-body)] text-[1rem] font-semibold text-white hover:bg-white hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                        {{ $cta_label }} <span class="ml-3 transition-transform group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
-                    </x-link>
+@if ($imageUrl)
+<x-block class="border-y border-primary/10 bg-[var(--color-surface-ivory)]">
+
+    <div class="mx-auto max-w-[1440px] px-5 pb-16 pt-12 sm:px-8 lg:px-12 xl:px-16">
+
+        <div class="grid gap-12 lg:grid-cols-12 lg:gap-8 xl:gap-12">
+
+            <div class="flex flex-col justify-center text-left lg:col-span-4 order-1">
+                @if ($title ?? null)
+                    <p class="w-fit bg-[#2a3461] px-4 py-1.5 font-[var(--font-editorial)] text-sm font-bold text-white mb-3">{{ $title }}</p>
                 @endif
-            </div>
-        </header>
 
-        <ol class="mt-10 grid gap-7 sm:grid-cols-2 lg:grid-cols-4" aria-label="Libros destacados">
-            @foreach ($items->filter(fn ($item) => $item instanceof Libro) as $book)
-                <li>
-                    <article class="group flex h-full flex-col border-t border-primary pt-5">
-                        <a href="{{ $book->url }}" class="block bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent" tabindex="-1" aria-hidden="true">
-                            @if ($book->portada)
-                                <img src="{{ Storage::url($book->portada) }}" alt="" class="aspect-[4/5] w-full object-contain p-5 transition-transform duration-500 group-hover:scale-[1.015] motion-reduce:transition-none" loading="lazy">
-                            @else
-                                <span class="block aspect-[4/5] border border-gray-2" aria-hidden="true"></span>
-                            @endif
-                        </a>
-                        <p class="mt-5 font-[var(--font-editorial)] text-sm text-primary">{{ $book->fecha_publicacion?->year ?: 'Sin año' }}@if($book->autoria) · {{ $book->autoria }}@endif</p>
-                        <h3 class="mt-3 font-[var(--font-display)] text-[1.75rem] font-normal leading-[1.05] tracking-[-0.02em] text-primary">
-                            <a href="{{ $book->url }}" class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">{{ $book->title }}</a>
-                        </h3>
-                        <a href="{{ $book->url }}" class="group/link mt-auto inline-flex min-h-12 w-fit items-center border-b border-primary pt-6 font-[var(--font-body)] text-sm font-semibold text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">Ver información <span class="ml-2 transition-transform group-hover/link:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span></a>
-                    </article>
-                </li>
-            @endforeach
-        </ol>
-    </div>
-</x-block>
-@else
-<x-block class="border-y border-gray-2 bg-[var(--color-surface-ivory)] py-14 sm:py-16 lg:py-20">
-    <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
-        <div class="grid gap-12 lg:grid-cols-2 lg:items-stretch lg:gap-16">
-            <div>
-                @foreach ($items as $item)
-                @php
-                    $isBook = $item instanceof Libro;
-                    $image = $isBook ? $item->portada : $item->route?->image;
-                    $url = $isBook ? $item->url : ($item->document_url ?: $item->url);
-                    $descriptionText = Str::squish(strip_tags((string) ($isBook ? $item->descripcion : $item->resumen)));
-                @endphp
-                <article class="grid gap-7 sm:grid-cols-[minmax(12rem,0.75fr)_1.25fr] sm:items-end">
-                    <div class="bg-white">
-                        @if ($image)
-                            <img src="{{ Storage::url($image) }}" alt="Portada de {{ $item->title }}" class="mx-auto aspect-[4/5] max-h-[29rem] w-full object-contain p-5" loading="{{ $loop->first ? 'eager' : 'lazy' }}">
-                        @else
-                            <div class="aspect-[4/5] border border-gray-2 bg-white" aria-hidden="true"></div>
-                        @endif
+                @if ($bookAuthor)
+                    <p class="font-[var(--font-editorial)] text-lg font-bold text-primary/80">{{ $bookAuthor }}</p>
+                @endif
+
+                @if ($bookTitle)
+                    <h3 class="mt-3 max-w-[18ch] font-[var(--font-display)] text-[clamp(1.5rem,2.5vw,2.25rem)] font-bold leading-[.95] tracking-[-.02em] text-primary">{{ $bookTitle }}</h3>
+                @endif
+
+                @if ($bookSubtitle)
+                    <p class="mt-4 max-w-[45ch] font-[var(--font-editorial)] text-base leading-relaxed text-primary/80">{{ $bookSubtitle }}</p>
+                @endif
+
+                @if ($bookPublisher || $displayDate)
+                    <div class="mt-6 border-t border-primary/20 pt-4">
+                        <p class="font-[var(--font-editorial)] text-sm font-bold uppercase tracking-widest text-primary/60">
+                            @if ($bookPublisher){{ $bookPublisher }}@endif
+                            @if ($bookPublisher && $displayDate) · @endif
+                            @if ($displayDate){{ $displayDate }}@endif
+                        </p>
                     </div>
-                    <div class="pb-2">
-                        @if ($show_type_label ?? true)<p class="font-source text-sm text-primary">{{ $isBook ? 'Libro' : 'Artículo académico' }} · {{ $item->fecha_publicacion?->year }}</p>@endif
-                        <h3 class="mt-3 font-sans text-[clamp(2rem,3vw,3.25rem)] font-normal leading-[1] tracking-[-.03em] text-primary">{{ $item->title }}</h3>
-                        @if ($isBook && $item->autoria)<p class="mt-4 font-source text-lg text-primary">{{ $item->autoria }}</p>@endif
-                        @if ($descriptionText)<p class="mt-4 font-body text-sm leading-relaxed text-gray">{{ Str::limit($descriptionText, 170) }}</p>@endif
-                        <a href="{{ $url }}" class="group mt-5 inline-flex min-h-10 items-center border-b border-primary font-body text-sm text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">Ver ficha <span class="ml-2 transition-transform group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span></a>
-                    </div>
-                </article>
-                @endforeach
+                @endif
+
+                <a href="{{ $libro?->url ?? route('publications.books') }}" class="group mt-8 inline-flex min-h-12 w-fit items-center justify-center gap-3 border border-primary bg-primary px-6 py-3 font-body text-base font-medium text-white transition-colors duration-300 hover:bg-white hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                    {{ $ctaLabel }} <span class="transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
+                </a>
             </div>
 
-            <div class="flex flex-col justify-between border-l border-primary pl-7 sm:pl-10 lg:pl-12">
-                <div>
-                    <p class="font-source text-sm text-primary">Archivo editorial</p>
-                    @if ($title ?? null)<h2 class="mt-4 max-w-[12ch] font-sans text-[clamp(2.5rem,4vw,4.25rem)] font-normal leading-[.96] tracking-[-.035em] text-primary">{{ $title }}</h2>@endif
-                    @if ($description ?? null)<p class="mt-5 max-w-[38ch] font-source text-lg leading-relaxed text-gray">{{ $description }}</p>@endif
-                    <dl class="mt-8 grid grid-cols-3 border-y border-primary">
-                        @foreach ([['Libros', $booksCount], ['Artículos', $articlesCount], ['Áreas', $topicsCount]] as [$label, $count])
-                            <div class="px-3 py-5 first:pl-0 last:pr-0 [&+&]:border-l [&+&]:border-primary sm:px-5">
-                                <dt class="font-body text-xs text-gray">{{ $label }}</dt>
-                                <dd class="mt-1 font-source text-3xl text-primary">{{ $count }}</dd>
-                            </div>
-                        @endforeach
-                    </dl>
+            <div class="flex items-center justify-center lg:col-span-4 order-3 lg:order-2">
+                <div class="w-full max-w-xs">
+                    <img
+                        src="{{ $imageUrl }}"
+                        alt="{{ $bookTitle ?? '' }}"
+                        class="w-full object-contain"
+                        loading="eager"
+                    >
                 </div>
-                @if ($cta_label ?? null)
-                    <x-link :attrs="array_merge($cta, ['hideIfNull' => true])" class="group mt-8 inline-flex min-h-12 w-fit items-center border border-primary bg-primary px-6 font-body text-base text-white hover:bg-white hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                        {{ $cta_label }} <span class="ml-3 transition-transform group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
-                    </x-link>
+            </div>
+
+            <div class="flex flex-col text-left lg:col-span-4 order-2 lg:order-3">
+                @if ($otherBooks->isNotEmpty())
+                    <h3 class="font-[var(--font-editorial)] text-xs font-semibold uppercase tracking-wider text-primary/60">Otros libros publicados</h3>
+                    <ul class="mt-6 divide-y divide-primary/10">
+                        @foreach ($otherBooks as $other)
+                            <li>
+                                <a href="{{ $other->url }}" class="group flex items-start gap-4 py-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                    @if ($other->portada)
+                                        <img src="{{ Storage::url($other->portada) }}" alt="" class="h-20 w-14 flex-shrink-0 border border-primary/10 object-contain bg-white" loading="lazy">
+                                    @endif
+                                    <div class="min-w-0 flex-1">
+                                        <p class="font-[var(--font-editorial)] text-xs text-primary/60">{{ $other->fecha_publicacion?->year ?? 'Sin año' }}</p>
+                                        <p class="mt-0.5 font-[var(--font-display)] text-sm leading-tight text-primary transition-colors group-hover:text-primary/70">{{ $other->title }}</p>
+                                    </div>
+                                    <span class="mt-1 flex-shrink-0 text-primary/40 transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
                 @endif
             </div>
         </div>
+
+        <div class="mt-14 text-center">
+            <a href="{{ route('publications.books') }}" class="group inline-flex min-h-12 items-center justify-center gap-3 border border-primary bg-transparent px-6 py-3 font-body text-base font-medium text-primary transition-colors duration-300 hover:bg-primary hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                Ver todos los libros publicados <span class="transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
+            </a>
+        </div>
     </div>
 </x-block>
-@endif
 @endif

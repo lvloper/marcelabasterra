@@ -20,6 +20,25 @@ $positionIds = collect($featured_positions ?? [])->map(fn ($id) => (int) $id);
 $heroPositions = \App\Models\CargoInstitucional::query()->whereIn('id', $positionIds)->get()
     ->sortBy(fn ($position) => $positionIds->search($position->id))->values();
 
+$parseIndicator = function ($label) {
+    $label = trim($label);
+    if (preg_match('/^([\d\+]+\+?)\s+(.+)$/', $label, $matches)) {
+        return ['number' => $matches[1], 'text' => trim($matches[2])];
+    }
+    return ['number' => '', 'text' => $label];
+};
+
+$indicatorIcon = function ($text) {
+    $text = mb_strtolower($text);
+    if (str_contains($text, 'libro')) return 'book-open';
+    if (str_contains($text, 'nota') || str_contains($text, 'prensa') || str_contains($text, 'artí') || str_contains($text, 'articulo')) return 'newspaper';
+    if (str_contains($text, 'año')) return 'calendar';
+    if (str_contains($text, 'confer')) return 'mic';
+    if (str_contains($text, 'univ')) return 'graduation-cap';
+    if (str_contains($text, 'public') || str_contains($text, 'revista')) return 'file-text';
+    return 'star';
+};
+
 $resolveRoute = function ($data) {
     if (! is_array($data) || ! $data) return null;
     $url = null;
@@ -57,73 +76,91 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
     $inverseButton = 'inline-flex min-h-12 items-center justify-center gap-3 border border-white bg-white px-6 py-3 font-body text-base font-medium text-primary transition-colors duration-300 hover:bg-primary hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent';
 @endphp
 
-<x-block class="block-Hero overflow-hidden bg-white">
+<x-block class="block-Hero overflow-hidden">
     <div id="{{ $id }}" data-hero-variant="{{ $heroVariant }}">
         @if ($heroVariant === 'editorial')
-            <div class="mx-auto grid max-w-[1440px] grid-cols-1 lg:min-h-[calc(100svh-5rem)] lg:grid-cols-12">
-                <div class="order-1 flex flex-col justify-center px-5 py-16 sm:px-8 lg:col-span-7 lg:px-12 lg:py-24 xl:px-16">
-                    @if ($heroBadge)
-                        <p class="hero-reveal mb-8 flex items-center gap-4 font-source text-sm text-primary">
-                            <span class="h-px w-12 bg-accent" aria-hidden="true"></span>
-                            {{ $heroBadge }}
-                        </p>
-                    @endif
-
-                    @if ($heroName)
-                        <h1 class="hero-reveal max-w-[11ch] font-sans text-[clamp(3.25rem,7vw,7rem)] font-normal leading-[0.94] tracking-[-0.035em] text-primary">
-                            {{ $heroName }}
-                        </h1>
-                    @endif
-
-                    <div class="hero-reveal mt-8 grid gap-6 border-t border-gray-2 pt-6 md:grid-cols-2 lg:max-w-3xl">
-                        @if ($heroSubtitle)
-                            <p class="font-source text-[clamp(1.35rem,2vw,1.8rem)] leading-tight text-primary">{{ $heroSubtitle }}</p>
+            <div class="relative min-h-svh bg-white">
+                <div class="mx-auto grid max-w-[1440px] grid-cols-1 lg:min-h-0 lg:grid-cols-12">
+                    <div class="order-1 flex flex-col justify-center bg-white px-5 py-16 pt-16 sm:px-8 lg:col-span-7 lg:bg-transparent lg:px-12 lg:py-24 lg:pt-20 xl:px-16">
+                        @if ($heroBadge)
+                            <p class="hero-reveal mb-10 flex items-center gap-4 font-source text-sm text-primary">
+                                <span class="h-px w-12 bg-accent" aria-hidden="true"></span>
+                                {{ $heroBadge }}
+                            </p>
                         @endif
-                        @if ($heroDescription)
-                            <p class="font-body text-base leading-relaxed text-gray">{{ $heroDescription }}</p>
+
+                        @if ($heroName)
+                            <div class="mb-12 hero-logo">
+                                <img src="{{ asset('img/Logos/logo-sin-tagline.svg') }}" alt="{{ $heroName }}" class="h-16 w-auto sm:h-20 lg:h-28">
+                            </div>
+                        @endif
+
+                        <div class="hero-reveal">
+                            @if ($heroSubtitle)
+                                <p class="max-w-3xl font-source text-[clamp(1.35rem,2vw,1.8rem)] leading-tight text-primary">{{ $heroSubtitle }}</p>
+                            @endif
+                            @if ($heroDescription)
+                                <p class="mt-5 max-w-3xl font-body text-base leading-relaxed text-gray">{{ $heroDescription }}</p>
+                            @endif
+                        </div>
+
+                        @if ($heroPositions->isNotEmpty())
+                            <div class="hero-reveal mt-12 border-t border-primary pt-8">
+                                <ul class="grid gap-x-8 gap-y-6">
+                                    @foreach ($heroPositions as $position)
+                                        <li>
+                                            @if ($position->institutional_url)
+                                                <a href="{{ $position->institutional_url }}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between gap-4 font-sans text-xl leading-tight text-primary underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                                    <span>{{ $position->cargo }}</span>
+                                                    <x-lucide-square-arrow-out-up-right class="h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+                                                </a>
+                                            @else
+                                                <p class="font-sans text-xl leading-tight text-primary">{{ $position->cargo }}</p>
+                                            @endif
+                                            <p class="mt-1 font-source text-base leading-snug text-gray">{{ $position->institucion }}</p>
+                                            @if ($position->fecha_fin === null && $position->fecha_inicio)
+                                                <p class="mt-1 font-body text-sm text-gray">Vigente desde {{ $position->fecha_inicio->year }}</p>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        @if ($ctaPrimary || $ctaSecondary || $ctaTertiary)
+                            <div class="hero-reveal mt-12 flex flex-wrap items-center gap-4">
+                                @if ($ctaPrimary)
+                                    <a href="{{ $ctaPrimary['url'] }}" @if ($ctaPrimary['newWindow']) target="_blank" rel="noopener noreferrer" @endif @if ($ctaPrimary['download']) download="{{ $ctaPrimary['download'] }}" @endif class="{{ $primaryButton }} group">
+                                        {{ $ctaPrimary['label'] }} <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
+                                    </a>
+                                @endif
+                                @if ($ctaSecondary)
+                                    <a href="{{ $ctaSecondary['url'] }}" @if ($ctaSecondary['newWindow']) target="_blank" rel="noopener noreferrer" @endif @if ($ctaSecondary['download']) download="{{ $ctaSecondary['download'] }}" @endif class="{{ $secondaryButton }} group">
+                                        {{ $ctaSecondary['label'] }} <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
+                                    </a>
+                                @endif
+                                @if ($ctaTertiary)
+                                    <a href="{{ $ctaTertiary['url'] }}" @if ($ctaTertiary['newWindow']) target="_blank" rel="noopener noreferrer" @endif @if ($ctaTertiary['download']) download="{{ $ctaTertiary['download'] }}" @endif class="group inline-flex min-h-12 items-center gap-3 border-b border-primary font-body text-base text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                        {{ $ctaTertiary['label'] }} <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
+                                    </a>
+                                @endif
+                            </div>
                         @endif
                     </div>
 
-                    @if (! empty($heroIndicators))
-                        <ul class="hero-reveal mt-8 flex flex-wrap gap-x-8 gap-y-3">
-                            @foreach ($heroIndicators as $item)
-                                <li class="font-body text-sm text-gray"><span class="mr-2 text-accent" aria-hidden="true">—</span>{{ $item['label'] }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
-
-                    @if ($ctaPrimary || $ctaSecondary || $ctaTertiary)
-                        <div class="hero-reveal mt-10 flex flex-wrap items-center gap-4">
-                            @if ($ctaPrimary)
-                                <a href="{{ $ctaPrimary['url'] }}" @if ($ctaPrimary['newWindow']) target="_blank" rel="noopener noreferrer" @endif @if ($ctaPrimary['download']) download="{{ $ctaPrimary['download'] }}" @endif class="{{ $primaryButton }} group">
-                                    {{ $ctaPrimary['label'] }} <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
-                                </a>
-                            @endif
-                            @if ($ctaSecondary)
-                                <a href="{{ $ctaSecondary['url'] }}" @if ($ctaSecondary['newWindow']) target="_blank" rel="noopener noreferrer" @endif @if ($ctaSecondary['download']) download="{{ $ctaSecondary['download'] }}" @endif class="{{ $secondaryButton }} group">
-                                    {{ $ctaSecondary['label'] }} <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
-                                </a>
-                            @endif
-                            @if ($ctaTertiary)
-                                <a href="{{ $ctaTertiary['url'] }}" @if ($ctaTertiary['newWindow']) target="_blank" rel="noopener noreferrer" @endif @if ($ctaTertiary['download']) download="{{ $ctaTertiary['download'] }}" @endif class="group inline-flex min-h-12 items-center gap-3 border-b border-primary font-body text-base text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                                    {{ $ctaTertiary['label'] }} <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
-                                </a>
-                            @endif
-                        </div>
-                    @endif
+                    <div class="relative order-2 min-h-[24rem] border-t border-gray-2 bg-white lg:col-span-5 lg:border-t-0 lg:bg-white lg:min-h-auto">
+                        @if ($profilePhoto)
+                            <div class="hero-image-mask h-full min-h-[28rem] overflow-hidden">
+                                <img src="{{ $profilePhoto }}" alt="{{ $heroImageAlt }}" class="hero-photo h-full w-full object-cover object-top" fetchpriority="high">
+                            </div>
+                        @else
+                            <div class="flex min-h-28 items-end p-6 lg:min-h-[28rem] lg:p-12" aria-hidden="true">
+                                <span class="font-source text-7xl text-primary/20">MB</span>
+                            </div>
+                        @endif
+                    </div>
                 </div>
-
-                <div class="order-2 border-t border-gray-2 bg-[var(--color-surface-ivory)] lg:col-span-5 lg:border-l lg:border-t-0">
-                    @if ($profilePhoto)
-                        <div class="hero-image-mask h-full min-h-[28rem] overflow-hidden">
-                            <img src="{{ $profilePhoto }}" alt="{{ $heroImageAlt }}" class="hero-photo h-full w-full object-cover object-center transition-transform duration-700 hover:scale-[1.025]" fetchpriority="high">
-                        </div>
-                    @else
-                        <div class="flex min-h-28 items-end p-6 lg:min-h-[28rem] lg:p-12" aria-hidden="true">
-                            <span class="font-source text-7xl text-primary/20">MB</span>
-                        </div>
-                    @endif
-                </div>
+                <div class="pointer-events-none absolute right-0 top-0 hidden h-full w-40 hero-dot-pattern lg:block" aria-hidden="true"></div>
             </div>
 
         @elseif ($heroVariant === 'institutional')
@@ -149,13 +186,6 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
                                 @if ($heroDescription)
                                     <p class="mt-5 max-w-lg font-body text-base leading-relaxed text-gray-3">{{ $heroDescription }}</p>
                                 @endif
-                                @if (! empty($heroIndicators))
-                                    <ul class="mt-7 grid gap-3">
-                                        @foreach ($heroIndicators as $item)
-                                            <li class="border-t border-white/30 pt-3 font-body text-sm text-gray-3">{{ $item['label'] }}</li>
-                                        @endforeach
-                                    </ul>
-                                @endif
                             </div>
                             @if ($ctaPrimary || $ctaSecondary || $ctaTertiary)
                                 <div class="flex flex-col items-start gap-3 md:items-end">
@@ -174,14 +204,8 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
                     <div class="border-t border-white/30 lg:col-span-4 lg:border-l lg:border-t-0">
                         @if ($profilePhoto)
                             <div class="hero-image-mask h-full min-h-[30rem] overflow-hidden">
-                                <img src="{{ $profilePhoto }}" alt="{{ $heroImageAlt }}" class="hero-photo h-full w-full object-cover transition-transform duration-700 hover:scale-[1.025]" fetchpriority="high">
+                                <img src="{{ $profilePhoto }}" alt="{{ $heroImageAlt }}" class="hero-photo h-full w-full object-cover" fetchpriority="high">
                             </div>
-                        @elseif (! empty($heroIndicators))
-                            <ul class="flex h-full min-h-[24rem] flex-col justify-end gap-0 p-8 lg:p-10">
-                                @foreach ($heroIndicators as $item)
-                                    <li class="border-t border-white/30 py-5 font-source text-xl text-white">{{ $item['label'] }}</li>
-                                @endforeach
-                            </ul>
                         @endif
                     </div>
                 </div>
@@ -206,18 +230,11 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
                                     <p class="hero-reveal mt-6 max-w-[52ch] font-body text-base leading-relaxed text-gray">{{ $heroDescription }}</p>
                                 @endif
                             </div>
-                            @if (! empty($heroIndicators))
-                                <ul class="hero-reveal mt-12 grid gap-3 border-t border-gray-2 pt-6 sm:grid-cols-2">
-                                    @foreach ($heroIndicators as $item)
-                                        <li class="font-body text-sm leading-snug text-gray"><span class="mr-2 text-accent" aria-hidden="true">—</span>{{ $item['label'] }}</li>
-                                    @endforeach
-                                </ul>
-                            @endif
                         </div>
 
                         <div class="hero-image-mask order-1 min-h-[28rem] overflow-hidden bg-gray-3 lg:order-2 lg:col-span-7 lg:min-h-[42rem]">
                             @if ($profilePhoto)
-                                <img src="{{ $profilePhoto }}" alt="{{ $heroImageAlt }}" class="hero-photo h-full w-full object-cover object-center transition-transform duration-700 hover:scale-[1.025]" fetchpriority="high">
+                                <img src="{{ $profilePhoto }}" alt="{{ $heroImageAlt }}" class="hero-photo h-full w-full object-cover object-top" fetchpriority="high">
                             @endif
                         </div>
                     </div>
@@ -236,9 +253,33 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
                 </div>
             </div>
         @endif
+
+        @if (! empty($heroIndicators))
+            <div class="bg-gradient-to-b from-gray-3/40 to-transparent">
+                <div class="mx-auto max-w-[1440px] px-5 py-14 sm:px-8 lg:px-12 lg:py-20 xl:px-16">
+                    <div class="hero-reveal grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                        @foreach ($heroIndicators as $item)
+                            @php
+                                $parsed = $parseIndicator($item['label']);
+                                $iconName = $indicatorIcon($parsed['text']);
+                            @endphp
+                            <div class="group relative overflow-hidden border border-gray-2 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg sm:p-8">
+                                <div class="mb-4">
+                                    <x-dynamic-component :component="'lucide-' . $iconName" class="h-5 w-5 text-accent" aria-hidden="true" />
+                                </div>
+                                @if ($parsed['number'])
+                                    <p class="font-source text-[clamp(2.25rem,3vw,3.25rem)] font-semibold leading-none text-primary">{{ $parsed['number'] }}</p>
+                                @endif
+                                <p class="font-body text-sm leading-snug text-gray @if (!$parsed['number']) mt-0 @else mt-2 @endif">{{ $parsed['text'] }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 
-    @if ($heroPositions->isNotEmpty())
+    @if ($heroVariant !== 'editorial' && $heroPositions->isNotEmpty())
         <section class="border-t border-primary bg-white" aria-label="Cargos institucionales destacados">
             <div class="mx-auto grid max-w-[1440px] lg:grid-cols-12">
                 <p class="px-5 py-7 font-source text-sm text-primary sm:px-8 lg:col-span-3 lg:px-12 xl:px-16">Cargos destacados</p>
@@ -260,6 +301,7 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
 
     @pushOnce('scripts', 'block-hero')
         <style>
+            .block-Hero .hero-dot-pattern { background-image: radial-gradient(circle, rgba(90,107,115,0.15) 1.5px, transparent 1.5px); background-size: 28px 28px; }
             .block-Hero .hero-reveal,
             .block-Hero .hero-image-mask { opacity: 0; transform: translateY(20px); }
             .block-Hero .hero-image-mask { transform: translateY(0); clip-path: inset(0 0 100% 0); }
@@ -293,6 +335,25 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
                 }
                 if (masks.length > 0) {
                     window.gsap.to(masks, { opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: 1.1, ease: 'power3.inOut', delay: 0.15 });
+                }
+
+                const heroLogo = block.querySelector('.hero-logo');
+                if (heroLogo) {
+                    const onScroll = () => {
+                        if (!document.body.contains(heroLogo)) {
+                            window.removeEventListener('scroll', onScroll);
+                            return;
+                        }
+                        const logoRect = heroLogo.getBoundingClientRect();
+                        const logoBottom = logoRect.bottom;
+                        const startFadeAt = 120;
+                        const endFadeAt = 40;
+                        const progress = Math.max(0, Math.min(1, (startFadeAt - logoBottom) / (startFadeAt - endFadeAt)));
+                        heroLogo.style.opacity = '' + (1 - progress);
+                        heroLogo.style.transform = `translateY(${-progress * 40}px) scale(${1 - progress * 0.3})`;
+                    };
+                    window.addEventListener('scroll', onScroll, { passive: true });
+                    onScroll();
                 }
             };
 

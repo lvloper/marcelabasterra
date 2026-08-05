@@ -77,7 +77,7 @@
             <header class="grid gap-6 border-t border-primary pt-6 lg:grid-cols-12 lg:gap-12">
                 <div class="lg:col-span-5">
                     @if ($title ?? null)
-                        <h2 class="max-w-[14ch] font-[var(--font-display)] text-[clamp(2.5rem,4.5vw,4.5rem)] font-normal leading-[1] tracking-[-0.03em] text-primary">{{ $title }}</h2>
+                        <h2 class="whitespace-nowrap font-[var(--font-display)] text-[clamp(2rem,3.5vw,3.5rem)] font-normal leading-[1] tracking-[-0.03em] text-primary">{!! $title !!}</h2>
                     @endif
                 </div>
                 @if ($description ?? null)
@@ -110,39 +110,76 @@
             @endif
 
             @if ($items->isNotEmpty())
-                <ol class="mt-10 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-12" aria-label="Noticias, prensa y entrevistas">
-                    @foreach ($items as $item)
-                        @php $cardImage = ($show_image ?? true) ? $imageUrl($item['image']) : null; @endphp
-                        <li class="{{ $loop->first ? 'lg:col-span-7' : 'lg:col-span-5' }}">
-                            <article class="group h-full border-t border-primary pt-5">
-                                @if ($cardImage)
-                                    <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="block overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent" tabindex="-1" aria-hidden="true">
-                                        <img src="{{ $cardImage }}" alt="" class="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none" loading="lazy">
-                                    </a>
+                @php $first = $items->first(); @endphp
+                <div class="mt-10 grid gap-x-8 gap-y-10 lg:grid-cols-12">
+                    {{-- Featured — sticky, 9 cols --}}
+                    @php $cardImage = ($show_image ?? true) ? $imageUrl($first['image']) : null; @endphp
+                    <div class="lg:col-span-9 lg:sticky lg:top-16 lg:self-start">
+                        <article class="group border-t border-primary pt-5">
+                            @if ($cardImage)
+                                <a href="{{ $first['url'] }}" @if($first['external']) target="_blank" rel="noopener noreferrer" @endif class="block overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent" tabindex="-1" aria-hidden="true">
+                                    <img src="{{ $cardImage }}" alt="" class="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none" loading="lazy">
+                                </a>
+                            @endif
+                            <div class="{{ $cardImage ? 'mt-5' : '' }}">
+                                <p class="font-[var(--font-editorial)] text-sm text-primary">
+                                    {{ $typeLabels[$first['type']] ?? ucfirst($first['type']) }}@if($first['medium']) · {{ $first['medium'] }}@endif
+                                </p>
+                                <h3 class="mt-3 max-w-[28ch] font-[var(--font-display)] text-[clamp(1.75rem,3vw,2.75rem)] font-normal leading-[1.04] tracking-[-0.02em] text-primary">
+                                    <a href="{{ $first['url'] }}" @if($first['external']) target="_blank" rel="noopener noreferrer" @endif class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">{{ $first['title'] }}</a>
+                                </h3>
+                                @if ($first['summary'])
+                                    <p class="mt-4 line-clamp-3 max-w-[65ch] font-[var(--font-body)] text-[1rem] leading-relaxed text-gray">{{ $first['summary'] }}</p>
                                 @endif
-                                <div class="{{ $cardImage ? 'mt-5' : '' }}">
-                                    <p class="font-[var(--font-editorial)] text-sm text-primary">
-                                        {{ $typeLabels[$item['type']] ?? ucfirst($item['type']) }}@if($item['medium']) · {{ $item['medium'] }}@endif
-                                    </p>
-                                    <h3 class="mt-3 max-w-[28ch] font-[var(--font-display)] text-[clamp(1.75rem,3vw,2.75rem)] font-normal leading-[1.04] tracking-[-0.02em] text-primary">
-                                        <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">{{ $item['title'] }}</a>
-                                    </h3>
-                                    @if ($item['summary'])
-                                        <p class="mt-4 line-clamp-3 max-w-[65ch] font-[var(--font-body)] text-[1rem] leading-relaxed text-gray">{{ $item['summary'] }}</p>
+                                <div class="mt-5 flex flex-wrap items-end justify-between gap-4">
+                                    @if ($first['date'])
+                                        <time datetime="{{ $first['date']->toDateString() }}" class="font-[var(--font-editorial)] text-sm text-gray">{{ $first['date']->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</time>
                                     @endif
-                                    <div class="mt-5 flex flex-wrap items-end justify-between gap-4">
-                                        @if ($item['date'])
-                                            <time datetime="{{ $item['date']->toDateString() }}" class="font-[var(--font-editorial)] text-sm text-gray">{{ $item['date']->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</time>
-                                        @endif
-                                        <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="inline-flex min-h-11 items-center border-b border-primary font-[var(--font-body)] text-sm font-semibold text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                                            Leer más <span class="ml-2" aria-hidden="true">{{ $item['external'] ? '↗' : '→' }}</span>
-                                        </a>
-                                    </div>
+                                    <a href="{{ $first['url'] }}" @if($first['external']) target="_blank" rel="noopener noreferrer" @endif class="inline-flex min-h-11 items-center border-b border-primary font-[var(--font-body)] text-sm font-semibold text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                        Leer más <span class="ml-2" aria-hidden="true">{{ $first['external'] ? '↗' : '→' }}</span>
+                                    </a>
                                 </div>
-                            </article>
-                        </li>
-                    @endforeach
-                </ol>
+                            </div>
+                        </article>
+                    </div>
+
+                    {{-- Sidebar — scrollable, 3 cols --}}
+                    @if ($items->count() > 1)
+                        <ol class="lg:col-span-3 flex flex-col gap-y-8" aria-label="Más noticias">
+                            @foreach ($items->skip(1) as $item)
+                                @php $cardImage = ($show_image ?? true) ? $imageUrl($item['image']) : null; @endphp
+                                <li>
+                                    <article class="group border-t border-primary pt-5">
+                                        @if ($cardImage)
+                                            <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="block overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent" tabindex="-1" aria-hidden="true">
+                                                <img src="{{ $cardImage }}" alt="" class="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none" loading="lazy">
+                                            </a>
+                                        @endif
+                                        <div class="{{ $cardImage ? 'mt-5' : '' }}">
+                                            <p class="font-[var(--font-editorial)] text-sm text-primary">
+                                                {{ $typeLabels[$item['type']] ?? ucfirst($item['type']) }}@if($item['medium']) · {{ $item['medium'] }}@endif
+                                            </p>
+                                            <h3 class="mt-3 max-w-[28ch] font-[var(--font-display)] text-[clamp(1.75rem,3vw,2.75rem)] font-normal leading-[1.04] tracking-[-0.02em] text-primary">
+                                                <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">{{ $item['title'] }}</a>
+                                            </h3>
+                                            @if ($item['summary'])
+                                                <p class="mt-4 line-clamp-3 max-w-[65ch] font-[var(--font-body)] text-[1rem] leading-relaxed text-gray">{{ $item['summary'] }}</p>
+                                            @endif
+                                            <div class="mt-5 flex flex-wrap items-end justify-between gap-4">
+                                                @if ($item['date'])
+                                                    <time datetime="{{ $item['date']->toDateString() }}" class="font-[var(--font-editorial)] text-sm text-gray">{{ $item['date']->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</time>
+                                                @endif
+                                                <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="inline-flex min-h-11 items-center border-b border-primary font-[var(--font-body)] text-sm font-semibold text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                                    Leer más <span class="ml-2" aria-hidden="true">{{ $item['external'] ? '↗' : '→' }}</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </li>
+                            @endforeach
+                        </ol>
+                    @endif
+                </div>
             @else
                 <p class="mt-8 border-y border-gray-2 py-6 font-[var(--font-editorial)] text-xl leading-relaxed text-gray">{{ $empty_message }}</p>
             @endif
