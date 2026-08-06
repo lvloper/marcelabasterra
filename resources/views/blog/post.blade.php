@@ -18,20 +18,14 @@
 
 <x-layout>
     <article id="post-container" class="bg-white text-gray">
-        <header class="border-b border-gray-2 bg-[var(--color-surface-ivory)] pt-16 md:pt-24">
+        <header class="border-b border-gray-2 bg-gray-3 pt-16 md:pt-24">
             <div class="container pb-12 md:pb-20">
                 <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8">
                     <div class="lg:col-span-9">
-                        <div class="mb-8 flex items-center gap-4 font-source text-md text-primary">
-                            <a wire:navigate href="{{ url('/novedades') }}"
-                                class="underline decoration-accent underline-offset-4 transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                                Novedades
-                            </a>
-                            @if ($primaryTag)
-                                <span aria-hidden="true" class="h-px w-8 bg-accent"></span>
-                                <span>{{ $primaryTag->name }}</span>
-                            @endif
-                        </div>
+                        <x-breadcrumbs :items="array_merge(
+                            [['label' => 'Novedades', 'url' => url('/novedades')]],
+                            $primaryTag ? [['label' => $primaryTag->name, 'url' => $blog->tagRoute($primaryTag)]] : [],
+                        )" :current="$blog->title" class="mb-8" />
 
                         <h1 class="max-w-[18ch] text-balance font-sans text-[clamp(2.75rem,6.2vw,6rem)] font-bold leading-[0.98] tracking-[-0.035em] text-primary">
                             {{ Str::of($blog->title)->trim() }}
@@ -111,7 +105,7 @@
         </div>
 
         @if ($previous || $next)
-            <nav class="border-y border-gray-2 bg-[var(--color-surface-ivory)]" aria-label="Navegación entre publicaciones">
+            <nav class="border-y border-gray-2 bg-gray-3" aria-label="Navegación entre publicaciones">
                 <div class="container grid grid-cols-1 md:grid-cols-2">
                     @if ($previous)
                         <a wire:navigate href="{{ $previous->url }}"

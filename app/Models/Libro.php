@@ -20,6 +20,7 @@ class Libro extends Model
     protected $fillable = [
         'subtitulo', 'autoria', 'portada', 'descripcion', 'fecha_publicacion',
         'editorial', 'area_tematica', 'isbn', 'tomos', 'enlaces', 'destacado', 'blocks',
+        'categoria',
     ];
 
     protected $casts = [

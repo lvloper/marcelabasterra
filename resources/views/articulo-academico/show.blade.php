@@ -8,7 +8,10 @@
         <header class="border-b border-primary bg-primary text-white">
             <div class="container mx-auto grid grid-cols-1 gap-12 py-16 lg:grid-cols-12 lg:py-24">
                 <div class="lg:col-span-9">
-                    <a href="{{ route('publications.articles') }}" class="inline-flex min-h-11 items-center gap-2 font-body text-base text-gray-3 focus:outline-none focus:ring-2 focus:ring-accent">← Volver al archivo académico</a>
+                    <x-breadcrumbs dark :items="[
+                        ['label' => 'Publicaciones', 'url' => route('publications.index')],
+                        ['label' => 'Artículos académicos', 'url' => route('publications.articles')],
+                    ]" :current="$articuloAcademico->title" class="mb-10" />
                     <p class="mt-10 font-source text-lg text-gray-3">{{ $articuloAcademico->tematica }}</p>
                     <h1 class="mt-5 max-w-6xl font-sans text-4xl font-bold leading-[1.02] tracking-[-0.025em] sm:text-5xl lg:text-7xl">{{ $articuloAcademico->title }}</h1>
                 </div>
@@ -21,7 +24,7 @@
             </div>
         </header>
 
-        <section class="bg-[var(--color-surface-ivory)] py-16 lg:py-24">
+        <section class="bg-gray-3 py-16 lg:py-24">
             <div class="container mx-auto grid grid-cols-1 gap-12 lg:grid-cols-12">
                 <aside class="lg:col-span-3">
                     <p class="border-t border-primary pt-4 font-source text-lg text-primary">Referencia bibliográfica</p>

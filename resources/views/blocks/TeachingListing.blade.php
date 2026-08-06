@@ -69,7 +69,7 @@
 @endphp
 
 @if ($teachingItems->isNotEmpty())
-    <x-block class="bg-[var(--color-surface-ivory)] py-16 md:py-20 lg:py-24">
+    <x-block class="bg-gray-3 py-16 md:py-20 lg:py-24">
         <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
             <header class="grid gap-6 border-t border-primary pt-6 lg:grid-cols-12 lg:gap-8 lg:pt-8">
                 @if ($title ?? null)

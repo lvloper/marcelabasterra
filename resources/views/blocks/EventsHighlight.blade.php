@@ -38,9 +38,9 @@
                     @php($featuredImage = $imageUrl($item['image']))
                     <article class="grid border-t border-primary lg:grid-cols-12">
                         @if ($item['url'])
-                            <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="group order-2 flex flex-col justify-between bg-[var(--color-surface-ivory)] p-6 sm:p-10 lg:order-1 lg:col-span-5 lg:p-12 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                            <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="group order-2 flex flex-col justify-between bg-gray-3 p-6 sm:p-10 lg:order-1 lg:col-span-5 lg:p-12 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
                         @else
-                            <div class="order-2 flex flex-col justify-between bg-[var(--color-surface-ivory)] p-6 sm:p-10 lg:order-1 lg:col-span-5 lg:p-12">
+                            <div class="order-2 flex flex-col justify-between bg-gray-3 p-6 sm:p-10 lg:order-1 lg:col-span-5 lg:p-12">
                         @endif
                             <div>
                                 <div class="flex flex-wrap items-center gap-x-5 gap-y-2 font-body text-sm text-primary">

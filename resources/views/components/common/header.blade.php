@@ -18,7 +18,7 @@
     };
 
     $featuredNavigation = collect([
-        $makeLink('Trayectoria', 'trayectoria'),
+        $makeLink('Sobre mí', 'sobre-mi'),
         $makeLink('Publicaciones', 'publicaciones'),
         $makeLink('Actividad académica', 'actividad-academica'),
         $makeLink('Jornadas y Congresos', 'jornadas-y-congresos'),
@@ -30,14 +30,10 @@
             'route' => $routeForPath('sobre-mi'),
             'children' => collect([
                 $makeLink('Biografía', 'sobre-mi', 'biografia'),
+                $makeLink('Trayectoria', 'sobre-mi', 'trayectoria-en-cifras'),
                 $makeLink('Cargos institucionales', 'sobre-mi', 'cargos'),
                 $makeLink('CV', 'sobre-mi', 'cv'),
             ])->filter()->values(),
-        ],
-        [
-            'label' => 'Trayectoria',
-            'route' => $routeForPath('trayectoria'),
-            'children' => collect(),
         ],
         [
             'label' => 'Actividad académica',
@@ -73,12 +69,13 @@
         ],
     ])->filter(fn (array $item): bool => $item['route'] instanceof App\Models\Route)->values();
 
-    $latestBook = App\Models\Libro::query()
+    $latestBooks = App\Models\Libro::query()
         ->with('route')
         ->isPublished()
         ->orderByDesc('fecha_publicacion')
         ->orderByDesc('id')
-        ->first();
+        ->limit(3)
+        ->get();
 
     $latestBlog = App\Models\Blog::query()
         ->with('route')
@@ -119,6 +116,7 @@
     :class="fused && overHero ? 'bg-transparent text-primary' : 'bg-primary text-white'"
     x-data="{
         menuOpen: false,
+        menuCloseTimer: null,
         scrolled: false,
         logoReady: false,
         logoRevealed: false,
@@ -164,8 +162,9 @@
                 this.logoRevealed = true;
             }
         },
-        openMenu() {
+        openMenu(lockScroll = true) {
             this.menuOpen = true;
+            if (!lockScroll) return;
             document.documentElement.style.overflow = 'hidden';
             this.$nextTick(() => this.$refs.closeButton?.focus());
         },
@@ -199,7 +198,11 @@
             </span>
         </a>
 
-        <div class="flex items-center gap-4 lg:gap-8">
+        <div
+            class="flex items-center gap-4 lg:gap-8"
+            @mouseenter="window.matchMedia('(min-width: 1280px)').matches && openMenu(false)"
+            @mouseleave="menuCloseTimer = window.setTimeout(() => closeMenu(), 250)"
+        >
             <nav class="hidden items-center gap-6 xl:flex" aria-label="Accesos principales">
                 @foreach ($featuredNavigation as $index => $item)
                     <x-link
@@ -216,7 +219,7 @@
                 type="button"
                 x-ref="menuButton"
                 @click="menuOpen ? closeMenu() : openMenu()"
-                class="font-body group inline-flex min-h-11 items-center justify-center gap-3 border-0 text-[15px] text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+                class="font-body group inline-flex min-h-11 items-center justify-center gap-3 border-0 text-[15px] text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent xl:hidden"
                 :aria-expanded="menuOpen.toString()"
                 :aria-label="menuOpen ? 'Cerrar menú' : 'Abrir menú Ver más'"
                 aria-controls="site-menu-panel"
@@ -243,6 +246,8 @@
         x-transition:leave-end="-translate-y-2 opacity-0"
         class="archive-menu-panel fixed inset-x-0 overflow-y-auto border-y border-primary/30 bg-gray-3"
         :class="scrolled ? 'top-12 lg:top-14' : 'top-14 lg:top-16'"
+        @mouseenter="window.clearTimeout(menuCloseTimer)"
+        @mouseleave="menuCloseTimer = window.setTimeout(() => closeMenu(), 250)"
         role="dialog"
         aria-modal="true"
         aria-labelledby="site-menu-title"
@@ -260,39 +265,48 @@
                 </button>
 
                 <div class="flex items-end justify-between gap-4">
-                    <div>
-                        <p class="font-source text-[13px] text-gray">Archivo vivo</p>
-                        <h2 id="site-menu-title" class="mt-1 font-sans text-[1.65rem] font-normal leading-none text-primary">Último libro</h2>
-                    </div>
-                    @if ($latestBook?->fecha_publicacion)
-                        <span class="font-source text-sm text-gray">{{ $latestBook->fecha_publicacion->year }}</span>
-                    @endif
+                <div>
+                    <p class="font-source text-[13px] text-gray">Archivo vivo</p>
+                    <h2 id="site-menu-title" class="mt-1 font-sans text-[1.65rem] font-normal leading-none text-primary">Últimos libros</h2>
                 </div>
-
-                @if ($latestBook)
-                    <a
-                        href="{{ $latestBook->route->url }}"
-                        wire:navigate.hover
-                        class="group mt-5 grid grid-cols-[4.75rem_1fr] gap-4 border-y border-primary/40 py-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
-                    >
-                        <div class="flex aspect-[4/5] items-center justify-center border border-primary bg-white p-1.5">
-                            @if ($latestBook->portada)
-                                <img src="{{ Storage::url($latestBook->portada) }}" alt="Portada de {{ $latestBook->title }}" class="h-full w-full object-contain transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] motion-reduce:transition-none">
-                            @else
-                                <span class="flex h-full w-full flex-col justify-between bg-primary p-2.5 text-white">
-                                    <span class="font-source text-[9px] text-gray-3">Obra reciente</span>
-                                    <span class="font-source text-2xl leading-none">MB</span>
-                                    <span class="h-px w-5 bg-accent" aria-hidden="true"></span>
-                                </span>
-                            @endif
-                        </div>
-                        <div class="self-center">
-                            <h3 class="line-clamp-3 font-sans text-[17px] font-bold leading-[1.15] text-primary transition-colors group-hover:text-accent">{{ $latestBook->title }}</h3>
-                            <span class="mt-3 inline-flex items-center gap-2 font-body text-[13px] text-primary">Ver ficha <span aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-1">→</span></span>
-                        </div>
-                    </a>
+                @if ($latestBooks->isNotEmpty() && $latestBooks->first()->fecha_publicacion)
+                    <span class="font-source text-sm text-gray">{{ $latestBooks->first()->fecha_publicacion->year }}</span>
                 @endif
-            </aside>
+            </div>
+
+            @if ($latestBooks->isNotEmpty())
+                <ul class="mt-5 divide-y divide-primary/40 border-y border-primary/40">
+                    @foreach ($latestBooks as $book)
+                        <li>
+                            <a
+                                href="{{ $book->route->url }}"
+                                wire:navigate.hover
+                                class="group grid min-h-[5.25rem] grid-cols-[4.5rem_1fr_auto] items-center gap-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+                            >
+                                <div class="flex aspect-[4/5] items-center justify-center border border-primary bg-white p-1">
+                                    @if ($book->portada)
+                                        <img src="{{ Storage::url($book->portada) }}" alt="Portada de {{ $book->title }}" class="h-full w-full object-contain transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] motion-reduce:transition-none">
+                                    @else
+                                        <span class="flex h-full w-full flex-col justify-between bg-primary p-2 text-white">
+                                            <span class="font-source text-[8px] text-gray-3">Obra reciente</span>
+                                            <span class="font-source text-lg leading-none">MB</span>
+                                            <span class="h-px w-4 bg-accent" aria-hidden="true"></span>
+                                        </span>
+                                    @endif
+                                </div>
+                                <span class="min-w-0 self-center">
+                                    <span class="line-clamp-3 block font-sans text-[15px] font-bold leading-[1.2] text-primary transition-colors group-hover:text-accent">{{ $book->title }}</span>
+                                    @if ($book->fecha_publicacion)
+                                        <span class="mt-1.5 block font-source text-[12px] text-gray">{{ $book->fecha_publicacion->year }}</span>
+                                    @endif
+                                </span>
+                                <span class="font-body text-[13px] text-primary transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </aside>
 
             <nav class="lg:col-span-5 lg:px-1" aria-label="Mapa del sitio">
                 <p class="mb-3 font-source text-[13px] text-gray">Explorar</p>

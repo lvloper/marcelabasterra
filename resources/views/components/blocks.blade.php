@@ -7,7 +7,9 @@
         @if ( !($block['data']['hidden'] ?? false) && view()->exists($componentPath))
         @php
         
-            $uid = isset($block['data']['blockTitle']) ? \Illuminate\Support\Str::slug($block['data']['blockTitle']) : 'block-' . uniqid();
+            $uid = filled($block['data']['blockAnchor'] ?? null)
+                ? \Illuminate\Support\Str::slug($block['data']['blockAnchor'])
+                : (filled($block['data']['blockTitle'] ?? null) ? \Illuminate\Support\Str::slug($block['data']['blockTitle']) : 'block-' . uniqid());
             
             $mb = $block['data']['mb'] ?? "";
             $mdMb = $block['data']['mdMb'] ?? "";

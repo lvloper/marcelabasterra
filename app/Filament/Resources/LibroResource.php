@@ -68,6 +68,15 @@ class LibroResource extends ResourceBase
             TextInput::make('area_tematica')
                 ->label('Área temática'),
 
+            \Filament\Schemas\Components\Select::make('categoria')
+                ->label('Categoría')
+                ->options([
+                    'autoria' => 'Libros',
+                    'coautoria' => 'Libros en coautoría',
+                    'direccion' => 'Dirección de libros',
+                ])
+                ->default('autoria'),
+
             Repeater::make('tomos')
                 ->label('Tomos')
                 ->schema([

@@ -212,7 +212,7 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
             </div>
 
         @else
-            <div class="bg-[var(--color-surface-ivory)]">
+            <div class="bg-gray-3">
                 <div class="mx-auto max-w-[1440px] px-5 py-12 sm:px-8 lg:px-12 lg:py-20 xl:px-16">
                     @if ($heroBadge)
                         <p class="hero-reveal mb-8 border-b border-primary pb-4 font-source text-sm text-primary">{{ $heroBadge }}</p>

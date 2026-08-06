@@ -1,9 +1,12 @@
 <x-layout :notLayout="false">
     <article>
-        <header class="border-b border-primary bg-[var(--color-surface-ivory)]">
+        <header class="border-b border-primary bg-gray-3">
             <div class="container mx-auto grid grid-cols-1 gap-12 py-16 lg:grid-cols-12 lg:items-center lg:py-24">
                 <div class="order-2 lg:order-1 lg:col-span-7">
-                    <a href="{{ route('publications.books') }}" class="inline-flex min-h-11 items-center gap-2 font-body text-base text-gray focus:outline-none focus:ring-2 focus:ring-accent">← Volver a Libros</a>
+                    <x-breadcrumbs :items="[
+                        ['label' => 'Publicaciones', 'url' => route('publications.index')],
+                        ['label' => 'Libros', 'url' => route('publications.books')],
+                    ]" :current="$libro->title" class="mb-10" />
                     <p class="mt-10 font-source text-lg text-primary">Libro · {{ $libro->fecha_publicacion?->year }}</p>
                     <h1 class="mt-5 font-sans text-4xl font-bold leading-[1.02] tracking-[-0.025em] text-primary sm:text-5xl lg:text-7xl">{{ $libro->title }}</h1>
 

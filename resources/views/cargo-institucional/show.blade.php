@@ -7,10 +7,7 @@
         <div class="absolute inset-0 bg-grid pointer-events-none z-0"></div>
         <div class="relative z-10 container mx-auto px-4 py-12 md:py-20">
             @if ($parentRoute)
-                <a href="{{ url($parentRoute->full_slug) }}" class="inline-flex items-center gap-1.5 text-sm text-secondary hover:text-primary transition-colors mb-6 font-sans group">
-                    <x-lucide-arrow-left class="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-                    {{ $parentRoute->title }}
-                </a>
+                <x-breadcrumbs :items="[['label' => $parentRoute->title, 'url' => url($parentRoute->full_slug)]]" :current="$cargoInstitucional->cargo" class="mb-6" />
             @endif
 
             <div class="max-w-3xl mx-auto">

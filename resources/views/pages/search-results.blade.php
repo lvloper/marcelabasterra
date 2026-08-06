@@ -2,6 +2,9 @@
     <div class="pt-0 bg-gray-3">
         <div class="bg-primary">
             <div class="relative" style="z-index: 1;">
+                <div class="flex items-start justify-start container pt-10 md:pt-12">
+                    <x-breadcrumbs dark :items="[['label' => 'Resultados de búsqueda']]" />
+                </div>
                 <div class="flex items-start justify-start container">
                     <h1 class="title-animate uppercase text-white pt-16 md:pt-20 lg:pt-18 max-w-[800px] font-bold lg:leading-[1] lg:mb-[-16px] text-xl lg:text-5xl leading-snug">
                         Resultados de búsqueda

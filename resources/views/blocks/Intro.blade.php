@@ -105,7 +105,7 @@
                         @if (filled($quote ?? null))
                             <blockquote class="relative mt-0 border-t-2 border-primary bg-gray-3 px-8 py-8">
                                 <span
-                                    class="absolute right-8 top-6 font-[var(--font-editorial)] text-[clamp(3.5rem,5vw,5rem)] leading-none text-accent"
+                                    class="absolute right-8 top-4 font-[var(--font-editorial)] text-[clamp(5rem,8vw,8rem)] leading-none text-accent"
                                     aria-hidden="true"
                                 >
                                     &ldquo;

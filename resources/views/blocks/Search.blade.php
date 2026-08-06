@@ -34,7 +34,7 @@
         };
     @endphp
 
-    <x-block class="border-y border-gray-2 bg-[var(--color-surface-ivory)] py-14 sm:py-16 lg:py-20">
+    <x-block class="border-y border-gray-2 bg-gray-3 py-14 sm:py-16 lg:py-20">
         <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
             <header class="grid gap-6 border-b border-primary pb-8 lg:grid-cols-12 lg:items-end lg:gap-12">
                 <div class="lg:col-span-7">
@@ -111,21 +111,21 @@
                                             <img src="{{ $cardImage }}" alt="" class="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none" loading="lazy">
                                         </a>
                                     @endif
-                                    <div class="flex flex-1 flex-col p-6">
-                                        <p class="font-[var(--font-editorial)] text-sm text-primary">
+                                    <div class="flex flex-1 flex-col p-5">
+                                        <p class="font-[var(--font-editorial)] text-xs text-primary">
                                             {{ $item['category_label'] }}
                                             @if ($item['year']) · <time datetime="{{ $item['date'] }}">{{ $item['year'] }}</time>@endif
                                         </p>
-                                        <h3 class="mt-3 font-[var(--font-display)] text-[1.75rem] font-normal leading-[1.05] tracking-[-0.02em] text-primary">
+                                        <h3 class="mt-2 font-[var(--font-display)] text-[1.25rem] font-normal leading-[1.1] tracking-[-0.02em] text-primary">
                                             <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">{{ $item['title'] }}</a>
                                         </h3>
                                         @if ($item['institution'] || $item['medium'])
-                                            <p class="mt-3 font-[var(--font-body)] text-sm text-gray">{{ $item['institution'] ?: $item['medium'] }}</p>
+                                            <p class="mt-2 font-[var(--font-body)] text-xs text-gray">{{ $item['institution'] ?: $item['medium'] }}</p>
                                         @endif
                                         @if ($item['summary'])
-                                            <p class="mt-4 line-clamp-3 font-[var(--font-body)] text-[1rem] leading-relaxed text-gray">{{ \Illuminate\Support\Str::limit($item['summary'], 180) }}</p>
+                                            <p class="mt-3 line-clamp-2 font-[var(--font-body)] text-sm leading-snug text-gray">{{ \Illuminate\Support\Str::limit($item['summary'], 120) }}</p>
                                         @endif
-                                        <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="group/link mt-auto inline-flex min-h-12 w-fit items-center border-b border-primary pt-6 font-[var(--font-body)] text-sm font-semibold text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                        <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="group/link mt-auto inline-flex min-h-10 w-fit items-center border-b border-primary pt-4 font-[var(--font-body)] text-xs font-semibold text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
                                             {{ $item['action_label'] }} <span class="ml-2 transition-transform group-hover/link:translate-x-1 motion-reduce:transition-none" aria-hidden="true">{{ $item['external'] ? '↗' : '→' }}</span>
                                             @if($item['external'])<span class="sr-only"> (se abre en una pestaña nueva)</span>@endif
                                         </a>

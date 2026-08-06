@@ -2,7 +2,10 @@
     <section class="border-b border-primary bg-white">
         <div class="container mx-auto grid grid-cols-1 gap-12 py-20 lg:grid-cols-12 lg:py-28">
             <div class="lg:col-span-8">
-                <a href="{{ route('publications.index') }}" class="inline-flex min-h-11 items-center gap-2 font-body text-base text-gray focus:outline-none focus:ring-2 focus:ring-accent">← Publicaciones</a>
+                <x-breadcrumbs :items="[
+                    ['label' => 'Publicaciones', 'url' => route('publications.index')],
+                    ['label' => 'Artículos académicos'],
+                ]" class="mb-10" />
                 <h1 class="mt-10 max-w-5xl font-sans text-5xl font-bold leading-[0.96] tracking-[-0.035em] text-primary sm:text-6xl lg:text-[5.5rem]">Artículos académicos</h1>
             </div>
             <div class="self-end border-l border-primary pl-8 lg:col-span-4">
@@ -12,13 +15,13 @@
         </div>
     </section>
 
-    <section class="sticky top-[var(--header-height)] z-20 border-b border-primary bg-[var(--color-surface-ivory)]">
+    <section class="sticky top-[var(--header-height)] z-20 border-b border-primary bg-gray-3">
         <form action="{{ route('publications.articles') }}" method="GET" class="container mx-auto grid grid-cols-1 gap-px bg-primary lg:grid-cols-12" aria-label="Filtros de artículos académicos">
-            <div class="bg-[var(--color-surface-ivory)] p-4 lg:col-span-5">
+            <div class="bg-gray-3 p-4 lg:col-span-5">
                 <label for="publication-search" class="mb-2 block font-body text-sm text-primary">Buscar por título o referencia</label>
                 <input id="publication-search" name="q" value="{{ $search }}" type="search" class="min-h-12 w-full border border-primary bg-white px-4 font-body text-base text-primary outline-none focus:ring-2 focus:ring-accent" placeholder="Ej.: acceso a la información">
             </div>
-            <div class="bg-[var(--color-surface-ivory)] p-4 lg:col-span-2">
+            <div class="bg-gray-3 p-4 lg:col-span-2">
                 <label for="publication-year" class="mb-2 block font-body text-sm text-primary">Año</label>
                 <select id="publication-year" name="year" class="min-h-12 w-full border border-primary bg-white px-4 font-body text-base text-primary outline-none focus:ring-2 focus:ring-accent">
                     <option value="">Todos</option>
@@ -27,7 +30,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="bg-[var(--color-surface-ivory)] p-4 lg:col-span-3">
+            <div class="bg-gray-3 p-4 lg:col-span-3">
                 <label for="publication-topic" class="mb-2 block font-body text-sm text-primary">Temática</label>
                 <select id="publication-topic" name="topic" class="min-h-12 w-full border border-primary bg-white px-4 font-body text-base text-primary outline-none focus:ring-2 focus:ring-accent">
                     <option value="">Todas</option>
@@ -52,7 +55,7 @@
             @else
                 <div class="space-y-6">
                     @foreach ($articles as $article)
-                        <article class="group grid grid-cols-1 border border-primary bg-white transition-colors duration-300 hover:bg-[var(--color-surface-ivory)] lg:grid-cols-12">
+                        <article class="group grid grid-cols-1 border border-primary bg-white transition-colors duration-300 hover:bg-gray-3 lg:grid-cols-12">
                             <div class="border-b border-primary p-6 lg:col-span-2 lg:border-b-0 lg:border-r lg:p-8">
                                 <p class="font-source text-4xl text-primary">{{ $article->fecha_publicacion?->year }}</p>
                                 <p class="mt-3 font-body text-sm leading-relaxed text-gray">{{ $article->tematica }}</p>

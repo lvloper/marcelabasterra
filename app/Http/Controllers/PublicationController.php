@@ -17,10 +17,16 @@ final class PublicationController extends Controller
     {
         $route = $this->route('publicaciones');
         $latestBook = Libro::with('route')->isPublished()->orderByDesc('fecha_publicacion')->first();
+        $recentBooks = Libro::with('route')->isPublished()
+            ->whereNotNull('portada')
+            ->orderByDesc('fecha_publicacion')
+            ->take(4)
+            ->get();
 
         return view('publications.index', [
             'route' => $route,
             'latestBook' => $latestBook,
+            'recentBooks' => $recentBooks,
             'booksCount' => Libro::query()->isPublished()->count(),
             'articlesCount' => ArticuloAcademico::has('route')->count(),
             'topicsCount' => ArticuloAcademico::has('route')->distinct()->count('tematica'),

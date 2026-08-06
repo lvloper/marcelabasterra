@@ -11,13 +11,11 @@
     @endphp
 
     <article class="bg-white">
-        <header class="border-b border-primary bg-[var(--color-surface-ivory)]">
+        <header class="border-b border-primary bg-gray-3">
             <div class="mx-auto grid max-w-[1440px] lg:grid-cols-12">
                 <div class="px-5 py-14 sm:px-8 sm:py-20 lg:col-span-7 lg:px-12 lg:py-24 xl:px-16">
                     @if ($parentRoute)
-                        <a href="{{ url($parentRoute->full_slug) }}#agenda-y-archivo" class="group inline-flex min-h-11 items-center border-b border-primary font-body text-sm font-semibold text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                            <span class="mr-2 transition-transform duration-200 group-hover:-translate-x-1" aria-hidden="true">←</span> Jornadas y Congresos
-                        </a>
+                        <x-breadcrumbs :items="[['label' => 'Jornadas y Congresos', 'url' => url($parentRoute->full_slug . '#agenda-y-archivo')]]" :current="$evento->title" class="mb-10" />
                     @endif
 
                     <p class="mt-10 font-source text-sm text-primary"><span class="mr-3 text-accent" aria-hidden="true">—</span>{{ \App\Support\EventCatalog::TYPE_LABELS[$evento->tipo] ?? 'Actividad académica' }} · {{ $isPast ? 'Realizado' : 'Próximo' }}</p>

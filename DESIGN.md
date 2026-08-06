@@ -329,12 +329,9 @@ No utilizar el monograma como patrón decorativo repetido en exceso.
 | `text-muted` | `#bec4c7` | Texto muy secundario y elementos decorativos; no usar para párrafos |
 | `surface-white` | `#ffffff` | Fondo general |
 | `surface-light` | `#f3f4f4` | Fondo gris claro |
-| `surface-ivory` | `#f5f0e8` | Fondo editorial cálido |
 | `border-light` | `#bec4c7` | Divisores suaves |
 | `on-primary` | `#ffffff` | Texto principal sobre azul |
 | `on-primary-soft` | `#f3f4f4` | Texto secundario sobre azul |
-
-`surface-ivory` se adopta como valor operativo para el fondo marfil. Si la dirección de arte final modifica este valor, debe actualizarse en un único token y no directamente en componentes.
 
 ## 8.2 Fondo general
 
@@ -344,7 +341,7 @@ El fondo base del sitio es:
 background: #ffffff;
 ```
 
-El blanco puro permite que las secciones marfil, gris claro y azul institucional generen contrastes claros.
+El blanco puro permite que las secciones gris claro y azul institucional generen contrastes claros.
 
 ## 8.3 Azul institucional
 
@@ -365,23 +362,7 @@ Se utiliza para:
 
 No sustituirlo por negro.
 
-## 8.4 Marfil
-
-`#f5f0e8` puede utilizarse frecuentemente en secciones completas.
-
-Funciones:
-
-- aportar temperatura editorial;
-- separar capítulos;
-- acompañar textos largos;
-- panel de navegación;
-- citas;
-- publicaciones;
-- transiciones entre bloques fotográficos y bloques institucionales.
-
-No usarlo como fondo de todas las tarjetas dentro de una sección marfil.
-
-## 8.5 Gris claro
+## 8.4 Gris claro
 
 `#f3f4f4` se utiliza para:
 
@@ -390,11 +371,11 @@ No usarlo como fondo de todas las tarjetas dentro de una sección marfil.
 - áreas informativas;
 - formularios;
 - estados suaves;
-- fondos sobre los que el marfil no sea apropiado.
+- fondos editoriales de secciones completas.
 
-No debe competir en frecuencia con el blanco y el marfil.
+No debe competir en frecuencia con el blanco.
 
-## 8.6 Celeste de acento
+## 8.5 Celeste de acento
 
 `#45bfe3` debe usarse poco.
 
@@ -421,7 +402,7 @@ Usos prohibidos:
 
 Regla recomendada: el celeste no debería ocupar visualmente más del 5 % de una vista.
 
-## 8.7 Gris base
+## 8.6 Gris base
 
 `#5c6b73` se utiliza para:
 
@@ -434,7 +415,7 @@ Regla recomendada: el celeste no debería ocupar visualmente más del 5 % de una
 
 Puede usarse el azul institucional para titulares y datos de mayor jerarquía.
 
-## 8.8 Colores reducidos
+## 8.7 Colores reducidos
 
 `#bec4c7` y `#9499b0` no deben utilizarse para párrafos pequeños sobre blanco.
 
@@ -448,7 +429,7 @@ Reservarlos para:
 - metadatos grandes;
 - texto sobre fondos donde exista contraste suficiente.
 
-## 8.9 Combinaciones preferidas
+## 8.8 Combinaciones preferidas
 
 ### Fondo blanco
 
@@ -457,13 +438,6 @@ Reservarlos para:
 - borde: gris reducido o azul;
 - acento: celeste;
 - botón primario: azul con texto blanco.
-
-### Fondo marfil
-
-- título: azul institucional;
-- párrafo: gris base;
-- borde: azul o gris base con baja presencia;
-- botón: azul pleno o borde azul.
 
 ### Fondo gris claro
 
@@ -726,7 +700,7 @@ El cambio de ancho debe ser visible y deliberado.
 Se permiten secciones que ocupen todo el viewport para:
 
 - fondos azules;
-- fondos marfil;
+- fondos gris claro;
 - galerías;
 - fotografías;
 - videos;
@@ -858,10 +832,9 @@ La variación debe estar dentro de la escala definida.
 Se permiten:
 
 1. blanco;
-2. marfil;
-3. gris claro;
-4. azul institucional;
-5. fotografía como bloque independiente, sin texto encima.
+2. gris claro;
+3. azul institucional;
+4. fotografía como bloque independiente, sin texto encima.
 
 ## 12.2 Alternancia
 
@@ -895,7 +868,7 @@ Uso:
 - cifras;
 - pensamiento.
 
-No usar más de dos grandes superficies azules consecutivas sin una pausa blanca, marfil, gris o fotográfica.
+No usar más de dos grandes superficies azules consecutivas sin una pausa blanca, gris o fotográfica.
 
 ## 12.4 Bordes
 
@@ -1184,7 +1157,7 @@ Nunca mediante elevación artificial.
 
 Hover:
 
-- invertir a fondo blanco o marfil;
+- invertir a fondo blanco;
 - texto azul;
 - desplazar flecha si existe.
 
@@ -1277,7 +1250,6 @@ Deben sentirse como piezas editoriales, no como widgets.
 Pueden usar:
 
 - fondo blanco;
-- fondo marfil;
 - fondo gris;
 - fondo azul;
 - borde de 1 px;
@@ -1444,7 +1416,7 @@ El footer debe cerrar el sitio con autoridad, no actuar como una zona residual.
 Puede ser:
 
 - azul institucional;
-- marfil;
+- gris claro;
 - blanco con borde superior.
 
 ## 19.2 Contenido
@@ -1882,7 +1854,7 @@ Características permitidas:
 - titular muy grande;
 - grilla asimétrica;
 - fotografía independiente;
-- fondo blanco, marfil o azul;
+- fondo blanco, gris claro o azul;
 - introducción en Source Serif 4;
 - botón primario y secundario;
 - año o etiqueta vertical;
@@ -1961,7 +1933,7 @@ Debe seguir pareciendo institucional.
 - gran escala;
 - Source Serif 4 o Bellota Text según tipo;
 - borde o línea;
-- fondo marfil, blanco o azul;
+- fondo gris claro, blanco o azul;
 - atribución clara;
 - sin comillas decorativas gigantes.
 
@@ -2088,7 +2060,6 @@ Cada vista previa es una tarjeta editorial rectangular:
 
   --color-surface-white: #ffffff;
   --color-surface-light: #f3f4f4;
-  --color-surface-ivory: #f5f0e8;
 
   --color-border-light: #bec4c7;
   --color-on-primary: #ffffff;
@@ -2129,7 +2100,6 @@ container-reading
 section-space
 surface-white
 surface-light
-surface-ivory
 surface-primary
 font-display
 font-body
@@ -2242,7 +2212,6 @@ text-base
 text-muted
 surface-white
 surface-light
-surface-ivory
 border-light
 ```
 
@@ -2535,7 +2504,7 @@ La LLM no debe decidir por sí sola:
 
 ## 29.3 Listado de publicaciones
 
-- fondo marfil;
+- fondo gris claro;
 - grilla con separación;
 - tarjetas blancas o transparentes;
 - títulos en Bellota o Source Serif según jerarquía;
@@ -2567,7 +2536,7 @@ La LLM no debe decidir por sí sola:
 
 - contenedor reducido;
 - Source Serif 4 o Bellota Text;
-- fondo marfil;
+- fondo gris claro;
 - borde izquierdo;
 - atribución;
 - amplio espacio.
@@ -2727,8 +2696,7 @@ Al trabajar sobre este proyecto:
 - Source Serif 4 en contenido editorial.
 - Azul institucional.
 - Blanco general.
-- Marfil frecuente.
-- Gris claro secundario.
+- Gris claro frecuente.
 - Celeste como acento.
 - Bordes de 1 px.
 - Grillas asimétricas.
@@ -2736,7 +2704,7 @@ Al trabajar sobre este proyecto:
 - Fotografías naturales.
 - Tarjetas separadas.
 - Header fijo y reducido.
-- Menú amplio marfil.
+- Menú amplio gris claro.
 - Animación editorial.
 - Carruseles manuales.
 - Vistas previas de conferencias en carrusel de tarjetas editoriales (borde azul, poster 16:9, índice editorial, botón "Reproducir").

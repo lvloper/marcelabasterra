@@ -155,7 +155,7 @@
                 <a
                     href="{{ $featuredResource['url'] }}"
                     @if($featuredResource['external']) target="_blank" rel="noopener" @endif
-                    class="group border-t border-primary bg-[var(--color-surface-ivory)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent lg:col-span-7 lg:border-l lg:border-t-0"
+                    class="group border-t border-primary bg-gray-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent lg:col-span-7 lg:border-l lg:border-t-0"
                     aria-label="Ver {{ $featuredResource['title'] }}"
                 >
                     @if ($featuredImage)
