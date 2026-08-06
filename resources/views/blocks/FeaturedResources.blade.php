@@ -97,7 +97,7 @@
             @if (filled($title ?? null) || filled($description ?? null))
                 <header class="grid gap-6 border-t border-primary pt-6 md:gap-8 lg:grid-cols-12 lg:pt-8">
                     @if (filled($title ?? null))
-                        <h2 class="max-w-[14ch] font-[var(--font-display)] text-[clamp(2.5rem,4.4vw,4.5rem)] font-normal leading-[0.98] tracking-[-0.03em] text-primary lg:col-span-7">
+                        <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary lg:col-span-7">
                             {{ $title }}
                         </h2>
                     @endif

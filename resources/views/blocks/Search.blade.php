@@ -38,12 +38,9 @@
         <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
             <header class="grid gap-6 border-b border-primary pb-8 lg:grid-cols-12 lg:items-end lg:gap-12">
                 <div class="lg:col-span-7">
-                    <p class="mb-4 flex items-center gap-3 font-[var(--font-editorial)] text-sm text-primary">
-                        <span class="h-px w-10 bg-accent" aria-hidden="true"></span>
-                        Archivo consultable
-                    </p>
+                    <p class="mb-4 font-source text-2xl text-gray">Archivo consultable</p>
                     @if ($title ?? null)
-                        <h2 class="max-w-[15ch] font-[var(--font-display)] text-[clamp(2.5rem,5vw,4.75rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary">{{ $title }}</h2>
+                        <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary">{{ $title }}</h2>
                     @endif
                 </div>
                 @if ($description ?? null)
@@ -172,7 +169,7 @@
     <x-block class="border-y border-gray-2 bg-white py-14 md:py-16">
         <div class="mx-auto max-w-[800px] px-5 sm:px-8">
             @if ($title ?? null)
-                <h2 class="font-[var(--font-display)] text-[clamp(2.5rem,5vw,4.5rem)] font-normal leading-[0.98] tracking-[-0.03em] text-primary">{{ $title }}</h2>
+                <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary">{{ $title }}</h2>
             @endif
             @if ($description ?? null)
                 <p class="mt-5 font-[var(--font-editorial)] text-xl leading-relaxed text-gray">{{ $description }}</p>

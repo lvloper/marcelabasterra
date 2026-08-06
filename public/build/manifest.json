@@ -24,7 +24,7 @@
     "src": "public/fonts/WorkSans-SemiBold.ttf"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BDMzne-h.css",
+    "file": "assets/app-BhAiDzBG.css",
     "name": "app",
     "names": [
       "app.css"
@@ -41,7 +41,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-B_ddubmQ.js",
+    "file": "assets/app-MiLpUmRe.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,

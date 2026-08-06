@@ -572,7 +572,23 @@ Los titulares:
 
 No centrar titulares por defecto.
 
-## 9.4 Saltos manuales
+## 9.4 Estándar de titular de sección (obligatorio)
+
+Todo titular de sección de un bloque CMS (EventsListing, Search, EventsHighlight, Cards, ContactForm, etc.) debe componerse en **dos escalas**:
+
+- **Etiqueta de sección**: Source Serif 4, `clamp` entre 24 px y 32 px (`text-2xl`), color gris base sobre superficies claras (`text-gray`) o gris claro sobre azul institucional (`text-gray-3`), alineada a la izquierda, sin guiones, viñetas ni decoraciones previas.
+- **Título**: Bellota Text, `font-size: clamp(2.75rem, 5.5vw, 5rem)`, `font-weight: normal`, `line-height: 0.96`, `letter-spacing: -0.035em`, `max-width: 16ch`, `color: azul institucional` sobre superficies claras (`text-primary`) o blanco sobre azul institucional (`text-white`), alineado a la izquierda.
+
+Reglas de aplicación:
+
+- Etiqueta y título separados por 16 px (`mb-4` en la etiqueta).
+- No usar `font-bold`, mayúsculas sistemáticas ni centrado en titulares de sección.
+- La escala es fluida (clamp), no escalones de breakpoint.
+- **Variantes compactas**: banners (CTA) y paneles funcionales (CVDownload) mantienen la misma familia y tratamiento (normal, tracking negativo, izquierda) pero con escala reducida: `clamp(1.75rem, 3vw, 2.75rem)`.
+- En superficies azules, invertir únicamente los colores del token (etiqueta `text-gray-3`, título `text-white`); nunca cambiar tipografía, peso ni alineación.
+- Los titulares de página (h1 de Home, hero y detalle de contenido) conservan su escala Display propia (§ 9.2), no esta regla.
+
+## 9.5 Saltos manuales
 
 Se permiten en:
 
@@ -589,7 +605,7 @@ No usarlos en:
 - listados;
 - contenidos que puedan cambiar desde CMS sin control editorial.
 
-## 9.5 Texto base
+## 9.6 Texto base
 
 Tamaño recomendado en desktop:
 
@@ -600,7 +616,7 @@ line-height: 1.6;
 
 No reducir el cuerpo principal a 14 px o 15 px.
 
-## 9.6 Lectura larga
+## 9.7 Lectura larga
 
 Los textos extensos deben:
 
@@ -612,7 +628,7 @@ Los textos extensos deben:
 - ofrecer contraste suficiente;
 - evitar columnas múltiples para artículos largos.
 
-## 9.7 Introducciones
+## 9.8 Introducciones
 
 Los párrafos introductorios pueden usar Source Serif 4 entre 24 px y 32 px.
 
@@ -624,7 +640,7 @@ Se utilizan en:
 - textos institucionales;
 - introducciones de trayectoria.
 
-## 9.8 Citas
+## 9.9 Citas
 
 - Declaración institucional o concepto breve: Bellota Text.
 - Cita textual, jurídica o académica: Source Serif 4.
@@ -633,7 +649,7 @@ Se utilizan en:
 - Se permite una línea vertical o borde superior.
 - Se permite un monograma pequeño como sello.
 
-## 9.9 Mayúsculas
+## 9.10 Mayúsculas
 
 No utilizar mayúsculas sistemáticamente.
 
@@ -646,7 +662,7 @@ Permitidas para:
 
 Las etiquetas editoriales principales pueden permanecer en escritura normal con Source Serif 4.
 
-## 9.10 Subrayados
+## 9.11 Subrayados
 
 Se permite subrayar una palabra o fragmento con celeste.
 
@@ -1381,7 +1397,7 @@ El panel amplio contiene el mapa completo del sitio.
 Fondo:
 
 ```text
-Marfil
+Gris claro (`gray-3`, #f3f4f4)
 ```
 
 Puede incluir:
@@ -1515,6 +1531,8 @@ No tratar cifras como métricas de una startup.
 Usar Source Serif 4.
 
 No son obligatorias en todas las secciones.
+
+Cuando un bloque incluye etiqueta + titular de sección, aplicar la composición estándar de **dos escalas** definida en § 9.4: etiqueta Source Serif 4 a escala `text-2xl` (24–32 px), gris base, sin guiones ni viñetas decorativas, separada 16 px del titular.
 
 Incluirlas cuando:
 
@@ -2015,6 +2033,43 @@ Ejemplos:
 - Contactar
 
 No usar urgencia artificial ni lenguaje comercial agresivo.
+
+## 24.13 Vistas previas de conferencias y exposiciones (estándar)
+
+Estándar obligatorio de presentación para las vistas previas del bloque **Conferencias y exposiciones** (EventsListing en modo vídeo) y para cualquier catálogo de intervenciones audiovisuales (conferencias, exposiciones, entrevistas).
+
+### Superficie y cabecera
+
+- Sección sobre gris claro (`surface-light` / `bg-gray-3`) delimitada con borde superior e inferior de 1 px en `border-light`.
+- Cabecera estándar de dos escalas (§ 9.4): etiqueta Source Serif 4 (`text-2xl`, gris base) y título Bellota Text `clamp(2.75rem, 5.5vw, 5rem)`, azul institucional, alineado a la izquierda.
+- Descripción opcional a la derecha en Source Serif 4 (`text-xl`, gris base, `max-width` 46–48ch).
+
+### Carrusel
+
+- Carrusel de desplazamiento manual, **sin autoplay**, sin indicadores automáticos.
+- `slides-per-view: auto` con separación de 24 px entre diapositivas.
+- La primera diapositiva puede presentarse con más presencia visual (mayor ancho).
+- Navegación con botones prev/next cuadrados de 48 px: fondo blanco, borde azul institucional de 1 px, chevron de Lucide; en hover invierten (fondo azul, chevron blanco); foco celeste visible.
+- En mobile, swipe manual; la tarjeta ocupa el ancho útil del viewport y la navegación sigue disponible.
+
+### Anatomía de la tarjeta de vista previa (obligatoria)
+
+Cada vista previa es una tarjeta editorial rectangular:
+
+1. **Contenedor**: `<article>` con borde de 1 px azul institucional, fondo blanco, sin radio, sin sombra, altura completa dentro de la diapositiva.
+2. **Barra superior**: borde inferior de 1 px azul institucional; índice numerado en Source Serif 4 (escala pequeña, azul institucional) a la izquierda; tipo de actividad e institución en Work Sans (escala pequeña, gris base) a la derecha.
+3. **Poster**: relación de aspecto 16:9 (`aspect-video`), `object-cover`, color natural; en hover zoom suave moderado (≈ 1.02, 400–600 ms) con `prefers-reduced-motion`; el enlace abre en pestaña nueva (`target="_blank"`).
+4. **Cuerpo** (padding 20 px): fecha en Source Serif 4 (escala pequeña, gris base); título en Bellota Text `clamp(1.15rem, 1.35vw, 1.4rem)`, peso normal, `line-height` ≈ 1.12, `letter-spacing: -0.02em`, azul institucional; acción anclada al pie.
+5. **Acción**: botón secundario compacto ("Reproducir" + flecha `→`, escritura normal), borde azul de 1 px, texto azul, altura mínima 44 px; en hover invierte (fondo azul, texto blanco) y la flecha se desplaza 4 px.
+
+### Reglas invariables
+
+- Sin texto superpuesto sobre la fotografía.
+- Sin autoplay ni reproducción automática.
+- Sin radio, sin sombra, sin hover que eleve la tarjeta.
+- `alt=""` en posters decorativos (el título visible y el enlace ya identifican el contenido).
+- Foco celeste visible en todos los enlaces, botones y controles.
+- Índice numerado solo si aporta orden editorial; no numerar de forma mecánica en otros bloques.
 
 ---
 
@@ -2608,6 +2663,14 @@ Antes de aprobar un bloque, responder:
 - [ ] ¿El hover no eleva tarjetas?
 - [ ] ¿Se respeta `prefers-reduced-motion`?
 
+## Vistas previas de conferencias (estándar § 24.13)
+
+- [ ] ¿Superficie gris claro con bordes de 1 px?
+- [ ] ¿Tarjeta rectangular con borde azul y fondo blanco?
+- [ ] ¿Poster 16:9 con zoom suave y sin texto encima?
+- [ ] ¿Carrusel manual sin autoplay con botones de 48 px?
+- [ ] ¿Acción "Reproducir →" con hover invertido?
+
 ## Accesibilidad
 
 - [ ] ¿Funciona con teclado?
@@ -2676,6 +2739,7 @@ Al trabajar sobre este proyecto:
 - Menú amplio marfil.
 - Animación editorial.
 - Carruseles manuales.
+- Vistas previas de conferencias en carrusel de tarjetas editoriales (borde azul, poster 16:9, índice editorial, botón "Reproducir").
 - Video por acción del usuario.
 - Texto vertical.
 - Contenedores de 1440 px y 720–800 px.

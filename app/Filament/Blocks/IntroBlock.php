@@ -4,13 +4,13 @@ namespace App\Filament\Blocks;
 
 use App\Filament\Forms\Components\Field;
 
-class BiographySummaryBlock extends PageBlock
+class IntroBlock extends PageBlock
 {
-    protected const NAME = 'BiographySummary';
+    protected const NAME = 'Intro';
 
-    protected const CATEGORY = 'Hero';
+    protected const CATEGORY = 'Contenido';
 
-    protected const LABEL = 'Resumen biográfico';
+    protected const LABEL = 'Intro de sección';
 
     protected static function fields(): array
     {
@@ -21,10 +21,10 @@ class BiographySummaryBlock extends PageBlock
                 'h1' => 'H1 · Título principal de página',
                 'h2' => 'H2 · Título de sección',
             ])->default('h2')->required(),
-            Field::rich('summary', 'Resumen biográfico', 'basic')->required(),
-            Field::image('photo', 'Foto de perfil', '400', '400', 'images/biography'),
-            Field::text('cta_label', 'Texto del botón'),
-            Field::route('cta_route', 'Ruta del botón'),
+            Field::rich('summary', 'Resumen', 'basic')->required(),
+            Field::image('photo', 'Foto', '400', '400', 'images/biography'),
+            Field::text('cta_label', 'Texto del enlace'),
+            Field::route('cta_route', 'Ruta del enlace'),
             Field::repeater('highlights', 'Datos destacados', [
                 Field::text('number', 'Número')->placeholder('Ej: 25+'),
                 Field::text('label', 'Etiqueta')->placeholder('Ej: años de docencia'),

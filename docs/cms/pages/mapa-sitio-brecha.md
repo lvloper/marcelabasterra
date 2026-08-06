@@ -68,7 +68,7 @@ No corresponde crear un bloque distinto por cada sección del mapa. Hero, texto,
 | Necesidad | Bloque existente | Observación |
 |---|---|---|
 | Hero de Home | `Hero` | Ya admite retrato, especialidad, descripción y CTAs. |
-| Biografía | `BiographySummary` | Debe registrarse: actualmente tiene PHP y Blade pero figura `SIN_REGISTRO`. |
+| Biografía | `Intro` | Debe registrarse: actualmente tiene PHP y Blade pero figura `SIN_REGISTRO`. |
 | Trayectoria | `Timeline` | Cubre hitos cronológicos. |
 | Publicación más reciente | `FeaturedResources` o `PublicationsHighlight` | Puede seleccionar un libro o listar destacados. |
 | Reconocimiento destacado | `MediaText` | Cubre texto, imagen/video y CTA; cargar fecha/organismo dentro del contenido. |

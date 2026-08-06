@@ -4,6 +4,7 @@
 @import "./components/text-wysiwyg.css";
 @import "./components/gallery.css";
 @import "./blocks/marquee.css";
+@import "./blocks/carousel.css";
 
 @import "./view-transition.css";
 

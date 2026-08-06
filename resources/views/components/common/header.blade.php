@@ -106,18 +106,31 @@
         ['label' => 'En medios', 'record' => $latestMedia, 'date' => $latestMedia?->fecha],
         ['label' => 'Jornada', 'record' => $latestConference, 'date' => $latestConference?->fecha],
     ])->filter(fn (array $item): bool => $item['record']?->route instanceof App\Models\Route)->values();
+
+    $firstBlock = data_get($route ?? null, 'routable.blocks.0');
+    $heroFused = is_array($firstBlock)
+        && ($firstBlock['type'] ?? null) === 'Hero'
+        && data_get($firstBlock, 'data.variant') === 'editorial';
 @endphp
 
 <header
     id="mainHeader"
-    class="fixed inset-x-0 top-0 z-50 border-b border-primary/20 bg-white text-primary"
+    class="fixed inset-x-0 top-0 z-50"
+    :class="fused && overHero ? 'bg-transparent text-primary' : 'bg-primary text-white'"
     x-data="{
         menuOpen: false,
         scrolled: false,
         logoReady: false,
+        logoRevealed: false,
+        fused: @js($heroFused),
+        overHero: @js($heroFused),
+        heroEl: null,
         init() {
             this.scrolled = window.scrollY > 24;
-            window.addEventListener('scroll', () => this.scrolled = window.scrollY > 24, { passive: true });
+            window.addEventListener('scroll', () => {
+                this.scrolled = window.scrollY > 24;
+                if (this.fused) this.updateOverHero();
+            }, { passive: true });
 
             const logoImg = this.$refs.headerLogo;
             if (logoImg) {
@@ -126,6 +139,29 @@
                 } else {
                     logoImg.addEventListener('load', () => { this.logoReady = true; }, { once: true });
                 }
+            }
+
+            if (this.fused) {
+                const detectHero = () => {
+                    this.heroEl = document.querySelector('#main .block-Hero [data-hero-variant]');
+                    this.logoRevealed = false;
+                    this.updateOverHero();
+                };
+                detectHero();
+                document.addEventListener('livewire:navigated', detectHero);
+            }
+        },
+        updateOverHero() {
+            const headerHeight = document.getElementById('mainHeader')?.offsetHeight ?? 56;
+            this.overHero = window.scrollY <= 0;
+            if (!this.heroEl) return;
+            const heroLogo = this.heroEl.querySelector('.hero-logo');
+            if (heroLogo) {
+                if (heroLogo.getBoundingClientRect().bottom <= headerHeight) {
+                    this.logoRevealed = true;
+                }
+            } else {
+                this.logoRevealed = true;
             }
         },
         openMenu() {
@@ -153,12 +189,12 @@
             class="flex min-h-11 items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             aria-label="{{ config_text('site-name', 'Marcela Basterra') }} — Inicio"
         >
-            <span class="relative block" x-cloak x-show="logoReady">
+            <span class="relative block" x-cloak x-show="logoReady && !overHero && (!fused || logoRevealed)">
                 <img
                     x-ref="headerLogo"
                     src="{{ asset('img/Logos/logo-sin-tagline.svg') }}"
                     alt="{{ config_text('site-name', 'Marcela Basterra') }}"
-                    class="h-9 w-auto lg:h-10"
+                    class="h-9 w-auto brightness-0 invert lg:h-10"
                 >
             </span>
         </a>
@@ -168,7 +204,7 @@
                 @foreach ($featuredNavigation as $index => $item)
                     <x-link
                         allowWireNavitage
-                        class="font-body relative flex min-h-11 items-center text-[15px] leading-none text-primary transition-colors duration-200 after:absolute after:inset-x-0 after:bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent {{ $item['route']->isActive() ? 'after:scale-x-100' : '' }}"
+                        class="font-body relative flex min-h-11 items-center text-[15px] leading-none text-current transition-colors duration-200 after:absolute after:inset-x-0 after:bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent {{ $item['route']->isActive() ? 'after:scale-x-100' : '' }}"
                         :attrs="['route_id' => $item['route']->id]"
                     >
                         {{ $item['label'] }}
@@ -180,7 +216,7 @@
                 type="button"
                 x-ref="menuButton"
                 @click="menuOpen ? closeMenu() : openMenu()"
-                class="font-body group inline-flex min-h-11 items-center justify-center gap-3 border-0 text-[15px] text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+                class="font-body group inline-flex min-h-11 items-center justify-center gap-3 border-0 text-[15px] text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
                 :aria-expanded="menuOpen.toString()"
                 :aria-label="menuOpen ? 'Cerrar menú' : 'Abrir menú Ver más'"
                 aria-controls="site-menu-panel"
@@ -205,7 +241,7 @@
         x-transition:leave="transition duration-[250ms] ease-in motion-reduce:transition-none"
         x-transition:leave-start="translate-y-0 opacity-100"
         x-transition:leave-end="-translate-y-2 opacity-0"
-        class="archive-menu-panel fixed inset-x-0 overflow-y-auto border-y border-primary/30 bg-[var(--color-surface-ivory)]"
+        class="archive-menu-panel fixed inset-x-0 overflow-y-auto border-y border-primary/30 bg-gray-3"
         :class="scrolled ? 'top-12 lg:top-14' : 'top-14 lg:top-16'"
         role="dialog"
         aria-modal="true"

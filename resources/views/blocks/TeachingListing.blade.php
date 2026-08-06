@@ -73,7 +73,7 @@
         <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
             <header class="grid gap-6 border-t border-primary pt-6 lg:grid-cols-12 lg:gap-8 lg:pt-8">
                 @if ($title ?? null)
-                    <h2 class="max-w-[13ch] font-[var(--font-display)] text-[clamp(2.75rem,5.5vw,5.25rem)] font-normal leading-[.94] tracking-[-.035em] text-primary lg:col-span-7">
+                    <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary lg:col-span-7">
                         {{ $title }}
                     </h2>
                 @endif

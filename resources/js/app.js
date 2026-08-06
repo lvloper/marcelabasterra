@@ -42,7 +42,26 @@ function initSwiperElements() {
             element.initialize();
         }
     });
+    equalizeCarouselHeights();
 }
+
+function equalizeCarouselHeights() {
+    document.querySelectorAll('swiper-container.carousel-videos').forEach(track => {
+        const slides = Array.from(track.querySelectorAll('swiper-slide'));
+        if (slides.length === 0) return;
+        slides.forEach(slide => { slide.style.height = ''; });
+        const tallest = slides.reduce((max, slide) => Math.max(max, slide.getBoundingClientRect().height), 0);
+        if (tallest > 0) {
+            slides.forEach(slide => { slide.style.height = `${tallest}px`; });
+        }
+    });
+}
+
+let carouselResizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(carouselResizeTimer);
+    carouselResizeTimer = setTimeout(equalizeCarouselHeights, 150);
+});
 
 // Expose for external contexts (e.g., iframe previews) and simple event hook
 // Safe if defined multiple times across navigations
@@ -71,6 +90,7 @@ document.addEventListener('livewire:init', () => {
 window.addEventListener('livewire:navigated', () => {
     setTimeout(() => {
         initSwiperElements(); // Initialize Swiper after Livewire navigation
+        equalizeCarouselHeights();
         if (window.location.hash == "") {
             window.scrollTo({top: 0});
         } else {

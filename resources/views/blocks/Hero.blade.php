@@ -79,9 +79,9 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
 <x-block class="block-Hero overflow-hidden">
     <div id="{{ $id }}" data-hero-variant="{{ $heroVariant }}">
         @if ($heroVariant === 'editorial')
-            <div class="relative min-h-svh bg-white">
-                <div class="mx-auto grid max-w-[1440px] grid-cols-1 lg:min-h-0 lg:grid-cols-12">
-                    <div class="order-1 flex flex-col justify-center bg-white px-5 py-16 pt-16 sm:px-8 lg:col-span-7 lg:bg-transparent lg:px-12 lg:py-24 lg:pt-20 xl:px-16">
+            <div class="relative bg-white">
+                <div class="mx-auto grid max-w-[1440px] grid-cols-1 lg:grid-cols-12">
+                    <div class="hero-fused-top order-1 flex flex-col justify-center bg-white px-5 py-16 pt-16 sm:px-8 lg:col-span-7 lg:bg-transparent lg:px-12 lg:py-24 lg:pt-20 xl:px-16">
                         @if ($heroBadge)
                             <p class="hero-reveal mb-10 flex items-center gap-4 font-source text-sm text-primary">
                                 <span class="h-px w-12 bg-accent" aria-hidden="true"></span>
@@ -151,7 +151,7 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
                     <div class="relative order-2 min-h-[24rem] border-t border-gray-2 bg-white lg:col-span-5 lg:border-t-0 lg:bg-white lg:min-h-auto">
                         @if ($profilePhoto)
                             <div class="hero-image-mask h-full min-h-[28rem] overflow-hidden">
-                                <img src="{{ $profilePhoto }}" alt="{{ $heroImageAlt }}" class="hero-photo h-full w-full object-cover object-top" fetchpriority="high">
+                                <img src="{{ $profilePhoto }}" alt="{{ $heroImageAlt }}" class="hero-photo h-full w-full object-cover object-center" fetchpriority="high">
                             </div>
                         @else
                             <div class="flex min-h-28 items-end p-6 lg:min-h-[28rem] lg:p-12" aria-hidden="true">
@@ -302,9 +302,10 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
     @pushOnce('scripts', 'block-hero')
         <style>
             .block-Hero .hero-dot-pattern { background-image: radial-gradient(circle, rgba(90,107,115,0.15) 1.5px, transparent 1.5px); background-size: 28px 28px; }
+            .blocks-container > .block-Hero:first-child [data-hero-variant="editorial"] .hero-fused-top { padding-top: 0; }
             .block-Hero .hero-reveal,
             .block-Hero .hero-image-mask { opacity: 0; transform: translateY(20px); }
-            .block-Hero .hero-image-mask { transform: translateY(0); clip-path: inset(0 0 100% 0); }
+            .block-Hero .hero-image-mask { transform: translateY(0); clip-path: inset(100% 0 0 0); }
             @media (prefers-reduced-motion: reduce) {
                 .block-Hero .hero-reveal,
                 .block-Hero .hero-image-mask { opacity: 1 !important; transform: none !important; clip-path: none !important; }
@@ -334,7 +335,7 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
                     window.gsap.to(reveals, { opacity: 1, y: 0, duration: 0.8, stagger: 0.09, ease: 'power3.out', delay: 0.1 });
                 }
                 if (masks.length > 0) {
-                    window.gsap.to(masks, { opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: 1.1, ease: 'power3.inOut', delay: 0.15 });
+                    window.gsap.to(masks, { opacity: 1, clipPath: 'inset(0% 0 0 0)', duration: 1.1, ease: 'power3.inOut', delay: 0.15 });
                 }
 
                 const heroLogo = block.querySelector('.hero-logo');

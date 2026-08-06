@@ -641,7 +641,7 @@ class DatabaseSeeder extends Seeder
                 'cta_tertiary' => array_merge($this->routeRef('actualidad-y-medios'), ['btn_label' => 'Actualidad']),
             ]),
             // 2. Presentación
-            $this->block('BiographySummary', [
+            $this->block('Intro', [
                 'title' => 'Presentación',
                 'summary' => '<p>Doctora en Derecho (UBA), Profesora Titular de Derecho Constitucional de la Universidad de Buenos Aires y referente en derecho constitucional y procesal constitucional. Ha ocupado destacados cargos institucionales, dictado conferencias en numerosos países y es autora de más de 50 libros y un centenar de publicaciones especializadas. Su labor ha sido distinguida por la Legislatura de la Ciudad Autónoma de Buenos Aires por su aporte a las Ciencias Jurídicas.</p>',
                 'photo' => null,
@@ -713,7 +713,7 @@ class DatabaseSeeder extends Seeder
 
         return [
             // 1. Bio / Presentacion
-            $this->block('BiographySummary', [
+            $this->block('Intro', [
                 'blockAnchor' => 'biografia',
                 'title' => 'Sobre mí',
                 'heading_level' => 'h1',
@@ -863,7 +863,7 @@ class DatabaseSeeder extends Seeder
                 'cta_secondary' => $this->routeAttrs($publicaciones, 'Ver publicaciones'),
                 'cta_tertiary' => $this->routeAttrs($actualidad, 'Actualidad y medios'),
             ]),
-            $this->block('BiographySummary', [
+            $this->block('Intro', [
                 'title' => 'Una mirada sobre el derecho constitucional',
                 'summary' => '<p>Este texto es ficticio y representa un resumen biográfico editable desde el CMS. Aquí podría presentarse la trayectoria, las áreas de especialización y la perspectiva profesional.</p>',
                 'photo' => null,

@@ -1,0 +1,36 @@
+.carousel-videos {
+    --carousel-items: 1.3;
+    --carousel-gap: 1.5rem;
+    --carousel-unit: calc((100% - var(--carousel-items) * var(--carousel-gap)) / var(--carousel-items));
+    width: 100%;
+}
+
+.carousel-videos::part(wrapper) {
+    align-items: stretch;
+}
+
+.carousel-videos-item {
+    width: var(--carousel-unit);
+}
+
+.carousel-videos-principal {
+    width: calc(var(--carousel-unit) * 1.3 + var(--carousel-gap) * 0.3);
+}
+
+@media (min-width: 640px) {
+    .carousel-videos {
+        --carousel-items: 2.3;
+    }
+}
+
+@media (min-width: 768px) {
+    .carousel-videos {
+        --carousel-items: 3.3;
+    }
+}
+
+@media (min-width: 1024px) {
+    .carousel-videos {
+        --carousel-items: 4.5;
+    }
+}

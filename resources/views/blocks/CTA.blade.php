@@ -7,7 +7,7 @@
         <div class="flex flex-col gap-7 md:flex-row md:items-center md:justify-between">
             <div>
                 @if ($title ?? false)
-                    <h2 class="font-sans text-3xl font-normal leading-tight tracking-[-0.025em] text-white sm:text-4xl">{{ $title }}</h2>
+                    <h2 class="font-sans text-[clamp(1.9rem,3vw,2.75rem)] font-normal leading-tight tracking-[-0.025em] text-white">{{ $title }}</h2>
                 @endif
 
                 @if ($text ?? false)

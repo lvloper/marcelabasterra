@@ -92,7 +92,7 @@
     <div class="container mx-auto px-4">
         <div class="mx-auto max-w-5xl">
         @if ($title ?? null)
-            <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4 text-center">{{ $title }}</h2>
+            <h2 class="mb-4 max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary">{{ $title }}</h2>
         @endif
 
         @if ($htmlDescription)

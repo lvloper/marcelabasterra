@@ -1,7 +1,7 @@
 # T25 — Page: Sobre mí
 
 - **Estado**: ✅ implementada
-- **Depende de**: T15 (TimelineBlock), T17 (BiographySummaryBlock), T14 (CTABlock), T8 (CargoInstitucional), T12 (CardsBlock verificado)
+- **Depende de**: T15 (TimelineBlock), T17 (IntroBlock), T14 (CTABlock), T8 (CargoInstitucional), T12 (CardsBlock verificado)
 - **Ruta**: `/sobre-mi`
 
 ---
@@ -10,7 +10,7 @@
 
 | # | Bloque | Contenido |
 |---|--------|-----------|
-| 1 | **BiographySummaryBlock** | Bio / Presentación completa + foto |
+| 1 | **IntroBlock** | Bio / Presentación completa + foto |
 | 2 | **ContentListBlock** | Indicadores destacados de trayectoria |
 | 3 | **ContentListBlock** | Cargos actuales consultados desde CargoInstitucional |
 | 4 | **MediaTextBlock** | Reconocimiento Personalidad Destacada + video |
@@ -21,7 +21,7 @@
 ## Checklist
 
 - [x] Crear Page "Sobre mí" con route `/sobre-mi`
-- [x] Agregar BiographySummaryBlock con bio completa
+- [x] Agregar IntroBlock con bio completa
 - [x] Agregar indicadores destacados de trayectoria
 - [x] Consultar cargos desde CargoInstitucional mediante ContentListBlock
 - [x] Agregar reconocimiento y video mediante MediaTextBlock

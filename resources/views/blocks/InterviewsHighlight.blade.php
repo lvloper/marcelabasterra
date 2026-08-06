@@ -20,7 +20,7 @@
 <x-block class="py-12 md:py-16">
     <div class="container mx-auto px-4">
         @if ($title ?? null)
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-center font-sans">{{ $title }}</h2>
+            <h2 class="mb-4 max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary">{{ $title }}</h2>
         @endif
         @if ($description ?? null)
             <p class="text-base text-gray-600 mb-10 text-center max-w-2xl mx-auto">{{ $description }}</p>

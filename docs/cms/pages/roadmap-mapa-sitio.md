@@ -56,7 +56,7 @@ Para cada uno:
 5. Diseñar la vista respetando `DESIGN.md`.
 6. Generar preview y probar responsive/accesibilidad.
 
-En paralelo lógico, registrar `BiographySummary`, que hoy figura como `SIN_REGISTRO`; no requiere bloque nuevo.
+En paralelo lógico, registrar `Intro`, que hoy figura como `SIN_REGISTRO`; no requiere bloque nuevo.
 
 ## Fase 3 — Árbol de páginas y redirecciones
 

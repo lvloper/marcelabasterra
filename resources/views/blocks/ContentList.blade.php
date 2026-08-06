@@ -34,7 +34,7 @@
             @if (($title ?? null) || ($description ?? null))
                 <header class="grid gap-4 md:grid-cols-12 md:gap-8">
                     @if ($title ?? null)
-                        <h2 class="font-[var(--font-display)] text-[clamp(2.5rem,4.5vw,4.5rem)] font-normal leading-[.98] tracking-[-.03em] {{ $variant === 'metrics' ? 'text-white' : 'text-primary' }} md:col-span-5">
+                        <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] {{ $variant === 'metrics' ? 'text-white' : 'text-primary' }} md:col-span-5">
                             {{ $title }}
                         </h2>
                     @endif

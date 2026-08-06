@@ -41,7 +41,7 @@
         <div class="grid grid-cols-1 gap-10 border-t border-primary pt-6 lg:grid-cols-12 lg:gap-12 lg:pt-8">
             <header class="lg:col-span-4">
                 @if (filled($title ?? null))
-                    <h2 class="max-w-[12ch] font-sans text-[clamp(2.5rem,4.4vw,4.5rem)] font-normal leading-[0.98] tracking-[-0.03em] text-primary">
+                    <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary">
                         {{ $title }}
                     </h2>
                 @endif

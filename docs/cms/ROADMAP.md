@@ -65,7 +65,7 @@
 | T14 | CTABlock | `blocks/tasks/cta.md` | ⬜ pendiente |
 | T15 | TimelineBlock | `blocks/tasks/timeline.md` | ⬜ pendiente |
 | T16 | CVDownloadBlock | `blocks/tasks/cv-download.md` | ⬜ pendiente |
-| T17 | BiographySummaryBlock | `blocks/tasks/biography-summary.md` | ⬜ pendiente |
+| T17 | IntroBlock | `blocks/tasks/biography-summary.md` | ⬜ pendiente |
 | T18 | ContactFormBlock | `blocks/tasks/contact-form.md` | ⬜ pendiente |
 | T19 | FeaturedResourcesBlock | `blocks/tasks/featured-resources.md` | ⬜ pendiente |
 

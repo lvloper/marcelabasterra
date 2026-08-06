@@ -6,7 +6,7 @@
             </div>
 
             @if ($title ?? null)
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 font-sans">{{ $title }}</h2>
+                <h2 class="mb-4 font-sans text-[clamp(1.75rem,2.6vw,2.5rem)] font-normal leading-[1.05] tracking-[-0.02em] text-primary">{{ $title }}</h2>
             @endif
 
             @if ($description ?? null)

@@ -78,11 +78,11 @@
 
             <div class="{{ $hasImage ? 'flex-1' : '' }}">
                 @if ($eyebrow ?? null)
-                    <p class="text-sm font-semibold tracking-widest uppercase text-gray-500 mb-3 text-reveal">{{ $eyebrow }}</p>
+                    <p class="mb-4 font-source text-2xl text-gray text-reveal">{{ $eyebrow }}</p>
                 @endif
 
                 @if ($title ?? null)
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-reveal">{{ $title }}</h2>
+                    <h2 class="mb-6 max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary text-reveal">{{ $title }}</h2>
                 @endif
 
                 @if ($htmlContent)

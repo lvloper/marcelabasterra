@@ -54,7 +54,7 @@ Las fichas de libros, artículos, docencias, instituciones, conferencias y otras
 ### Inicio `/`
 
 1. `Hero`: identidad y presentación principal.
-2. `BiographySummary`: síntesis biográfica.
+2. `Intro`: síntesis biográfica.
 3. `PublicationsHighlight`: último libro desde el CMS.
 4. `PressFeed`: actualidad y publicaciones recientes.
 5. `EventsListing`: conferencias y exposiciones.
@@ -62,7 +62,7 @@ Las fichas de libros, artículos, docencias, instituciones, conferencias y otras
 
 ### Sobre mí `/sobre-mi`
 
-1. `BiographySummary`: perfil profesional.
+1. `Intro`: perfil profesional.
 2. `ContentList`: trayectoria en cifras.
 3. `ContentList`: responsabilidades institucionales consultadas desde `CargoInstitucional`.
 4. `MediaText`: reconocimiento como Personalidad Destacada en Ciencias Jurídicas.

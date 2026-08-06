@@ -125,7 +125,7 @@
                 <span class="mb-6 block h-px w-16 bg-accent" aria-hidden="true"></span>
 
                 @if ($title ?? null)
-                    <h2 class="font-[var(--font-display)] text-4xl font-bold leading-[1.02] tracking-[-0.025em] text-primary sm:text-5xl lg:text-4xl xl:text-5xl">
+                    <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary">
                         {{ $title }}
                     </h2>
                 @endif

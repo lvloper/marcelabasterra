@@ -10,7 +10,7 @@
         @if ($intro_title ?? null)
             <div class="grid grid-cols-12 gap-12 mb-24">
                 <div class="col-span-12 md:col-span-7">
-                    <h2 class="anim-heading text-5xl md:text-6xl font-medium leading-[1.05] text-white">
+                    <h2 class="anim-heading max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-white">
                         {!! $intro_title !!}
                     </h2>
                 </div>

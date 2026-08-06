@@ -1,4 +1,4 @@
-# T17 — BiographySummaryBlock
+# T17 — IntroBlock
 
 - **Estado**: ✅ completado
 - **Depende de**: Ninguna
@@ -23,8 +23,8 @@
 ## Checklist
 
 - [x] Draft → `docs/cms/blocks/draft-biography-summary.md`
-- [x] Clase `BiographySummaryBlock.php`
-- [x] Vista `BiographySummary.blade.php` funcional
+- [x] Clase `IntroBlock.php`
+- [x] Vista `Intro.blade.php` funcional
 - [x] Registrar en `DefaultTemplate.php`
 - [x] `php -l` + `view:clear`
 - [x] Probar en admin

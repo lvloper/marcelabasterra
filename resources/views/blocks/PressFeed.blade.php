@@ -72,74 +72,77 @@
 @endphp
 
 @if ($items->isNotEmpty() || (($show_filters ?? false) && filled($empty_message ?? null)))
-    <x-block class="bg-white py-14 md:py-16 lg:py-20">
+    <x-block class="border-y border-gray-2 bg-gray-3 py-16 sm:py-20 lg:py-24">
         <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
-            <header class="grid gap-6 border-t border-primary pt-6 lg:grid-cols-12 lg:gap-12">
+            <header class="grid gap-8 border-t border-primary pt-6 lg:grid-cols-12 lg:gap-12">
                 <div class="lg:col-span-5">
                     @if ($title ?? null)
-                        <h2 class="whitespace-nowrap font-[var(--font-display)] text-[clamp(1.75rem,2.75vw,2.75rem)] font-normal leading-[1] tracking-[-0.03em] text-primary">{!! $title !!}</h2>
+                        <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary">{!! $title !!}</h2>
                     @endif
                 </div>
                 @if ($description ?? null)
-                    <p class="max-w-[52ch] font-[var(--font-editorial)] text-lg leading-relaxed text-gray lg:col-span-5 lg:col-start-8">{{ $description }}</p>
+                    <p class="max-w-[52ch] font-source text-xl leading-relaxed text-gray lg:col-span-5 lg:col-start-8">{{ $description }}</p>
                 @endif
             </header>
 
             @if ($show_filters ?? false)
-                <form method="get" class="mt-8 grid gap-4 border-y border-gray-2 py-5 md:grid-cols-[1fr_1fr_auto]" aria-label="Filtros de noticias y medios">
-                    <label class="grid gap-2 font-[var(--font-body)] text-sm font-semibold text-primary">
+                <form method="get" class="mt-10 grid gap-4 border border-gray-2 bg-white px-6 py-6 md:grid-cols-[1fr_1fr_auto]" aria-label="Filtros de noticias y medios">
+                    <label class="grid gap-2 font-body text-sm font-semibold text-primary">
                         Tipo
-                        <select name="tipo" class="min-h-12 border border-primary bg-white px-4 font-[var(--font-body)] text-[1rem] font-normal text-gray focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+                        <select name="tipo" class="min-h-12 border border-gray-2 bg-transparent px-3 font-body text-[1rem] font-normal text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
                             <option value="">Todos</option>
                             @foreach ($configuredTypes as $type)
                                 <option value="{{ $type }}" @selected($requestedType === $type)>{{ $typeLabels[$type] }}</option>
                             @endforeach
                         </select>
                     </label>
-                    <label class="grid gap-2 font-[var(--font-body)] text-sm font-semibold text-primary">
+                    <label class="grid gap-2 font-body text-sm font-semibold text-primary">
                         Medio o institución
-                        <select name="medio" class="min-h-12 border border-primary bg-white px-4 font-[var(--font-body)] text-[1rem] font-normal text-gray focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+                        <select name="medio" class="min-h-12 border border-gray-2 bg-transparent px-3 font-body text-[1rem] font-normal text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
                             <option value="">Todos</option>
                             @foreach ($availableMedia as $medium)
                                 <option value="{{ $medium }}" @selected($requestedMedia === $medium)>{{ $medium }}</option>
                             @endforeach
                         </select>
                     </label>
-                    <button type="submit" class="min-h-12 self-end border border-primary bg-primary px-6 font-[var(--font-body)] text-[1rem] font-semibold text-white hover:bg-white hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">Aplicar filtros</button>
+                    <button type="submit" class="min-h-12 self-end border border-primary bg-primary px-6 font-body text-[1rem] font-semibold text-white hover:bg-white hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">Aplicar filtros</button>
                 </form>
             @endif
 
             @if ($items->isNotEmpty())
                 @php $first = $items->first(); @endphp
-                <div class="mt-10 grid gap-x-8 gap-y-10 lg:grid-cols-12">
+                <div class="mt-12 grid gap-x-8 gap-y-10 lg:grid-cols-12">
                     {{-- Featured — sticky, 9 cols --}}
                     @php $cardImage = ($show_image ?? true) ? $imageUrl($first['image']) : null; @endphp
                     <div class="lg:col-span-9 lg:sticky lg:top-16 lg:self-start">
-                        <article class="group border-t border-primary pt-5">
-                            @if ($cardImage)
-                                <a href="{{ $first['url'] }}" @if($first['external']) target="_blank" rel="noopener noreferrer" @endif class="block overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent" tabindex="-1" aria-hidden="true">
-                                    <img src="{{ $cardImage }}" alt="" class="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none" loading="lazy">
-                                </a>
-                            @endif
-                            <div class="{{ $cardImage ? 'mt-5' : '' }}">
-                                <p class="font-[var(--font-editorial)] text-sm text-primary">
+                        <article class="group relative border border-primary bg-white transition-colors duration-500 group-hover:bg-primary">
+                            <div class="flex items-baseline justify-between gap-4 border-b border-primary px-5 py-3 transition-colors duration-500 group-hover:border-white/40">
+                                @if ($first['date'])
+                                    <time datetime="{{ $first['date']->toDateString() }}" class="font-source text-xs text-gray transition-colors duration-500 group-hover:text-gray-3">{{ $first['date']->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</time>
+                                @endif
+                                <p class="ml-auto font-body text-xs text-gray transition-colors duration-500 group-hover:text-gray-3">
                                     {{ $typeLabels[$first['type']] ?? ucfirst($first['type']) }}@if($first['medium']) · {{ $first['medium'] }}@endif
                                 </p>
-                                <h3 class="mt-3 max-w-[28ch] font-[var(--font-display)] text-[clamp(1.375rem,2.25vw,2rem)] font-normal leading-[1.04] tracking-[-0.02em] text-primary">
+                            </div>
+                            @if ($cardImage)
+                                <div class="overflow-hidden border-b border-primary transition-colors duration-500 group-hover:border-white/40">
+                                    <img src="{{ $cardImage }}" alt="" class="aspect-video w-full object-cover transition-transform duration-[2500ms] ease-out group-hover:scale-150 motion-reduce:transition-none" loading="lazy">
+                                </div>
+                            @endif
+                            <div class="p-6 sm:p-8">
+                                <h3 class="max-w-[28ch] font-sans text-[clamp(1.375rem,2.25vw,2rem)] font-normal leading-[1.04] tracking-[-0.02em] text-primary transition-colors duration-500 group-hover:text-white">
                                     <a href="{{ $first['url'] }}" @if($first['external']) target="_blank" rel="noopener noreferrer" @endif class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">{{ $first['title'] }}</a>
                                 </h3>
                                 @if ($first['summary'])
-                                    <p class="mt-4 line-clamp-3 max-w-[65ch] font-[var(--font-body)] text-[1rem] leading-relaxed text-gray">{{ $first['summary'] }}</p>
+                                    <p class="mt-4 line-clamp-3 max-w-[65ch] font-body text-base leading-relaxed text-gray transition-colors duration-500 group-hover:text-gray-3">{{ $first['summary'] }}</p>
                                 @endif
-                                <div class="mt-5 flex flex-wrap items-end justify-between gap-4">
-                                    @if ($first['date'])
-                                        <time datetime="{{ $first['date']->toDateString() }}" class="font-[var(--font-editorial)] text-sm text-gray">{{ $first['date']->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</time>
-                                    @endif
-                                    <a href="{{ $first['url'] }}" @if($first['external']) target="_blank" rel="noopener noreferrer" @endif class="inline-flex min-h-11 items-center border-b border-primary font-[var(--font-body)] text-sm font-semibold text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                                        Leer más <span class="ml-2" aria-hidden="true">{{ $first['external'] ? '↗' : '→' }}</span>
+                                <div class="mt-6">
+                                    <a href="{{ $first['url'] }}" @if($first['external']) target="_blank" rel="noopener noreferrer" @endif class="group/cta relative z-20 inline-flex min-h-11 items-center justify-center border border-primary px-4 font-body text-xs font-semibold text-primary transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                        Leer más <span class="ml-2 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">{{ $first['external'] ? '↗' : '→' }}</span>
                                     </a>
                                 </div>
                             </div>
+                            <a href="{{ $first['url'] }}" @if($first['external']) target="_blank" rel="noopener noreferrer" @endif aria-label="Leer más: {{ $first['title'] }}" class="absolute inset-0 z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"></a>
                         </article>
                     </div>
 
@@ -149,31 +152,34 @@
                             @foreach ($items->skip(1) as $item)
                                 @php $cardImage = ($show_image ?? true) ? $imageUrl($item['image']) : null; @endphp
                                 <li>
-                                    <article class="group border-t border-primary pt-5">
-                                        @if ($cardImage)
-                                            <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="block overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent" tabindex="-1" aria-hidden="true">
-                                                <img src="{{ $cardImage }}" alt="" class="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none" loading="lazy">
-                                            </a>
-                                        @endif
-                                        <div class="{{ $cardImage ? 'mt-5' : '' }}">
-                                            <p class="font-[var(--font-editorial)] text-sm text-primary">
+                                    <article class="group relative flex h-full flex-col border border-primary bg-white transition-colors duration-500 group-hover:bg-primary">
+                                        <div class="flex items-baseline justify-between gap-4 border-b border-primary px-5 py-3 transition-colors duration-500 group-hover:border-white/40">
+                                            @if ($item['date'])
+                                                <time datetime="{{ $item['date']->toDateString() }}" class="font-source text-xs text-gray transition-colors duration-500 group-hover:text-gray-3">{{ $item['date']->locale('es')->translatedFormat('d M Y') }}</time>
+                                            @endif
+                                            <p class="ml-auto font-body text-xs text-gray transition-colors duration-500 group-hover:text-gray-3">
                                                 {{ $typeLabels[$item['type']] ?? ucfirst($item['type']) }}@if($item['medium']) · {{ $item['medium'] }}@endif
                                             </p>
-                                            <h3 class="mt-3 max-w-[28ch] font-[var(--font-display)] text-[clamp(1.125rem,1.75vw,1.5rem)] font-normal leading-[1.1] tracking-[-0.02em] text-primary">
+                                        </div>
+                                        @if ($cardImage)
+                                            <div class="overflow-hidden border-b border-primary transition-colors duration-500 group-hover:border-white/40">
+                                                <img src="{{ $cardImage }}" alt="" class="aspect-video w-full object-cover transition-transform duration-[2500ms] ease-out group-hover:scale-150 motion-reduce:transition-none" loading="lazy">
+                                            </div>
+                                        @endif
+                                        <div class="flex flex-1 flex-col p-5">
+                                            <h3 class="max-w-[30ch] font-sans text-[clamp(1.125rem,1.75vw,1.5rem)] font-normal leading-[1.1] tracking-[-0.02em] text-primary transition-colors duration-500 group-hover:text-white">
                                                 <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">{{ $item['title'] }}</a>
                                             </h3>
                                             @if ($item['summary'])
-                                                <p class="mt-4 line-clamp-3 max-w-[65ch] font-[var(--font-body)] text-[1rem] leading-relaxed text-gray">{{ $item['summary'] }}</p>
+                                                <p class="mt-3 line-clamp-3 font-body text-base leading-relaxed text-gray transition-colors duration-500 group-hover:text-gray-3">{{ $item['summary'] }}</p>
                                             @endif
-                                            <div class="mt-5 flex flex-wrap items-end justify-between gap-4">
-                                                @if ($item['date'])
-                                                    <time datetime="{{ $item['date']->toDateString() }}" class="font-[var(--font-editorial)] text-sm text-gray">{{ $item['date']->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</time>
-                                                @endif
-                                                <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="inline-flex min-h-11 items-center border-b border-primary font-[var(--font-body)] text-sm font-semibold text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                                                    Leer más <span class="ml-2" aria-hidden="true">{{ $item['external'] ? '↗' : '→' }}</span>
+                                            <div class="mt-auto pt-5">
+                                                <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="group/cta relative z-20 inline-flex min-h-11 items-center justify-center border border-primary px-4 font-body text-xs font-semibold text-primary transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                                    Leer más <span class="ml-2 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">{{ $item['external'] ? '↗' : '→' }}</span>
                                                 </a>
                                             </div>
                                         </div>
+                                        <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif aria-label="Leer más: {{ $item['title'] }}" class="absolute inset-0 z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"></a>
                                     </article>
                                 </li>
                             @endforeach
@@ -181,7 +187,7 @@
                     @endif
                 </div>
             @else
-                <p class="mt-8 border-y border-gray-2 py-6 font-[var(--font-editorial)] text-lg leading-relaxed text-gray">{{ $empty_message }}</p>
+                <p class="mt-8 border border-gray-2 bg-white px-6 py-10 font-source text-xl text-gray">{{ $empty_message }}</p>
             @endif
         </div>
     </x-block>

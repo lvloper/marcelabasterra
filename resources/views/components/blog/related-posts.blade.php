@@ -7,7 +7,7 @@
         <div class="container">
             <div class="mb-10 grid grid-cols-1 gap-5 border-b border-white/30 pb-7 md:grid-cols-12 md:items-end">
                 <h2 id="related-posts-title"
-                    class="font-sans text-[clamp(2.4rem,5vw,4.5rem)] font-bold leading-none md:col-span-8">
+                    class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-white md:col-span-8">
                     Seguir leyendo
                 </h2>
                 <p class="font-source text-lg text-gray-3 md:col-span-4 md:text-right">
