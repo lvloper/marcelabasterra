@@ -2,6 +2,9 @@
     <ol id="academic-articles-list" class="mt-12 border-b border-primary/25" aria-label="Archivo cronológico de publicaciones académicas">
         @foreach ($this->items as $item)
             <li wire:key="academic-publication-{{ $item['key'] }}" class="grid gap-4 border-t border-primary/25 py-7 sm:grid-cols-12 sm:gap-8 md:py-9">
+                @if ($item['url'])
+                    <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="group grid gap-4 sm:col-span-12 sm:grid-cols-12 sm:gap-8 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                @endif
                 <div class="sm:col-span-2">
                     @if ($item['year'])
                         <time @if($item['date']) datetime="{{ $item['date'] }}" @endif class="font-[var(--font-editorial)] text-[clamp(2rem,4vw,3.75rem)] leading-none text-primary">
@@ -12,7 +15,7 @@
                 </div>
 
                 <div class="sm:col-span-7 lg:col-span-8">
-                    <h3 class="max-w-[42ch] font-[var(--font-editorial)] text-xl leading-snug text-primary md:text-2xl">
+                    <h3 class="max-w-[42ch] font-[var(--font-editorial)] text-xl leading-snug text-primary transition-colors duration-300 group-hover:text-primary/70 md:text-2xl">
                         {{ $item['title'] }}
                     </h3>
                     @if ($item['summary'] || $item['topic'])
@@ -24,11 +27,14 @@
 
                 @if ($item['url'])
                     <div class="sm:col-span-3 sm:text-right lg:col-span-2">
-                        <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="group inline-flex min-h-12 items-center gap-2 border border-primary px-4 font-[var(--font-body)] text-sm font-semibold text-primary transition-colors duration-200 hover:bg-primary hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none" aria-label="{{ $item['action_label'] }}: {{ $item['title'] }}{{ $item['external'] ? ' (se abre en una pestaña nueva)' : '' }}">
+                        <span class="group/cta inline-flex min-h-12 items-center gap-2 border border-primary px-4 font-[var(--font-body)] text-sm font-semibold text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-white motion-reduce:transition-none" aria-hidden="true">
                             <span>{{ $item['action_label'] }}</span>
-                            <span class="transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">{{ $item['external'] ? '↗' : '→' }}</span>
-                        </a>
+                            <span class="transition-transform duration-200 group-hover/cta:translate-x-1 motion-reduce:transition-none" aria-hidden="true">{{ $item['external'] ? '↗' : '→' }}</span>
+                        </span>
                     </div>
+                @endif
+                @if ($item['url'])
+                    </a>
                 @endif
             </li>
         @endforeach

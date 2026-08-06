@@ -19,7 +19,7 @@ class CargoInstitucional extends Model
     }
 
     protected $fillable = [
-        'cargo', 'institucion', 'institutional_url', 'featured', 'fecha_inicio', 'fecha_fin', 'descripcion', 'blocks',
+        'cargo', 'institucion', 'logo', 'institutional_url', 'featured', 'fecha_inicio', 'fecha_fin', 'descripcion', 'blocks',
     ];
 
     protected $casts = [

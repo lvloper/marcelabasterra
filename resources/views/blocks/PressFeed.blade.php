@@ -74,7 +74,7 @@
 @if ($items->isNotEmpty() || (($show_filters ?? false) && filled($empty_message ?? null)))
     <x-block class="border-y border-gray-2 bg-gray-3 py-16 sm:py-20 lg:py-24">
         <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
-            <header class="grid gap-8 border-t border-primary pt-6 lg:grid-cols-12 lg:gap-12">
+            <header class="grid gap-8 lg:grid-cols-12 lg:gap-12">
                 <div class="lg:col-span-5">
                     @if ($title ?? null)
                         <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary">{!! $title !!}</h2>

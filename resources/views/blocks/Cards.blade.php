@@ -257,7 +257,11 @@
                                     }
                                 @endphp
 
-                                <div class="bg-gray-3 overflow-hidden">
+                                @if ($siUrl)
+                                    <a href="{{ $siUrl }}" @if ($siTarget) target="{{ $siTarget }}" rel="noopener noreferrer" @endif class="group block overflow-hidden bg-gray-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                @else
+                                    <div class="block overflow-hidden bg-gray-3">
+                                @endif
                                     @if ($siImage)
                                         <div class="aspect-[4/3] overflow-hidden bg-gray-100">
                                             <img
@@ -274,7 +278,7 @@
                                             </span>
                                         @endif
                                         @if ($item['title'] ?? null)
-                                            <h4 class="text-base font-semibold text-gray-900 mb-1 line-clamp-2">
+                                            <h4 class="text-base font-semibold text-gray-900 mb-1 line-clamp-2 transition-colors duration-300 group-hover:text-primary">
                                                 {{ $item['title'] }}
                                             </h4>
                                         @endif
@@ -284,16 +288,17 @@
                                             </p>
                                         @endif
                                         @if ($siUrl)
-                                            <a
-                                                href="{{ $siUrl }}"
-                                                @if ($siTarget) target="{{ $siTarget }}" rel="noopener noreferrer" @endif
-                                                class="inline-flex items-center text-sm font-medium text-primary hover:underline"
-                                            >
+                                            <span class="inline-flex items-center text-sm font-medium text-primary group-hover:underline" aria-hidden="true">
                                                 {{ $siRoute['btn_label'] ?? 'Ver más' }}
-                                            </a>
+                                                <x-lucide-arrow-right class="ml-1 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                                            </span>
                                         @endif
                                     </div>
-                                </div>
+                                @if ($siUrl)
+                                    </a>
+                                @else
+                                    </div>
+                                @endif
                             @endforeach
                         </div>
                     @endif

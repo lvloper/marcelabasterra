@@ -6,6 +6,7 @@ use App\Filament\Resources\Bases\ResourceBase;
 use App\Filament\Resources\CargoInstitucionalResource\Pages;
 use App\Models\CargoInstitucional;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -35,6 +36,13 @@ class CargoInstitucionalResource extends ResourceBase
         return [
             TextInput::make('cargo')->label('Cargo')->required(),
             TextInput::make('institucion')->label('Institución')->required(),
+            FileUpload::make('logo')
+                ->label('Logo de la institución')
+                ->image()
+                ->imageEditor()
+                ->directory('logos')
+                ->visibility('public')
+                ->helperText('Se muestra junto al cargo cuando el bloque lo soporta.'),
             TextInput::make('institutional_url')->label('Fuente institucional')->url(),
             Toggle::make('featured')->label('Destacar en el sitio'),
             Grid::make(2)->schema([

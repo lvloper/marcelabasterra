@@ -16,6 +16,7 @@
             ->map(fn ($position): array => [
                 'meta' => $position->institucion,
                 'title' => $position->cargo,
+                'logo' => $position->logo,
                 'text' => $position->descripcion ? trim(strip_tags($position->descripcion)) : null,
                 'url' => $position->institutional_url ?: ($position->route ? url($position->route->full_slug) : null),
                 'link_label' => $position->institutional_url ? 'Consultar fuente institucional' : 'Ver cargo',
@@ -29,18 +30,18 @@
 @endphp
 
 @if ($isLiveAcademicContent || $contentItems->isNotEmpty())
-    <x-block class="{{ $variant === 'metrics' ? 'bg-primary py-16 md:py-20' : ($variant === 'chronological' ? 'bg-white py-16 md:py-20 lg:py-24' : 'border-y border-gray-2 bg-white py-10 md:py-12') }}">
+    <x-block class="{{ $variant === 'metrics' ? 'bg-gray-3 py-16 md:py-20 lg:py-24' : ($variant === 'chronological' ? 'bg-white py-16 md:py-20 lg:py-24' : 'border-y border-gray-2 bg-white py-10 md:py-12') }}">
         <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
             @if (($title ?? null) || ($description ?? null))
                 <header class="grid gap-4 md:grid-cols-12 md:gap-8">
                     @if ($title ?? null)
-                        <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] {{ $variant === 'metrics' ? 'text-white' : 'text-primary' }} md:col-span-5">
+                        <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary md:col-span-5">
                             {{ $title }}
                         </h2>
                     @endif
 
                     @if ($description ?? null)
-                        <p class="max-w-[52ch] font-[var(--font-editorial)] text-xl leading-[1.55] {{ $variant === 'metrics' ? 'text-gray-3' : 'text-gray' }} md:col-span-6 md:col-start-7 md:text-2xl">
+                        <p class="max-w-[52ch] font-[var(--font-editorial)] text-xl leading-[1.55] text-gray md:col-span-6 md:col-start-7 md:text-2xl">
                             {{ $description }}
                         </p>
                     @endif
@@ -115,31 +116,140 @@
                     </nav>
                 @endif
                 @endif
+            @elseif ($variant === 'metrics')
+                @php
+                    $isMetric = static fn (array $item): bool => isset($item['meta']) && is_scalar($item['meta']) && preg_match('/^\+?\d/', (string) $item['meta']) === 1;
+                    $statsItems = $contentItems->filter($isMetric)->values();
+                    $milestoneItems = $contentItems->filter(static fn (array $item): bool => ! $isMetric($item))->values();
+                @endphp
+
+                @if ($statsItems->isNotEmpty())
+                    <ol
+                        class="grid {{ ($title ?? null) || ($description ?? null) ? 'mt-10 md:mt-14' : '' }} grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4 lg:gap-x-8"
+                        aria-label="Indicadores destacados: {{ $title ?? 'trayectoria en cifras' }}"
+                    >
+                        @foreach ($statsItems as $item)
+                            <li class="border-t border-primary/25 pt-6 md:pt-8">
+                                @if ($item['meta'] ?? null)
+                                    <p class="font-source text-[clamp(2rem,3.5vw,3.5rem)] leading-none text-primary">
+                                        {{ $item['meta'] }}
+                                    </p>
+                                @endif
+
+                                @if ($item['title'] ?? null)
+                                    <h3 class="mt-4 max-w-[24ch] font-[var(--font-body)] text-lg font-medium leading-snug text-gray">
+                                        {{ $item['title'] }}
+                                    </h3>
+                                @endif
+
+                                @if ($item['text'] ?? null)
+                                    <p class="mt-2 max-w-[30ch] font-[var(--font-body)] text-sm leading-[1.55] text-gray">
+                                        {{ $item['text'] }}
+                                    </p>
+                                @endif
+
+                                @if ($item['url'] ?? null)
+                                    <a
+                                        href="{{ $item['url'] }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="mt-4 inline-flex min-h-12 items-center gap-2 font-[var(--font-body)] text-[1rem] font-semibold text-primary underline decoration-gray-2 underline-offset-4 transition-colors duration-200 hover:decoration-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none"
+                                        aria-label="{{ $item['link_label'] ?? 'Ver más' }}: {{ $item['title'] ?? $item['meta'] ?? 'contenido' }} (se abre en una pestaña nueva)"
+                                    >
+                                        <span>{{ $item['link_label'] ?? 'Ver más' }}</span>
+                                        <span aria-hidden="true">↗</span>
+                                    </a>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ol>
+                @endif
+
+                @if ($milestoneItems->isNotEmpty())
+                    <ol
+                        class="mt-12 md:mt-16"
+                        aria-label="Hitos académicos e institucionales"
+                    >
+                        @foreach ($milestoneItems as $item)
+                            <li class="grid gap-4 border-t border-primary py-8 sm:grid-cols-12 sm:gap-8 md:py-10">
+                                <div class="sm:col-span-3 lg:col-span-2">
+                                    @if ($item['meta'] ?? null)
+                                        <p class="font-source text-[clamp(2rem,4vw,3.5rem)] leading-none text-primary">
+                                            {{ $item['meta'] }}
+                                        </p>
+                                    @endif
+                                </div>
+
+                                <div class="sm:col-span-9 lg:col-span-8">
+                                    @if ($item['year'] ?? null)
+                                        <p class="mb-2 font-source text-sm text-gray">
+                                            {{ $item['year'] }}
+                                        </p>
+                                    @endif
+
+                                    @if ($item['title'] ?? null)
+                                        <h3 class="max-w-[42ch] font-sans text-xl font-normal leading-[1.08] tracking-[-0.015em] text-primary md:text-2xl">
+                                            {{ $item['title'] }}
+                                        </h3>
+                                    @endif
+
+                                    @if ($item['text'] ?? null)
+                                        <p class="mt-3 max-w-[68ch] font-[var(--font-body)] text-base leading-[1.65] text-gray">
+                                            {{ $item['text'] }}
+                                        </p>
+                                    @endif
+                                </div>
+
+                                @if ($item['url'] ?? null)
+                                    <div class="sm:col-span-3 sm:text-right lg:col-span-2">
+                                        <a
+                                            href="{{ $item['url'] }}"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="group inline-flex min-h-12 items-center gap-2 font-[var(--font-body)] text-[1rem] font-semibold text-primary underline decoration-gray-2 underline-offset-4 transition-colors duration-200 hover:decoration-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none"
+                                            aria-label="{{ $item['link_label'] ?? 'Ver más' }}: {{ $item['title'] ?? $item['meta'] ?? 'contenido' }} (se abre en una pestaña nueva)"
+                                        >
+                                            <span>{{ $item['link_label'] ?? 'Ver más' }}</span>
+                                            <span aria-hidden="true">↗</span>
+                                        </a>
+                                    </div>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ol>
+                @endif
             @else
                 <ol
-                    class="grid {{ $variant === 'metrics' ? 'gap-x-6 sm:grid-cols-2 lg:grid-cols-12' : 'gap-x-10 md:grid-cols-2 lg:gap-x-16' }} {{ ($title ?? null) || ($description ?? null) ? 'mt-10 md:mt-14' : '' }}"
+                    class="grid gap-x-10 md:grid-cols-2 lg:gap-x-16 {{ ($title ?? null) || ($description ?? null) ? 'mt-10 md:mt-14' : '' }}"
                     aria-label="{{ $title ?? 'Listado de contenido' }}"
                 >
                     @foreach ($contentItems as $index => $item)
                         <li @class([
                             'py-6 md:py-7' => true,
-                            'border-t border-primary/25' => $variant !== 'metrics',
-                            'border-t border-white/40 lg:col-span-4 lg:py-8' => $variant === 'metrics',
+                            'border-t border-primary/25' => true,
                         ])>
+                        @if ($item['logo'] ?? null)
+                            <img
+                                src="{{ \Illuminate\Support\Facades\Storage::url($item['logo']) }}"
+                                alt="Logo de {{ $item['title'] ?? $item['meta'] ?? 'la institución' }}"
+                                class="mb-4 h-10 w-auto object-contain md:h-12"
+                            >
+                        @endif
+
                         @if ($item['meta'] ?? null)
-                            <p class="mb-3 {{ $variant === 'metrics' ? 'font-[var(--font-editorial)] text-[clamp(2.75rem,5vw,5rem)] leading-none text-white' : 'font-[var(--font-body)] text-sm leading-relaxed text-gray' }}">
+                            <p class="mb-3 font-[var(--font-body)] text-sm leading-relaxed text-gray">
                                 {{ $item['meta'] }}
                             </p>
                         @endif
 
                         @if ($item['title'] ?? null)
-                            <h3 class="max-w-[30ch] {{ $variant === 'metrics' ? 'font-[var(--font-body)] text-lg font-medium leading-snug text-white' : 'font-[var(--font-display)] text-2xl font-normal leading-[1.08] tracking-[-0.015em] text-primary md:text-3xl' }}">
+                            <h3 class="max-w-[30ch] font-sans text-2xl font-normal leading-[1.08] tracking-[-0.015em] text-primary md:text-3xl">
                                 {{ $item['title'] }}
                             </h3>
                         @endif
 
                         @if ($item['text'] ?? null)
-                            <p class="mt-3 max-w-[68ch] font-[var(--font-body)] text-[1rem] leading-[1.65] {{ $variant === 'metrics' ? 'text-gray-3' : 'text-gray' }}">
+                            <p class="mt-3 max-w-[68ch] font-[var(--font-body)] text-[1rem] leading-[1.65] text-gray">
                                 {{ $item['text'] }}
                             </p>
                         @endif
@@ -149,7 +259,7 @@
                                 href="{{ $item['url'] }}"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class="mt-4 inline-flex min-h-12 items-center gap-2 font-[var(--font-body)] text-[1rem] font-semibold {{ $variant === 'metrics' ? 'text-white decoration-white/50' : 'text-primary decoration-gray-2' }} underline underline-offset-4 transition-colors duration-200 hover:decoration-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none"
+                                class="mt-4 inline-flex min-h-12 items-center gap-2 font-[var(--font-body)] text-[1rem] font-semibold text-primary underline decoration-gray-2 underline-offset-4 transition-colors duration-200 hover:decoration-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none"
                                 aria-label="{{ $item['link_label'] ?? 'Ver más' }}: {{ $item['title'] ?? $item['meta'] ?? 'contenido' }} (se abre en una pestaña nueva)"
                             >
                                 <span>{{ $item['link_label'] ?? 'Ver más' }}</span>

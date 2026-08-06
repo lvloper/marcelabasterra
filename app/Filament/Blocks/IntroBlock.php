@@ -23,6 +23,9 @@ class IntroBlock extends PageBlock
             ])->default('h2')->required(),
             Field::rich('summary', 'Resumen', 'basic')->required(),
             Field::image('photo', 'Foto', '400', '400', 'images/biography'),
+            Field::textarea('quote', 'Cita'),
+            Field::text('quote_author', 'Autor de la cita'),
+            Field::text('quote_role', 'Rol del autor'),
             Field::text('cta_label', 'Texto del enlace'),
             Field::route('cta_route', 'Ruta del enlace'),
             Field::repeater('highlights', 'Datos destacados', [

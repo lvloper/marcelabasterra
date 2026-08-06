@@ -77,17 +77,18 @@
     }
 @endphp
 
-<x-block class="bg-[var(--color-surface-ivory)] py-16 md:py-20 lg:py-24">
-    <div class="container mx-auto">
-        <div class="grid items-start gap-10 lg:grid-cols-12 lg:gap-6">
-            @if ($hasMedia)
-                <div @class([
-                    'order-1 lg:col-span-7' => true,
-                    'lg:order-1' => $isLeft,
-                    'lg:order-2' => ! $isLeft,
-                ])>
+{{-- v4 Bandera azul: superficie institucional, video en marco blanco, acento celeste --}}
+<x-block class="bg-primary py-16 md:py-24">
+    <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
+        <div class="grid items-start gap-10 lg:grid-cols-12 lg:gap-8">
+            <div @class([
+                'lg:col-span-7' => true,
+                'lg:order-1' => $isLeft,
+                'lg:order-2' => ! $isLeft,
+            ])>
+                @if ($hasMedia)
                     @if ($mediaType === 'youtube' && ($youtube_id ?? null))
-                    <div class="aspect-video border border-primary bg-gray-3">
+                    <div class="aspect-video border border-white/60 bg-white">
                         <iframe
                             src="https://www.youtube-nocookie.com/embed/{{ rawurlencode($youtube_id) }}"
                             title="{{ $title ? 'Video: ' . $title : 'Video de YouTube' }}"
@@ -98,14 +99,14 @@
                         ></iframe>
                     </div>
                 @elseif ($mediaType === 'upload' && $videoFile)
-                    <div class="aspect-video border border-primary bg-gray-3">
+                    <div class="aspect-video border border-white/60 bg-white">
                         <video controls class="h-full w-full" preload="metadata">
                             <source src="{{ \Illuminate\Support\Facades\Storage::url($videoFile) }}" type="video/mp4">
                             Tu navegador no admite la reproducción de video.
                         </video>
                     </div>
                 @elseif ($mediaType === 'image' && $image)
-                    <div class="border border-primary bg-gray-3">
+                    <div class="border border-white/60 bg-white">
                         <img
                             src="{{ \Illuminate\Support\Facades\Storage::url($image) }}"
                             alt="{{ $title ?? '' }}"
@@ -113,25 +114,25 @@
                         >
                     </div>
                     @endif
-                </div>
-            @endif
+                @endif
+            </div>
 
             <div @class([
-                'order-2' => true,
-                'lg:col-span-4 lg:col-start-9 lg:order-2' => $hasMedia && $isLeft,
-                'lg:col-span-4 lg:col-start-1 lg:order-1' => $hasMedia && ! $isLeft,
+                'lg:col-span-4' => true,
+                'lg:col-start-9 lg:order-2' => $hasMedia && $isLeft,
+                'lg:col-start-1 lg:order-1' => $hasMedia && ! $isLeft,
                 'lg:col-span-7 lg:col-start-1' => ! $hasMedia,
             ])>
                 <span class="mb-6 block h-px w-16 bg-accent" aria-hidden="true"></span>
 
                 @if ($title ?? null)
-                    <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-primary">
+                    <h2 class="max-w-[16ch] font-sans text-[clamp(2.75rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-white">
                         {{ $title }}
                     </h2>
                 @endif
 
                 @if ($htmlContent)
-                    <div class="text-wysiwyg mt-6 max-w-[68ch] text-gray [&_a]:text-primary [&_a]:decoration-accent [&_a]:underline [&_a]:underline-offset-4 [&_p:not(:last-child)]:mb-5">
+                    <div class="text-wysiwyg mt-6 max-w-[68ch] font-[var(--font-editorial)] text-lg leading-[1.6] text-gray-3 [&_a]:text-accent [&_a]:decoration-accent [&_a]:underline [&_a]:underline-offset-4 [&_p:not(:last-child)]:mb-5">
                         {!! $htmlContent !!}
                     </div>
                 @endif
@@ -140,7 +141,7 @@
                     <a
                         href="{{ $ctaUrl }}"
                         @if ($ctaTarget) target="{{ $ctaTarget }}" rel="noopener noreferrer" @endif
-                        class="group mt-8 inline-flex min-h-12 items-center gap-3 border border-primary bg-primary px-6 py-3 font-[var(--font-body)] text-base font-semibold text-white transition-colors duration-200 hover:bg-transparent hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none"
+                        class="group mt-8 inline-flex min-h-12 items-center gap-3 border border-white bg-white px-6 py-3 font-[var(--font-body)] text-base font-semibold text-primary transition-colors duration-200 hover:bg-transparent hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none"
                     >
                         <span>{{ $cta['btn_label'] ?? 'Ver más' }}</span>
                         <span class="transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>

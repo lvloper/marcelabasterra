@@ -116,7 +116,11 @@
             @endphp
 
             <article class="mt-10 grid border-y border-primary lg:mt-12 lg:grid-cols-12">
-                <div class="flex flex-col justify-between p-6 sm:p-8 lg:col-span-5 lg:p-12">
+                <a
+                    href="{{ $featuredResource['url'] }}"
+                    @if($featuredResource['external']) target="_blank" rel="noopener" @endif
+                    class="group flex flex-col justify-between p-6 sm:p-8 lg:col-span-5 lg:p-12 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+                >
                     <div>
                         <div class="flex flex-wrap items-baseline gap-x-4 gap-y-2 font-[var(--font-editorial)] text-base text-primary">
                             <span>{{ $featuredResource['type_label'] }}</span>
@@ -128,7 +132,7 @@
                             @endif
                         </div>
 
-                        <h3 class="mt-8 max-w-[16ch] font-[var(--font-display)] text-[clamp(2.25rem,4vw,4rem)] font-normal leading-[0.98] tracking-[-0.03em] text-primary">
+                        <h3 class="mt-8 max-w-[16ch] font-[var(--font-display)] text-[clamp(2.25rem,4vw,4rem)] font-normal leading-[0.98] tracking-[-0.03em] text-primary transition-colors duration-300 group-hover:text-primary/70">
                             {{ $featuredResource['title'] }}
                         </h3>
 
@@ -139,15 +143,14 @@
                         @endif
                     </div>
 
-                    <a
-                        href="{{ $featuredResource['url'] }}"
-                        @if($featuredResource['external']) target="_blank" rel="noopener" @endif
-                        class="group mt-10 inline-flex min-h-12 w-fit items-center gap-3 border-b border-primary py-2 font-[var(--font-body)] text-base font-semibold text-primary transition-colors duration-200 hover:border-accent hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none"
+                    <span
+                        class="group/cta mt-10 inline-flex min-h-12 w-fit items-center gap-3 border-b border-primary py-2 font-[var(--font-body)] text-base font-semibold text-primary transition-colors duration-200 group-hover:border-accent motion-reduce:transition-none"
+                        aria-hidden="true"
                     >
                         <span>Ver publicación</span>
-                        <span class="transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
-                    </a>
-                </div>
+                        <span class="transition-transform duration-200 group-hover/cta:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
+                    </span>
+                </a>
 
                 <a
                     href="{{ $featuredResource['url'] }}"
@@ -178,15 +181,15 @@
                         @endphp
 
                         <li>
-                            <article class="flex h-full flex-col border-t border-primary pt-5">
+                            <a href="{{ $resource['url'] }}" @if($resource['external']) target="_blank" rel="noopener" @endif class="group flex h-full flex-col border-t border-primary pt-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
                                 @if ($resourceImage)
-                                    <a href="{{ $resource['url'] }}" @if($resource['external']) target="_blank" rel="noopener" @endif class="group block overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                                    <div class="overflow-hidden">
                                         <img
                                             src="{{ $resourceImage }}"
                                             alt="{{ $resource['title'] }}"
                                             class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.025] motion-reduce:transition-none"
                                         >
-                                    </a>
+                                    </div>
                                 @endif
 
                                 <div class="{{ $resourceImage ? 'mt-6' : '' }} flex flex-1 flex-col">
@@ -194,10 +197,8 @@
                                         {{ $resource['type_label'] }}@if ($resourceYear), <time datetime="{{ $resource['published_at'] }}">{{ $resourceYear }}</time>@endif
                                     </p>
 
-                                    <h3 class="mt-3 font-[var(--font-display)] text-3xl font-normal leading-[1.04] tracking-[-0.02em] text-primary">
-                                        <a href="{{ $resource['url'] }}" @if($resource['external']) target="_blank" rel="noopener" @endif class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                                            {{ $resource['title'] }}
-                                        </a>
+                                    <h3 class="mt-3 font-[var(--font-display)] text-3xl font-normal leading-[1.04] tracking-[-0.02em] text-primary transition-colors duration-300 group-hover:text-primary/70">
+                                        {{ $resource['title'] }}
                                     </h3>
 
                                     @if ($resource['description'])
@@ -206,12 +207,12 @@
                                         </p>
                                     @endif
 
-                                    <a href="{{ $resource['url'] }}" @if($resource['external']) target="_blank" rel="noopener" @endif class="group mt-6 inline-flex min-h-12 w-fit items-center gap-3 border-b border-primary py-2 font-[var(--font-body)] text-base font-semibold text-primary transition-colors duration-200 hover:border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none">
+                                    <span class="group/cta mt-6 inline-flex min-h-12 w-fit items-center gap-3 border-b border-primary py-2 font-[var(--font-body)] text-base font-semibold text-primary transition-colors duration-200 group-hover:border-accent motion-reduce:transition-none" aria-hidden="true">
                                         <span>Ver publicación</span>
-                                        <span class="transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
-                                    </a>
+                                        <span class="transition-transform duration-200 group-hover/cta:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
+                                    </span>
                                 </div>
-                            </article>
+                            </a>
                         </li>
                     @endforeach
                 </ol>

@@ -37,7 +37,11 @@
                 @foreach ($featuredItems as $item)
                     @php($featuredImage = $imageUrl($item['image']))
                     <article class="grid border-t border-primary lg:grid-cols-12">
-                        <div class="order-2 flex flex-col justify-between bg-[var(--color-surface-ivory)] p-6 sm:p-10 lg:order-1 lg:col-span-5 lg:p-12">
+                        @if ($item['url'])
+                            <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="group order-2 flex flex-col justify-between bg-[var(--color-surface-ivory)] p-6 sm:p-10 lg:order-1 lg:col-span-5 lg:p-12 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                        @else
+                            <div class="order-2 flex flex-col justify-between bg-[var(--color-surface-ivory)] p-6 sm:p-10 lg:order-1 lg:col-span-5 lg:p-12">
+                        @endif
                             <div>
                                 <div class="flex flex-wrap items-center gap-x-5 gap-y-2 font-body text-sm text-primary">
                                     <span class="border-l border-accent pl-3 font-semibold">{{ $item['is_upcoming'] ? 'Próximo' : 'Evento más reciente' }}</span>
@@ -50,7 +54,7 @@
                                     </time>
                                 @endif
 
-                                <h3 class="mt-8 max-w-[18ch] font-sans text-[clamp(2rem,3.5vw,3.75rem)] font-normal leading-[1] tracking-[-0.025em] text-primary">{{ $item['title'] }}</h3>
+                                <h3 class="mt-8 max-w-[18ch] font-sans text-[clamp(2rem,3.5vw,3.75rem)] font-normal leading-[1] tracking-[-0.025em] text-primary transition-colors duration-300 group-hover:text-primary/70">{{ $item['title'] }}</h3>
 
                                 @if ($item['institution'])
                                     <p class="mt-5 font-source text-xl leading-snug text-primary">{{ $item['institution'] }}</p>
@@ -73,11 +77,15 @@
                             </div>
 
                             @if ($item['url'])
-                                <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="group mt-10 inline-flex min-h-12 w-fit items-center border border-primary bg-primary px-6 font-body text-base font-medium text-white transition-colors duration-300 hover:bg-white hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                                    Ver más <span class="ml-3 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">{{ $item['external'] ? '↗' : '→' }}</span>
-                                </a>
+                                <span class="group/cta mt-10 inline-flex min-h-12 w-fit items-center border border-primary bg-primary px-6 font-body text-base font-medium text-white transition-colors duration-300 group-hover:bg-white group-hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent" aria-hidden="true">
+                                    Ver más <span class="ml-3 transition-transform duration-300 group-hover/cta:translate-x-1" aria-hidden="true">{{ $item['external'] ? '↗' : '→' }}</span>
+                                </span>
                             @endif
-                        </div>
+                        @if ($item['url'])
+                            </a>
+                        @else
+                            </div>
+                        @endif
 
                         <div class="order-1 min-h-[24rem] overflow-hidden bg-primary lg:order-2 lg:col-span-7 lg:min-h-[42rem]">
                             @if ($featuredImage)

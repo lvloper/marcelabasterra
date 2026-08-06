@@ -162,11 +162,14 @@
                     @foreach ($activityItems as $item)
                         @php($poster = ($show_image ?? true) ? $imageUrl($item['image']) : null)
                         <li data-status="{{ $item['is_upcoming'] ? 'upcoming' : 'past' }}" data-year="{{ $item['year'] }}" data-country="{{ $item['country'] }}" data-type="{{ $item['type'] }}" @if (($show_filters ?? true)) x-show="matches($el)" @endif>
-                            <article class="group flex h-full flex-col border border-gray-2 bg-white transition-colors duration-300 hover:border-primary">
+                            <article class="group relative flex h-full flex-col border border-gray-2 bg-white transition-colors duration-300 hover:border-primary">
+                                @if ($item['url'])
+                                    <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif aria-label="Ver detalles: {{ $item['title'] }}" class="absolute inset-0 z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"></a>
+                                @endif
                                 @if ($poster)
-                                    <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="block overflow-hidden bg-gray-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent" @if($item['url']) aria-label="{{ $item['title'] }}" @endif>
+                                    <div class="overflow-hidden bg-gray-3">
                                         <img src="{{ $poster }}" alt="" class="aspect-[3/2] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none" loading="lazy">
-                                    </a>
+                                    </div>
                                 @endif
                                 <div class="flex flex-1 flex-col p-6">
                                     @if ($item['date'])
@@ -178,12 +181,12 @@
                                         <span class="border-l border-accent pl-3 font-body text-sm font-semibold text-primary">Próximo</span>
                                     @endif
                                     <p class="mt-4 font-body text-sm text-gray">{{ $item['type_label'] }}@if($item['institution']) · {{ $item['institution'] }}@endif</p>
-                                    <h3 class="mt-2 font-sans text-[1.45rem] font-normal leading-[1.08] tracking-[-0.02em] text-primary">{{ $item['title'] }}</h3>
+                                    <h3 class="mt-2 font-sans text-[1.45rem] font-normal leading-[1.08] tracking-[-0.02em] text-primary transition-colors duration-300 group-hover:text-primary/70">{{ $item['title'] }}</h3>
                                     @if ($item['location'])<p class="mt-3 font-body text-base text-gray">{{ $item['location'] }}</p>@endif
                                     @if (($show_description ?? true) && $item['summary'])<p class="mt-3 font-body text-base leading-relaxed text-gray">{{ Str::limit($item['summary'], 180) }}</p>@endif
                                     @if ($item['url'])
                                         <div class="mt-auto pt-6">
-                                            <a href="{{ $item['url'] }}" @if($item['external']) target="_blank" rel="noopener noreferrer" @endif class="group/link inline-flex min-h-11 items-center border-b border-primary font-body text-sm font-semibold text-primary transition-colors duration-200 hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">Ver detalles <span class="ml-2 transition-transform duration-200 group-hover/link:translate-x-1" aria-hidden="true">{{ $item['external'] ? '↗' : '→' }}</span></a>
+                                            <span class="relative z-20 inline-flex min-h-11 items-center border-b border-primary font-body text-sm font-semibold text-primary transition-colors duration-200 group-hover:border-accent group-hover:text-accent" aria-hidden="true">Ver detalles <span class="ml-2 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">{{ $item['external'] ? '↗' : '→' }}</span></span>
                                         </div>
                                     @endif
                                 </div>
