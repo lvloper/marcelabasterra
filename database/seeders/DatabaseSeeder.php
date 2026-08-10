@@ -69,6 +69,9 @@ class DatabaseSeeder extends Seeder
         $this->seedErrorConfig($errorPage);
         $this->call(AcademicActivitySeeder::class);
         $this->call(JornadasCongresosSeeder::class);
+        $this->call(AcademicProductionPageSeeder::class);
+        $this->call(SiteArchitectureSeeder::class);
+        $this->call(LegacyDemoCleanupSeeder::class);
     }
 
     // ─── Super Admin ───────────────────────────────────────────
@@ -506,7 +509,7 @@ class DatabaseSeeder extends Seeder
                     ],
                     [
                         '_token' => 'menu-actualidad',
-                        'label' => 'Actualidad y Medios',
+                        'label' => 'Actividad',
                         'route' => $this->routeRef('actualidad-y-medios'),
                         'children' => [],
                     ],
@@ -638,7 +641,7 @@ class DatabaseSeeder extends Seeder
                 'featured_positions' => $featuredPositions,
                 'cta_primary' => array_merge($this->routeRef('sobre-mi'), ['btn_label' => 'CV']),
                 'cta_secondary' => array_merge($this->routeRef('publicaciones'), ['btn_label' => 'Ver publicaciones']),
-                'cta_tertiary' => array_merge($this->routeRef('actualidad-y-medios'), ['btn_label' => 'Actualidad']),
+                'cta_tertiary' => array_merge($this->routeRef('actualidad-y-medios'), ['btn_label' => 'Noticias y prensa']),
             ]),
             // 2. Presentación
             $this->block('Intro', [

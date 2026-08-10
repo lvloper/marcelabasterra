@@ -24,7 +24,10 @@ $routeClass = (isset($route_id) && is_numeric($route_id) && (int)$route_id >= 1)
     : null;
 
 if ($routeClass) {
-    $url = url($routeClass->url);
+    $homeRouteId = data_get(\App\Models\Configuration::getValue('home_route_id'), 'route.route_id');
+    $url = ((int) $routeClass->id === (int) $homeRouteId || $routeClass->slug === 'home')
+        ? url('/')
+        : $routeClass->url;
     $layout = $routeClass->layout;
     $allowWireNavitage = true;
 

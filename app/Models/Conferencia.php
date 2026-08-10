@@ -24,11 +24,14 @@ class Conferencia extends Model
     public function getDefaultRouteParentId(): ?int
     {
         return Route::query()
-            ->where('slug', 'jornadas-y-congresos')
+            ->whereFullSlug('actividad-academica/conferencias')
             ->where('routable_type', Page::class)
             ->value('id')
             ?: config('cms-routes.conferences_parent_id')
-            ?: Route::whereFullSlug('actividad-academica/conferencias')->value('id')
+            ?: Route::query()
+            ->where('slug', 'jornadas-y-congresos')
+            ->where('routable_type', Page::class)
+            ->value('id')
             ?: config('cms-routes.agenda_parent_id');
     }
 }

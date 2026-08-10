@@ -4,7 +4,7 @@
 
 | Prop | Tipo | Requerido | Default | Descripción |
 |------|------|-----------|---------|-------------|
-| `variant` | `toggleButtons` | sí | `editorial` | Composición visual: `editorial`, `institutional` o `portrait` |
+| `variant` | `toggleButtons` | sí | `editorial` | Composición visual: `editorial`, `institutional`, `portrait` o `listing` |
 | `profile_photo` | `image` | no | | Retrato principal 4:5 (1200x1500) |
 | `image_alt` | `text` | no | | Descripción accesible de la fotografía |
 | `badge` | `text` | no | | Etiqueta editorial de contexto |
@@ -38,7 +38,9 @@
 
 ## Reglas de renderizado
 
-- Las tres versiones renderizan el mismo contrato de contenido; `variant` solo cambia la composición.
+- Las cuatro versiones renderizan el mismo contrato de contenido; `variant` solo cambia la composición.
+- La variante `listing` (intro de catálogo) replica el intro de la página Libros: superficie blanca con borde inferior, titular enorme con punto de acento y columna derecha con introducción, presentación breve y cifras con borde superior. Las cifras se activan cuando el `label` de un indicador comienza con un número (ej. `13 Actividades vigentes`).
+- La variante `listing` no muestra la franja inferior de indicadores ni la sección de cargos destacados.
 - La fotografía nunca lleva texto superpuesto y conserva color natural.
 - Si no hay fotografía, las versiones `editorial` e `institutional` mantienen una superficie editorial alternativa.
 - Los CTA sin URL o sin etiqueta no se renderizan.

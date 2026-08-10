@@ -13,7 +13,8 @@ class Docencia extends Model
 
     public function getDefaultRouteParentId(): ?int
     {
-        return config('cms-routes.docencia_parent_id');
+        return Route::query()->whereFullSlug('actividad-academica/docencia')->value('id')
+            ?: config('cms-routes.docencia_parent_id');
     }
 
     protected $fillable = [

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\Conferencia;
 use App\Models\Evento;
 use App\Models\Page;
 use App\Models\Redirection;
@@ -70,7 +69,7 @@ final class JornadasCongresosSeeder extends Seeder
                         'source_mode' => 'automatic',
                         'eventos' => [],
                         'conferencias' => [],
-                        'include_conferences' => true,
+                        'include_conferences' => false,
                         'max_items' => 1,
                         'show_past' => true,
                     ], 'destacado'),
@@ -78,7 +77,7 @@ final class JornadasCongresosSeeder extends Seeder
                         'title' => 'Agenda y archivo de eventos',
                         'description' => 'Próximas actividades e historial reunidos en un único listado cronológico para recorrer por año, país y tipo de participación.',
                         'display_mode' => 'activities',
-                        'include_conferences' => true,
+                        'include_conferences' => false,
                         'conferencias' => [],
                         'status' => 'all',
                         'event_types' => [],
@@ -96,7 +95,6 @@ final class JornadasCongresosSeeder extends Seeder
             ]);
 
             $this->moveDetailRoutes(Evento::class, $route, $newSectionPath);
-            $this->moveDetailRoutes(Conferencia::class, $route, $newSectionPath);
 
             if ($oldSectionPath !== $newSectionPath) {
                 $this->redirect($oldSectionPath, $newSectionPath, 'Nueva jerarquía de Jornadas y Congresos.');

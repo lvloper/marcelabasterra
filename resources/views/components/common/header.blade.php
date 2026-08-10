@@ -1,73 +1,47 @@
 @php
-    $pageRoutes = App\Models\Route::query()
-        ->where('routable_type', App\Models\Page::class)
-        ->get();
+    $menu = App\Models\Menu::query()->where('slug', 'header')->first();
+    $routeIds = collect($menu?->items ?? [])
+        ->flatMap(function (array $item): array {
+            return array_merge(
+                [data_get($item, 'route.route_id')],
+                collect($item['children'] ?? [])->pluck('route.route_id')->all(),
+            );
+        })
+        ->filter()
+        ->map(fn ($id): int => (int) $id)
+        ->unique();
+    $menuRoutes = App\Models\Route::query()->whereIn('id', $routeIds)->get()->keyBy('id');
+    $hydrateItem = function (array $item) use ($menuRoutes): ?array {
+        $attrs = is_array($item['route'] ?? null) ? $item['route'] : [];
+        $linkedRoute = filled($attrs['route_id'] ?? null) ? $menuRoutes->get((int) $attrs['route_id']) : null;
+        if (! $linkedRoute && blank($attrs['external_url'] ?? null)) {
+            return null;
+        }
 
-    $routeForPath = function (string $path) use ($pageRoutes): ?App\Models\Route {
-        return $pageRoutes->first(fn (App\Models\Route $route): bool => $route->getFullPath() === trim($path, '/'));
+        return [
+            'token' => $item['_token'] ?? null,
+            'label' => $item['label'] ?? $linkedRoute?->title ?? 'Enlace',
+            'route' => $linkedRoute,
+            'attrs' => $attrs,
+            'children' => collect($item['children'] ?? [])->map(function (array $child) use ($menuRoutes): ?array {
+                $childAttrs = is_array($child['route'] ?? null) ? $child['route'] : [];
+                $childRoute = filled($childAttrs['route_id'] ?? null) ? $menuRoutes->get((int) $childAttrs['route_id']) : null;
+
+                return ($childRoute || filled($childAttrs['external_url'] ?? null)) ? [
+                    'token' => $child['_token'] ?? null,
+                    'label' => $child['label'] ?? $childRoute?->title ?? 'Enlace',
+                    'route' => $childRoute,
+                    'attrs' => $childAttrs,
+                ] : null;
+            })->filter()->values(),
+        ];
     };
-
-    $makeLink = function (string $label, string $path, ?string $anchor = null) use ($routeForPath): ?array {
-        $route = $routeForPath($path);
-
-        return $route ? [
-            'label' => $label,
-            'route' => $route,
-            'anchor' => $anchor,
-        ] : null;
-    };
-
-    $featuredNavigation = collect([
-        $makeLink('Sobre mí', 'sobre-mi'),
-        $makeLink('Publicaciones', 'publicaciones'),
-        $makeLink('Actividad académica', 'actividad-academica'),
-        $makeLink('Jornadas y Congresos', 'jornadas-y-congresos'),
-    ])->filter()->values();
-
-    $siteMap = collect([
-        [
-            'label' => 'Sobre mí',
-            'route' => $routeForPath('sobre-mi'),
-            'children' => collect([
-                $makeLink('Biografía', 'sobre-mi', 'biografia'),
-                $makeLink('Trayectoria', 'sobre-mi', 'trayectoria-en-cifras'),
-                $makeLink('Cargos institucionales', 'sobre-mi', 'cargos'),
-                $makeLink('CV', 'sobre-mi', 'cv'),
-            ])->filter()->values(),
-        ],
-        [
-            'label' => 'Actividad académica',
-            'route' => $routeForPath('actividad-academica'),
-            'children' => collect([
-                $makeLink('Programas', 'programas'),
-                $makeLink('Jornadas y Congresos', 'jornadas-y-congresos'),
-            ])->filter()->values(),
-        ],
-        [
-            'label' => 'Publicaciones',
-            'route' => $routeForPath('publicaciones'),
-            'children' => collect([
-                $makeLink('Libros', 'publicaciones/libros'),
-                $makeLink('Artículos académicos', 'publicaciones/articulos-academicos'),
-                $makeLink('Actualidad y producción académica', 'actualidad-y-produccion-academica'),
-            ])->filter()->values(),
-        ],
-        [
-            'label' => 'Novedades',
-            'route' => $routeForPath('novedades'),
-            'children' => collect(),
-        ],
-        [
-            'label' => 'Actualidad',
-            'route' => $routeForPath('actualidad-y-produccion-academica'),
-            'children' => collect(),
-        ],
-        [
-            'label' => 'Contacto',
-            'route' => $routeForPath('contacto'),
-            'children' => collect(),
-        ],
-    ])->filter(fn (array $item): bool => $item['route'] instanceof App\Models\Route)->values();
+    $navigation = collect($menu?->items ?? [])->sortBy('order')->map($hydrateItem)->filter()->values();
+    $featuredNavigation = $navigation
+        ->whereIn('token', ['menu-sobre-mi', 'menu-publicaciones', 'menu-actividad'])
+        ->values();
+    $cvNavigation = $navigation->firstWhere('token', 'menu-cv');
+    $siteMap = $navigation->reject(fn (array $item): bool => $item['token'] === 'menu-home')->values();
 
     $latestBooks = App\Models\Libro::query()
         ->with('route')
@@ -113,6 +87,8 @@
 <header
     id="mainHeader"
     class="fixed inset-x-0 top-0 z-50"
+    @mouseenter="window.matchMedia('(min-width: 1280px)').matches && openMenu(false)"
+    @mouseleave="menuCloseTimer = window.setTimeout(() => closeMenu(), 250)"
     :class="fused && overHero ? 'bg-transparent text-primary' : 'bg-primary text-white'"
     x-data="{
         menuOpen: false,
@@ -198,28 +174,34 @@
             </span>
         </a>
 
-        <div
-            class="flex items-center gap-4 lg:gap-8"
-            @mouseenter="window.matchMedia('(min-width: 1280px)').matches && openMenu(false)"
-            @mouseleave="menuCloseTimer = window.setTimeout(() => closeMenu(), 250)"
-        >
+        <div class="flex items-center gap-4 lg:gap-8">
             <nav class="hidden items-center gap-6 xl:flex" aria-label="Accesos principales">
                 @foreach ($featuredNavigation as $index => $item)
                     <x-link
                         allowWireNavitage
                         class="font-body relative flex min-h-11 items-center text-[15px] leading-none text-current transition-colors duration-200 after:absolute after:inset-x-0 after:bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:after:scale-x-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent {{ $item['route']->isActive() ? 'after:scale-x-100' : '' }}"
-                        :attrs="['route_id' => $item['route']->id]"
+                        :attrs="$item['attrs']"
                     >
                         {{ $item['label'] }}
                     </x-link>
                 @endforeach
             </nav>
 
+            @if ($cvNavigation)
+                <x-link
+                    allowWireNavitage
+                    class="font-body inline-flex min-h-11 items-center justify-center border border-current px-4 text-[14px] font-medium text-current transition-colors duration-200 hover:border-accent hover:bg-accent hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+                    :attrs="$cvNavigation['attrs']"
+                >
+                    CV
+                </x-link>
+            @endif
+
             <button
                 type="button"
                 x-ref="menuButton"
                 @click="menuOpen ? closeMenu() : openMenu()"
-                class="font-body group inline-flex min-h-11 items-center justify-center gap-3 border-0 text-[15px] text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent xl:hidden"
+                class="font-body group inline-flex min-h-11 items-center justify-center gap-3 border-0 text-[15px] text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
                 :aria-expanded="menuOpen.toString()"
                 :aria-label="menuOpen ? 'Cerrar menú' : 'Abrir menú Ver más'"
                 aria-controls="site-menu-panel"
@@ -246,8 +228,6 @@
         x-transition:leave-end="-translate-y-2 opacity-0"
         class="archive-menu-panel fixed inset-x-0 overflow-y-auto border-y border-primary/30 bg-gray-3"
         :class="scrolled ? 'top-12 lg:top-14' : 'top-14 lg:top-16'"
-        @mouseenter="window.clearTimeout(menuCloseTimer)"
-        @mouseleave="menuCloseTimer = window.setTimeout(() => closeMenu(), 250)"
         role="dialog"
         aria-modal="true"
         aria-labelledby="site-menu-title"
@@ -315,8 +295,8 @@
                         <li class="archive-menu-item border-t border-primary/30 pt-2" style="--menu-index: {{ $index }}">
                             <x-link
                                 allowWireNavitage
-                                class="font-sans inline-flex min-h-9 items-center text-[19px] leading-tight text-primary transition-colors duration-200 hover:text-gray focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent {{ $section['route']->isActive() ? 'font-bold' : '' }}"
-                                :attrs="['route_id' => $section['route']->id]"
+                                class="font-sans inline-flex min-h-9 items-center text-[19px] leading-tight text-primary transition-colors duration-200 hover:text-gray focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent {{ $section['route']?->isActive() ? 'font-bold' : '' }}"
+                                :attrs="$section['attrs']"
                             >
                                 {{ $section['label'] }}
                             </x-link>
@@ -328,7 +308,7 @@
                                             <x-link
                                                 allowWireNavitage
                                                 class="font-body inline-flex min-h-8 items-center text-[13px] leading-snug text-gray transition-colors duration-200 hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                                                :attrs="['route_id' => $child['route']->id, 'anchor' => $child['anchor']]"
+                                                :attrs="$child['attrs']"
                                             >
                                                 {{ $child['label'] }} <span class="ml-1.5" aria-hidden="true">→</span>
                                             </x-link>

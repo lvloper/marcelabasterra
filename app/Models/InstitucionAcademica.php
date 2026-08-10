@@ -35,7 +35,8 @@ class InstitucionAcademica extends Model
 
     public function getDefaultRouteParentId(): ?int
     {
-        return config('cms-routes.academic_institutions_parent_id')
+        return Route::query()->whereFullSlug('actividad-academica/docencia')->value('id')
+            ?: config('cms-routes.academic_institutions_parent_id')
             ?: Route::whereFullSlug('actividad-academica')->value('id');
     }
 

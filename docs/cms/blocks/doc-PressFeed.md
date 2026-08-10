@@ -6,12 +6,15 @@
 |------|------|-----------|---------|-------------|
 | `title` | text | no | — | Título de la sección. |
 | `description` | textarea | no | — | Texto introductorio. |
+| `layout` | select | sí | `featured` | `featured` o `archive`. La variante `archive` usa un listado cronológico simple. |
+| `heading_level` | select | sí | `h2` | `h1` para apertura de página o `h2` para una sección. |
 | `source_mode` | select | sí | `media_publications` | `media_publications` o `unified_news`. |
 | `content_types` | checkbox list | sí | artículo, entrevista, noticia | Tipos visibles en la consulta automática. |
 | `media` | text | no | — | Medios separados por coma; vacío incluye todos. |
 | `selected_items` | select multiple | no | — | IDs de `PublicacionMedio`; conserva orden editorial cuando se implemente la vista. |
-| `max_items` | number | sí | 6 | Límite entre 1 y 24. |
-| `show_filters` | toggle | sí | false | Activa filtros accesibles en las páginas índice. |
+| `max_items` | number | sí | 6 | Límite entre 1 y 24; en `archive` es el tamaño de página. |
+| `show_filters` | toggle | sí | false | Activa filtros accesibles por tipo y tema histórico en las páginas índice. |
+| `show_search` | toggle | sí | false | Activa el buscador textual en la variante `archive`. |
 | `show_image` | toggle | sí | true | Muestra imagen de ruta cuando exista. |
 | `empty_message` | text | no | — | Mensaje para índices sin resultados. |
 
@@ -36,7 +39,9 @@
 
 - La selección manual tiene prioridad sobre la consulta automática.
 - La consulta automática usa `PublicacionMedio`, filtra por tipo y medio, y ordena por `fecha` descendente.
-- `unified_news` reúne `Blog`, `PublicacionMedio` y `Entrevista` mediante el catálogo normalizado y elimina coincidencias duplicadas por título y fecha.
+- `unified_news` reúne `Blog`, `PublicacionMedio` y `Entrevista` mediante el catálogo normalizado y elimina coincidencias por título y fecha, incluso cuando la noticia importada agrega el medio como sufijo.
+- Cuando una noticia interna y una publicación en medios representan la misma pieza, se conserva la ficha específica de prensa.
+- `archive` mezcla los tipos cronológicamente, permite búsqueda, filtra por tipo y tema histórico y pagina los resultados sin separar el contenido en pestañas.
 - La vista final debe mostrar título, tipo, medio, fecha, resumen, imagen opcional y enlace externo o ficha interna.
 - En Home, la ausencia de resultados oculta el bloque. En índices, puede mostrar `empty_message`.
 

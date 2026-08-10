@@ -85,6 +85,19 @@ class RedirectionTest extends TestCase
         $this->assertStringContainsString('page=2', $location);
     }
 
+    public function test_redirection_places_query_parameters_before_the_fragment()
+    {
+        Redirection::create([
+            'old_url' => '/old-anchor',
+            'new_url' => '/new-page#section',
+            'redirect_code' => 301,
+            'is_active' => true,
+        ]);
+
+        $this->get('/old-anchor?utm_source=test')
+            ->assertRedirect('/new-page?utm_source=test#section');
+    }
+
     public function test_redirection_cache_is_used()
     {
         $redirection = Redirection::create([

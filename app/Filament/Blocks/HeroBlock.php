@@ -21,6 +21,7 @@ class HeroBlock extends PageBlock
                 'editorial' => '01 · Apertura editorial',
                 'institutional' => '02 · Capítulo institucional',
                 'portrait' => '03 · Retrato protagonista',
+                'listing' => '04 · Intro de catálogo',
             ])
                 ->default('editorial')
                 ->inline()

@@ -4,10 +4,10 @@ namespace App\Filament\Blocks;
 
 use App\Filament\Forms\Components\Field;
 use App\Models\PublicacionMedio;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\CheckboxList;
 
 class PressFeedBlock extends PageBlock
 {
@@ -22,6 +22,14 @@ class PressFeedBlock extends PageBlock
         return [
             Field::text('title', 'Título de la sección'),
             Field::textarea('description', 'Texto introductorio')->rows(3),
+            Field::select('layout', 'Diseño', [
+                'featured' => 'Destacado con piezas secundarias',
+                'archive' => 'Archivo editorial unificado',
+            ])->default('featured')->required(),
+            Field::select('heading_level', 'Nivel del título', [
+                'h1' => 'H1 · Título principal de página',
+                'h2' => 'H2 · Título de sección',
+            ])->default('h2')->required(),
             Field::select('source_mode', 'Origen del contenido', [
                 'media_publications' => 'Publicaciones en medios',
                 'unified_news' => 'Noticias, prensa y entrevistas',
@@ -48,7 +56,7 @@ class PressFeedBlock extends PageBlock
                     ->all())
                 ->searchable(),
             TextInput::make('max_items')
-                ->label('Máximo de items')
+                ->label('Items visibles o por página')
                 ->numeric()
                 ->default(6)
                 ->minValue(1)
@@ -56,6 +64,9 @@ class PressFeedBlock extends PageBlock
                 ->required(),
             Toggle::make('show_filters')
                 ->label('Mostrar filtros')
+                ->default(false),
+            Toggle::make('show_search')
+                ->label('Mostrar buscador')
                 ->default(false),
             Toggle::make('show_image')
                 ->label('Mostrar imagen cuando exista')

@@ -1,6 +1,6 @@
 @php
 $id = ($id ?? 'hero-' . uniqid()) . '-content';
-$heroVariant = in_array($variant ?? 'editorial', ['editorial', 'institutional', 'portrait'], true)
+$heroVariant = in_array($variant ?? 'editorial', ['editorial', 'institutional', 'portrait', 'listing'], true)
     ? ($variant ?? 'editorial')
     : 'editorial';
 
@@ -211,6 +211,46 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
                 </div>
             </div>
 
+        @elseif ($heroVariant === 'listing')
+            <section class="border-b border-primary bg-white">
+                <div class="mx-auto grid max-w-[1440px] grid-cols-1 gap-12 px-5 py-16 sm:px-8 md:py-20 lg:grid-cols-12 lg:gap-8 lg:px-12 lg:py-28 xl:px-16">
+                    <div class="lg:col-span-8">
+                        @if ($heroBadge)
+                            <p class="hero-reveal flex items-center gap-4 font-source text-sm text-primary">
+                                <span class="h-px w-12 bg-accent" aria-hidden="true"></span>{{ $heroBadge }}
+                            </p>
+                        @endif
+                        @if ($heroName)
+                            <h1 class="hero-reveal mt-10 font-sans text-[clamp(3rem,6.5vw,6.5rem)] font-normal leading-[0.94] tracking-[-0.035em] text-primary">
+                                {{ $heroName }}<span class="text-accent">.</span>
+                            </h1>
+                        @endif
+                    </div>
+                    <div class="lg:col-span-4 lg:col-start-9 lg:self-end">
+                        @if ($heroSubtitle)
+                            <p class="hero-reveal max-w-[38ch] font-source text-2xl leading-relaxed text-gray">{{ $heroSubtitle }}</p>
+                        @endif
+                        @if ($heroDescription)
+                            <p class="hero-reveal mt-5 max-w-[38ch] font-body text-base leading-relaxed text-gray">{{ $heroDescription }}</p>
+                        @endif
+        @if (! empty($heroIndicators))
+                            <div class="hero-reveal mt-10 space-y-6 border-t border-primary pt-6">
+                                @foreach ($heroIndicators as $item)
+                                    @php
+                                        $parsed = $parseIndicator($item['label']);
+                                    @endphp
+                                    @if ($parsed['number'])
+                                        <p class="font-source text-5xl text-primary">{{ $parsed['number'] }} <span class="font-body text-base text-gray">{{ $parsed['text'] }}</span></p>
+                                    @else
+                                        <p class="font-body text-sm text-gray">{{ $item['label'] }}</p>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </section>
+
         @else
             <div class="bg-gray-3">
                 <div class="mx-auto max-w-[1440px] px-5 py-12 sm:px-8 lg:px-12 lg:py-20 xl:px-16">
@@ -254,7 +294,7 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
             </div>
         @endif
 
-        @if (! empty($heroIndicators))
+        @if (! empty($heroIndicators) && $heroVariant !== 'listing')
             <div class="bg-gradient-to-b from-gray-3/40 to-transparent">
                 <div class="mx-auto max-w-[1440px] px-5 py-14 sm:px-8 lg:px-12 lg:py-20 xl:px-16">
                     <div class="hero-reveal grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -279,7 +319,7 @@ $ctaTertiary = $resolveRoute($cta_tertiary ?? null);
         @endif
     </div>
 
-    @if ($heroVariant !== 'editorial' && $heroPositions->isNotEmpty())
+    @if (! in_array($heroVariant, ['editorial', 'listing'], true) && $heroPositions->isNotEmpty())
         <section class="border-t border-primary bg-white" aria-label="Cargos institucionales destacados">
             <div class="mx-auto grid max-w-[1440px] lg:grid-cols-12">
                 <p class="px-5 py-7 font-source text-sm text-primary sm:px-8 lg:col-span-3 lg:px-12 xl:px-16">Cargos destacados</p>

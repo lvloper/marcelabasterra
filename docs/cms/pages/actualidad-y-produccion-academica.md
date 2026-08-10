@@ -1,27 +1,26 @@
-# Actualidad y Producción Académica
+# Actualidad
 
 ## Ruta
 
-- Actual: `/actualidad-y-produccion-academica`
-- Redirección permanente: `/actualidad-y-medios`
+- Canónica: `/actualidad`
+- Redirecciones permanentes: `/actualidad-y-produccion-academica` y `/actualidad-y-medios`
 - Recurso: `Page` existente, ID 14
+- Ubicación de navegación: nivel principal `Actualidad`
+- Título editorial visible: `Noticias · Prensa · Entrevistas`
 
 ## Composición
 
-1. `Hero`: apertura editorial con fotografía institucional existente.
-2. `Search`: explorador común por categoría, texto, año y tema.
-3. `FeaturedResources`: contenido más reciente del catálogo.
-4. `ContentList`: libros y artículos académicos cronológicos.
-5. `PressFeed`: noticias institucionales, prensa y entrevistas.
-6. `EventsListing` (`activities`): conferencias y actividades, con próximas primero.
-7. `PublicationsHighlight` (`library_grid`): biblioteca digital.
-8. `EventsListing` (`videos`): archivo audiovisual.
+1. `PressFeed` en variante `archive`: apertura de página y archivo unificado.
+2. Buscador textual sobre título, resumen, medio, tema y tipo.
+3. Filtros por `Noticias`, `Prensa`, `Entrevistas` y por categorías históricas del legacy.
+4. Paginación tradicional de 12 entradas por página.
+
+Los libros, artículos académicos, conferencias, actividades y videos permanecen en sus secciones específicas y no se duplican en esta página.
 
 ## Fuentes de datos
 
-- `Libro`, `ArticuloAcademico`, `Blog`, `PublicacionMedio`, `Entrevista`, `Conferencia` y `Evento`.
-- `AcademicProductionCatalog` normaliza filtros y evita duplicar contenido editorial dentro del JSON de la página.
-- `Conferencia` admite además `ubicacion` y `tematica` para completar la ficha cronológica.
+- `Blog`, `PublicacionMedio` y `Entrevista`.
+- `AcademicProductionCatalog` normaliza los tres orígenes, elimina coincidencias duplicadas por título y fecha, y ordena el archivo por fecha descendente.
 
 ## Carga reproducible
 

@@ -52,7 +52,12 @@ class RedirectionMiddleware
 
             // Preservar query parameters si existen
             if ($request->getQueryString()) {
-                $newUrl .= '?' . $request->getQueryString();
+                $fragment = '';
+                if (str_contains($newUrl, '#')) {
+                    [$newUrl, $fragment] = explode('#', $newUrl, 2);
+                    $fragment = '#'.$fragment;
+                }
+                $newUrl .= (str_contains($newUrl, '?') ? '&' : '?').$request->getQueryString().$fragment;
             }
 
             // Realizar la redirección con el código apropiado

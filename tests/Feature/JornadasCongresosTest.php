@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Enums\Status;
 use App\Models\Conferencia;
+use App\Models\Evento;
 use App\Models\Page;
 use App\Models\Route;
 use App\Support\EventCatalog;
@@ -43,7 +44,7 @@ final class JornadasCongresosTest extends TestCase
     {
         $this->pageRoute('Actividad Académica', 'actividad-academica');
         $this->pageRoute('Jornadas y Congresos', 'jornadas-y-congresos');
-        $this->conference('Congreso constitucional', '2025-09-10');
+        $this->event('Congreso constitucional', '2025-09-10');
 
         $this->seed(JornadasCongresosSeeder::class);
 
@@ -66,6 +67,28 @@ final class JornadasCongresosTest extends TestCase
             'slug' => 'congreso-constitucional',
             'full_slug' => 'actividad-academica/jornadas-y-congresos/congreso-constitucional',
         ]);
+    }
+
+    private function event(string $title, string $date): Evento
+    {
+        $event = Evento::query()->create([
+            'tipo' => 'congreso',
+            'institucion' => 'Universidad de Buenos Aires',
+            'ciudad' => 'Buenos Aires',
+            'pais' => 'Argentina',
+            'tema' => 'Derecho Constitucional',
+            'fecha_inicio' => $date,
+            'descripcion' => '<p>Participación académica.</p>',
+            'destacado' => true,
+        ]);
+        $event->route()->create([
+            'title' => $title,
+            'slug' => str($title)->slug(),
+            'full_slug' => 'agenda/'.str($title)->slug(),
+            'status' => Status::Published,
+        ]);
+
+        return $event->fresh('route');
     }
 
     private function conference(string $title, string $date): Conferencia

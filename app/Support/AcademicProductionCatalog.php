@@ -32,12 +32,22 @@ final class AcademicProductionCatalog
         return collect()
             ->concat($this->articles())
             ->concat($this->books())
-            ->concat($this->news())
-            ->concat($this->press())
-            ->concat($this->legacyInterviews())
+            ->concat($this->newsAndMedia())
             ->concat($this->conferences())
             ->concat($this->events())
             ->unique(fn (array $item): string => Str::lower($item['title'].'|'.($item['date'] ?? '')))
+            ->sortByDesc(fn (array $item): string => ($item['date'] ?? '0000-00-00').'|'.$item['key'])
+            ->values();
+    }
+
+    /** @return Collection<int, array<string, mixed>> */
+    public function newsAndMedia(): Collection
+    {
+        return collect()
+            ->concat($this->press())
+            ->concat($this->legacyInterviews())
+            ->concat($this->news())
+            ->unique(fn (array $item): string => $this->mediaDeduplicationKey($item))
             ->sortByDesc(fn (array $item): string => ($item['date'] ?? '0000-00-00').'|'.$item['key'])
             ->values();
     }
@@ -221,6 +231,15 @@ final class AcademicProductionCatalog
             location: $item->ubicacion,
             external: filled($item->video),
         ));
+    }
+
+    /** @param array<string, mixed> $item */
+    private function mediaDeduplicationKey(array $item): string
+    {
+        $title = Str::squish((string) $item['title']);
+        $titleWithoutSource = preg_replace('/\s*\/\s*[^\/]+$/u', '', $title) ?: $title;
+
+        return Str::lower(Str::ascii($titleWithoutSource)).'|'.($item['date'] ?? '');
     }
 
     /** @return array<string, mixed> */
