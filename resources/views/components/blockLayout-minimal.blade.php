@@ -10,7 +10,7 @@
     @filamentStyles
     @livewireStyles
 </head>
-<body class="overflow-hidden font-sans text-base tracking-normal leading-normal text-gray-800">
+<body class="overflow-hidden bg-white font-sans text-base tracking-normal leading-normal text-gray-800">
     <div id="main">
         {{ $slot }}
     </div>

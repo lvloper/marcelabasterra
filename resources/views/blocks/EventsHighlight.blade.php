@@ -101,4 +101,10 @@
             </div>
         </div>
     </x-block>
+@elseif ($preview ?? false)
+    <x-block-preview-empty
+        :title="$title ?? 'Eventos destacados'"
+        :description="$description ?? null"
+        message="Seleccioná actividades o habilitá una fuente automática para completar la vista previa."
+    />
 @endif

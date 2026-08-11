@@ -219,4 +219,10 @@
             @endif
         </div>
     </x-block>
+@elseif ($preview ?? false)
+    <x-block-preview-empty
+        :title="$title ?? 'Recursos destacados'"
+        :description="$description ?? null"
+        message="Seleccioná recursos o usá la fuente automática para completar la vista previa."
+    />
 @endif

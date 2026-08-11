@@ -1,0 +1,20 @@
+:root,
+:host {
+    --color-primary: #2a3461;
+    --color-primary-hover: #1f2748;
+    --color-secondary: #9499b0;
+    --color-secondary-hover: #7a80a0;
+    --color-secondary-light: #c4c7d4;
+    --color-accent: #45bfe3;
+    --color-accent-hover: #3aaed2;
+
+    --color-black: #000000;
+    --color-white: #ffffff;
+    --color-gray: #5c6b73;
+    --color-gray-2: #bec4c7;
+    --color-gray-3: #f3f4f4;
+
+    --font-display: 'Bellota Text', serif;
+    --font-body: 'Work Sans', sans-serif;
+    --font-editorial: 'Source Serif 4', serif;
+}

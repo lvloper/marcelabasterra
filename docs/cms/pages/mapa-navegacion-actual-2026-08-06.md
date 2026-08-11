@@ -78,7 +78,7 @@ También existen 22 entrevistas sin una Route propia. Son consumibles por bloque
 | Página | Bloques persistidos actualmente |
 |---|---|
 | Inicio | Hero · Presentación (`Intro`) · Último libro (`PublicationsHighlight`) · Actualidad y publicaciones recientes (`PressFeed`) · Conferencias (`EventsListing`) · CTA |
-| Sobre mí | Presentación (`Intro`) · Trayectoria en cifras · Responsabilidades institucionales · Reconocimiento destacado · Acceso al CV |
+| Sobre mí | Presentación (`Intro`) · Trayectoria en cifras · Responsabilidades institucionales · Reconocimiento destacado · Banner al CV (`CTA` → `/cv`) |
 | Actividad académica | Hero · Actividad docente (`TeachingListing`) · Artículos especializados |
 | Programas | Recursos destacados; sin registros de programas cargados |
 | Jornadas y Congresos | Hero · Actividad destacada · Agenda y archivo |

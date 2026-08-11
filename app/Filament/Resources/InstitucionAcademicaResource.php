@@ -23,8 +23,10 @@ class InstitucionAcademicaResource extends ResourceBase
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Docencia';
+        return 'Actividad académica';
     }
+
+    protected static ?int $navigationSort = 20;
 
     public static function getNavigationIcon(): string
     {

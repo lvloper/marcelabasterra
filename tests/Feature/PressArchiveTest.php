@@ -30,7 +30,7 @@ final class PressArchiveTest extends TestCase
                     'source_mode' => 'unified_news',
                     'content_types' => ['articulo', 'entrevista', 'noticia'],
                     'max_items' => 12,
-                    'show_filters' => false,
+                    'show_filters' => true,
                     'show_search' => true,
                     'show_image' => false,
                     'empty_message' => 'No encontramos resultados para esta búsqueda.',
@@ -82,6 +82,9 @@ final class PressArchiveTest extends TestCase
             ->assertSee('Noticia de archivo 13')
             ->assertDontSee('Noticia de archivo 01')
             ->assertSee('Página 1 de 2')
+            ->assertSee('?tipo=noticias#archivo', false)
+            ->assertSee('?tipo=entrevistas#archivo', false)
+            ->assertSee('?tipo=prensa#archivo', false)
             ->assertSee('noticias=2#archivo', false);
 
         $this->get('/actualidad-y-produccion-academica?noticias=2')
@@ -95,5 +98,12 @@ final class PressArchiveTest extends TestCase
             ->assertSee('Cobertura constitucional especial')
             ->assertSee('https://example.com/prensa-especial', false)
             ->assertDontSee('Noticia de archivo 04');
+
+        $this->get('/actualidad-y-produccion-academica?tipo=prensa')
+            ->assertOk()
+            ->assertSee('1 resultado')
+            ->assertSee('Cobertura constitucional especial')
+            ->assertSee('aria-current="page"', false)
+            ->assertSee('tipo=prensa#archivo', false);
     }
 }

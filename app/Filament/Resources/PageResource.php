@@ -15,6 +15,10 @@ class PageResource extends ResourceBase
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-square-2-stack';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Sitio';
+
+    protected static ?int $navigationSort = 10;
+
     public static function getRelations(): array
     {
         return [

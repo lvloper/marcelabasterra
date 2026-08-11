@@ -2,8 +2,8 @@
     $layout = $layout ?? 'left';
     $mediaType = $media_type ?? 'image';
     $isLeft = $layout === 'left';
-    $image = is_array($image ?? null) ? ($image[0] ?? null) : $image;
-    $videoFile = is_array($video_file ?? null) ? ($video_file[0] ?? null) : $video_file;
+    $image = is_array($image ?? null) ? ($image[0] ?? null) : ($image ?? null);
+    $videoFile = is_array($video_file ?? null) ? ($video_file[0] ?? null) : ($video_file ?? null);
     $hasMedia = ($mediaType === 'youtube' && filled($youtube_id ?? null))
         || ($mediaType === 'upload' && filled($videoFile))
         || ($mediaType === 'image' && filled($image));
@@ -114,6 +114,11 @@
                         >
                     </div>
                     @endif
+                @elseif ($preview ?? false)
+                    <x-block-preview-empty
+                        title="Multimedia"
+                        message="Seleccioná una imagen o un video para completar esta columna."
+                    />
                 @endif
             </div>
 

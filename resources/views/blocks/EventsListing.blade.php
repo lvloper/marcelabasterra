@@ -45,6 +45,7 @@
             $eventIds->isNotEmpty() ? $eventIds : null,
             $conferenceIds->isNotEmpty() ? $conferenceIds : null,
             (bool) ($include_conferences ?? true),
+            (bool) ($include_legacy_archive ?? false),
         );
         $activityItems = $catalog->filter($activityItems, $status ?? 'all', array_values($event_types ?? []))->take($limit)->values();
         $years = $catalog->years($activityItems);
@@ -174,7 +175,7 @@
                                 <div class="flex flex-1 flex-col p-6">
                                     @if ($item['date'])
                                         <div class="flex items-center gap-3">
-                                            <time datetime="{{ $item['date'] }}" class="font-source text-sm text-primary">{{ Carbon::parse($item['date'])->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</time>
+                                            <time datetime="{{ $item['date'] }}" class="font-source text-sm text-primary">{{ ($item['date_kind'] ?? 'event') === 'published' ? 'Publicado el ' : '' }}{{ Carbon::parse($item['date'])->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</time>
                                             @if ($item['is_upcoming'])<span class="border-l border-accent pl-3 font-body text-sm font-semibold text-primary">Próximo</span>@endif
                                         </div>
                                     @elseif ($item['is_upcoming'])

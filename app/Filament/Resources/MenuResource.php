@@ -22,7 +22,11 @@ class MenuResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-bars-4';
 
-    // protected static string|\UnitEnum|null $navigationGroup = 'Site';
+    protected static ?string $navigationLabel = 'Menús';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Sitio';
+
+    protected static ?int $navigationSort = 20;
 
     public static function form(Schema $schema): Schema
     {

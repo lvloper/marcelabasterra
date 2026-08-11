@@ -31,6 +31,10 @@ class EventsListingBlock extends PageBlock
             Toggle::make('include_conferences')
                 ->label('Incluir conferencias en el listado')
                 ->default(true),
+            Toggle::make('include_legacy_archive')
+                ->label('Incluir archivo histórico de Actualidad')
+                ->helperText('Consulta las crónicas etiquetadas como Jornadas & Congresos sin copiarlas al recurso Evento.')
+                ->default(false),
             Select::make('conferencias')
                 ->label('Conferencias seleccionadas')
                 ->multiple()
@@ -60,6 +64,7 @@ class EventsListingBlock extends PageBlock
                     'seminario' => 'Seminario',
                     'taller' => 'Taller',
                     'otro' => 'Otro',
+                    'archivo' => 'Archivo histórico',
                 ])
                 ->columns(2),
             Select::make('selected_events')

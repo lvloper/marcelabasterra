@@ -760,7 +760,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <x-dynamic-component class="fi-visual-editor" :component="$getFieldWrapperView()" :field="$field" x-data="{
     currentDevice: 'desktop',
-    cntWidth: window.innerWidth > 1280 ? '1280' : '320px',
+    cntWidth: 'min(1280px, 100%)',
     reorderInProgress: false,
     getDeviceWidth: (device = 'desktop') => {
         let newWidth;
@@ -772,10 +772,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 newWidth = '768px';
                 break;
             case 'desktop':
-                newWidth = '1280px';
+                newWidth = 'min(1280px, 100%)';
                 break;
             default:
-                newWidth = '1280px';
+                newWidth = 'min(1280px, 100%)';
         }
         return newWidth;
     },

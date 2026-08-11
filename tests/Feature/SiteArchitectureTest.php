@@ -34,7 +34,9 @@ final class SiteArchitectureTest extends TestCase
         $articles = $this->pageRoute('Artículos académicos', 'articulos-academicos', $publications);
         $activity = $this->pageRoute('Actividad académica', 'actividad-academica');
         $this->pageRoute('Jornadas y Congresos', 'jornadas-y-congresos', blocks: [], parent: $activity);
+        $postgraduates = $this->pageRoute('Posgrados, Maestrías y Doctorados', 'posgrados', blocks: [], parent: $activity);
         $this->pageRoute('Actualidad y Producción Académica', 'actualidad-y-produccion-academica');
+        $this->pageRoute('Novedades', 'novedades');
 
         $this->institution('Universidad de Buenos Aires', 'UBA', $activity);
         $this->institution('Pontificia Universidad Católica Argentina', 'UCA', $activity);
@@ -63,8 +65,11 @@ final class SiteArchitectureTest extends TestCase
         $this->get('/libros')->assertRedirect('/publicaciones/libros');
         $this->get('/articulos-especializados')->assertRedirect('/publicaciones/articulos-academicos');
         $this->get('/actualidad-y-produccion-academica')->assertRedirect('/actualidad');
+        $this->get('/novedades')->assertRedirect('/actualidad');
         $this->get('/trayectoria')->assertRedirect('/sobre-mi#trayectoria-en-cifras');
         $this->get('/programas')->assertRedirect('/actividad-academica/docencia#programas');
+        $this->get('/actividad-academica/posgrados')->assertRedirect('/actividad-academica/docencia#posgrados');
+        $this->assertDatabaseHas('routes', ['id' => $postgraduates->id, 'status' => Status::Archived->value]);
 
         $this->assertDatabaseHas('routes', [
             'id' => $conference->route->id,
@@ -79,11 +84,40 @@ final class SiteArchitectureTest extends TestCase
             collect($aboutItem['children'])->pluck('route.anchor')->all(),
         );
         $this->assertSame(7, $items->count());
+        $this->assertSame(
+            ['Inicio', 'Sobre mí', 'Publicaciones', 'Actividad académica', 'Actualidad', 'CV', 'Contacto'],
+            $items->pluck('label')->all(),
+        );
         $this->assertSame($home->id, (int) data_get($items->firstWhere('_token', 'menu-home'), 'route.route_id'));
         $this->assertSame($about->id, (int) data_get($items->firstWhere('_token', 'menu-sobre-mi'), 'route.route_id'));
         $this->assertSame($contact->id, (int) data_get($items->firstWhere('_token', 'menu-contacto'), 'route.route_id'));
         $this->assertSame($books->id, (int) data_get($items->firstWhere('_token', 'menu-publicaciones'), 'children.0.route.route_id'));
         $this->assertSame($articles->id, (int) data_get($items->firstWhere('_token', 'menu-publicaciones'), 'children.1.route.route_id'));
+        $activityChildren = collect($items->firstWhere('_token', 'menu-actividad')['children']);
+        $this->assertSame(['Docencia', 'Conferencias', 'Jornadas y Congresos'], $activityChildren->pluck('label')->all());
+        $this->assertTrue($activityChildren->every(fn (array $item): bool => $item['children'] === []));
+        $actualityChildren = collect($items->firstWhere('_token', 'menu-actualidad')['children']);
+        $this->assertSame(['Todas las publicaciones', 'Noticias', 'Prensa', 'Entrevistas'], $actualityChildren->pluck('label')->all());
+        $this->assertSame([
+            '/actualidad#archivo',
+            '/actualidad?tipo=noticias#archivo',
+            '/actualidad?tipo=prensa#archivo',
+            '/actualidad?tipo=entrevistas#archivo',
+        ], $actualityChildren->pluck('route.external_url')->all());
+        $this->assertSame(
+            ['Ver CV', 'Descargar PDF'],
+            collect($items->firstWhere('_token', 'menu-cv')['children'])->pluck('label')->all(),
+        );
+
+        $homeResponse = $this->get('/')
+            ->assertOk()
+            ->assertSee('Jornadas y Congresos')
+            ->assertSee('Abrir menú principal');
+
+        $this->assertMatchesRegularExpression(
+            '/aria-label="Accesos principales".*Sobre mí.*Publicaciones.*Actividad académica.*Actualidad.*<\/nav>/s',
+            $homeResponse->getContent(),
+        );
     }
 
     private function pageRoute(string $title, string $slug, ?Route $parent = null, array $blocks = []): Route

@@ -28,6 +28,8 @@ class LibroResource extends ResourceBase
         return 'Publicaciones';
     }
 
+    protected static ?int $navigationSort = 10;
+
     public static function getNavigationIcon(): string
     {
         return 'heroicon-o-book-open';

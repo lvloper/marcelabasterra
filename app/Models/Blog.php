@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Filament\Forms\Components\RichEditor\RichContentCustomBlocks\MediaBlock;
 use App\Models\Traits\HasPublishedDate;
 use App\Models\Traits\HasRoute;
 use App\Models\Traits\HasThumb;
+use Filament\Forms\Components\RichEditor\Models\Concerns\InteractsWithRichContent;
+use Filament\Forms\Components\RichEditor\Models\Contracts\HasRichContent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,9 +16,9 @@ use Illuminate\Support\Str;
 use Spatie\Tags\HasTags;
 use Spatie\Tags\Tag;
 
-class Blog extends Model
+class Blog extends Model implements HasRichContent
 {
-    use HasFactory, HasPublishedDate, HasRoute, HasTags, HasThumb;
+    use HasFactory, HasPublishedDate, HasRoute, HasTags, HasThumb, InteractsWithRichContent;
 
     public function getDefaultRouteParentId(): ?int
     {
@@ -37,6 +40,16 @@ class Blog extends Model
         'content' => 'string',
         'is_featured' => 'boolean',
     ];
+
+    protected function setUpRichContent(): void
+    {
+        $this->registerRichContent('content')
+            ->fileAttachmentsDisk(config('admin.contentMedia.disk'))
+            ->fileAttachmentsVisibility(config('admin.contentMedia.visibility'))
+            ->customBlocks([
+                MediaBlock::class,
+            ]);
+    }
 
     /**
      * Get description attribute and handle empty/null values
@@ -157,9 +170,14 @@ class Blog extends Model
             // Si aún no hay suficientes posts, buscar en otros años
             if ($posts->count() < 3) {
                 $remaining = 3 - $posts->count();
+                $date = $this->published_at->toDateString();
+                $driver = $this->getConnection()->getDriverName();
+                $closestQuery = $driver === 'mysql'
+                    ? 'ABS(DATEDIFF(published_at, ?))'
+                    : 'ABS(julianday(published_at) - julianday(?))';
                 $additionalPosts = Blog::where('id', '!=', $this->id)
                     ->isPublished()
-                    ->orderByRaw('ABS(DATEDIFF(published_at, ?))', [$this->published_at])
+                    ->orderByRaw($closestQuery, [$date])
                     ->limit($remaining)
                     ->get();
 

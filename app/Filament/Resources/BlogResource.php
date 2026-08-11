@@ -3,13 +3,15 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Forms\Components\Image;
-use App\Filament\Resources\BlogResource\Pages;
 use App\Filament\Resources\Bases\ResourceBase;
+use App\Filament\Resources\BlogResource\Pages;
 use App\Models\Blog;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
@@ -21,6 +23,12 @@ class BlogResource extends ResourceBase
     protected static ?string $model = Blog::class;
 
     protected static ?string $modelLabel = 'Novedades';
+
+    protected static ?string $navigationLabel = 'Noticias';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Actualidad';
+
+    protected static ?int $navigationSort = 10;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-newspaper';
 
@@ -45,7 +53,7 @@ class BlogResource extends ResourceBase
                     $set('route.slug', Str::slug($state));
                 }),
 
-            \Filament\Schemas\Components\Grid::make(2)
+            Grid::make(2)
                 ->schema([
                     Image::make(
                         name: 'image',
@@ -53,7 +61,7 @@ class BlogResource extends ResourceBase
                         width: '1910',
                         height: '1000',
                     ),
-                    \Filament\Schemas\Components\Group::make()
+                    Group::make()
                         ->schema([
                             SpatieTagsInput::make('tags')->label('Nube de tags'),
                             Toggle::make('is_featured')->label('Destacada'),
@@ -65,7 +73,14 @@ class BlogResource extends ResourceBase
 
             RichEditor::make('content')
                 ->label('Contenido')
-                ->toolbarButtons(config('admin.richEditor.avanced', config('admin.richEditor.basic')))
+                ->toolbarButtons(config('admin.richEditor.advanced', config('admin.richEditor.basic')))
+                ->fileAttachmentsDisk(config('admin.contentMedia.disk'))
+                ->fileAttachmentsDirectory(config('admin.contentMedia.imageDirectory'))
+                ->fileAttachmentsVisibility(config('admin.contentMedia.visibility'))
+                ->fileAttachmentsAcceptedFileTypes(config('admin.contentMedia.imageMimeTypes'))
+                ->fileAttachmentsMaxSize(config('admin.contentMedia.imageMaxSize'))
+                ->resizableImages()
+                ->extraInputAttributes(['class' => 'editorial-rich-editor'])
                 ->required(),
         ];
     }

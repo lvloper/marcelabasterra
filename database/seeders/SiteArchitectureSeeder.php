@@ -60,6 +60,7 @@ final class SiteArchitectureSeeder extends Seeder
             $this->moveDetailRoutes(Docencia::class, $teaching, 'Ruta docente reorganizada.');
             $this->moveDetailRoutes(InstitucionAcademica::class, $teaching, 'Institución académica reorganizada.');
             $this->moveDetailRoutes(Conferencia::class, $conferences, 'Conferencia reorganizada.');
+            $this->retireDuplicatePostgraduatePage($teaching);
 
             $this->composeActivityPage($activity, $teaching, $conferences, $congresses, $cv);
             $this->composeTeachingPage($teaching, $historicalTeachingIds, $articles, $cv);
@@ -475,28 +476,25 @@ final class SiteArchitectureSeeder extends Seeder
             return;
         }
         $blocks = collect($page->blocks ?? [])
-            ->reject(fn (array $block): bool => ($block['type'] ?? null) === 'CTA' && data_get($block, 'data.blockAnchor') === 'archivo-legacy')
+            ->reject(fn (array $block): bool => ($block['type'] ?? null) === 'CTA'
+                && data_get($block, 'data.title') === 'Archivo histórico de jornadas y congresos')
             ->map(function (array $block): array {
-            if (in_array($block['type'] ?? null, ['EventsHighlight', 'EventsListing'], true)) {
-                data_set($block, 'data.include_conferences', false);
-            }
-            if (($block['type'] ?? null) === 'EventsHighlight') {
-                data_set($block, 'data.blockAnchor', 'proximos');
-                data_set($block, 'data.blockTitle', 'Próximos eventos');
-            }
-            if (($block['type'] ?? null) === 'EventsListing') {
-                data_set($block, 'data.blockAnchor', 'historial');
-                data_set($block, 'data.blockTitle', 'Historial');
-            }
+                if (in_array($block['type'] ?? null, ['EventsHighlight', 'EventsListing'], true)) {
+                    data_set($block, 'data.include_conferences', false);
+                }
+                if (($block['type'] ?? null) === 'EventsHighlight') {
+                    data_set($block, 'data.blockAnchor', 'proximos');
+                    data_set($block, 'data.blockTitle', 'Próximos eventos');
+                }
+                if (($block['type'] ?? null) === 'EventsListing') {
+                    data_set($block, 'data.blockAnchor', 'historial');
+                    data_set($block, 'data.blockTitle', 'Historial');
+                    data_set($block, 'data.include_legacy_archive', true);
+                    data_set($block, 'data.show_empty_fallback', false);
+                }
 
-            return $block;
-        })->values()->all();
-        $blocks[] = $this->block('CTA', [
-            'title' => 'Archivo histórico de jornadas y congresos',
-            'text' => 'Las noticias y crónicas recuperadas del sitio anterior se conservan en Actualidad bajo sus temas históricos.',
-            'button_label' => 'Consultar actualidad',
-            'button_route' => $this->routeAttrs($current),
-        ], 'archivo-legacy');
+                return $block;
+            })->values()->all();
         $page->update(['blocks' => $blocks]);
     }
 
@@ -532,8 +530,8 @@ final class SiteArchitectureSeeder extends Seeder
             'name' => 'Actualidad',
             'blocks' => [
                 $this->block('PressFeed', [
-                    'title' => 'Noticias · Prensa · Entrevistas',
-                    'description' => 'Archivo cronológico con filtros editoriales y temas históricos recuperados del sitio anterior.',
+                    'title' => 'Actualidad',
+                    'description' => 'Noticias, prensa y entrevistas.',
                     'layout' => 'archive',
                     'heading_level' => 'h1',
                     'source_mode' => 'unified_news',
@@ -607,6 +605,8 @@ final class SiteArchitectureSeeder extends Seeder
         Route $cv,
         Route $contact,
     ): void {
+        $actualityUrl = '/'.$current->getFullPath();
+
         Menu::query()->updateOrCreate(['slug' => 'header'], [
             'name' => 'Navegación principal',
             'items' => [
@@ -617,17 +617,25 @@ final class SiteArchitectureSeeder extends Seeder
                     $this->menuItem('menu-cargos', 'Cargos', $about, anchor: 'cargos'),
                     $this->menuItem('menu-reconocimientos', 'Reconocimientos', $about, anchor: 'reconocimientos'),
                 ]),
+                $this->menuItem('menu-publicaciones', 'Publicaciones', $publications, [
+                    $this->menuItem('menu-libros', 'Libros', $books),
+                    $this->menuItem('menu-articulos', 'Artículos académicos', $articles),
+                ]),
                 $this->menuItem('menu-actividad', 'Actividad académica', $activity, [
                     $this->menuItem('menu-docencia', 'Docencia', $teaching),
                     $this->menuItem('menu-conferencias', 'Conferencias', $conferences),
                     $this->menuItem('menu-jornadas', 'Jornadas y Congresos', $congresses),
                 ]),
-                $this->menuItem('menu-publicaciones', 'Publicaciones', $publications, [
-                    $this->menuItem('menu-libros', 'Libros', $books),
-                    $this->menuItem('menu-articulos', 'Artículos académicos', $articles),
+                $this->menuItem('menu-actualidad', 'Actualidad', $current, [
+                    $this->menuUrlItem('menu-actualidad-todas', 'Todas las publicaciones', $actualityUrl.'#archivo'),
+                    $this->menuUrlItem('menu-actualidad-noticias', 'Noticias', $actualityUrl.'?tipo=noticias#archivo'),
+                    $this->menuUrlItem('menu-actualidad-prensa', 'Prensa', $actualityUrl.'?tipo=prensa#archivo'),
+                    $this->menuUrlItem('menu-actualidad-entrevistas', 'Entrevistas', $actualityUrl.'?tipo=entrevistas#archivo'),
                 ]),
-                $this->menuItem('menu-actualidad', 'Actualidad', $current),
-                $this->menuItem('menu-cv', 'CV', $cv),
+                $this->menuItem('menu-cv', 'CV', $cv, [
+                    $this->menuItem('menu-cv-ver', 'Ver CV', $cv, anchor: 'documento'),
+                    $this->menuUrlItem('menu-cv-descargar', 'Descargar PDF', '/storage/pdfs/cv/marcela-basterra-cv-completo-2026.pdf', true),
+                ]),
                 $this->menuItem('menu-contacto', 'Contacto', $contact),
             ],
         ]);
@@ -644,6 +652,19 @@ final class SiteArchitectureSeeder extends Seeder
         ];
     }
 
+    private function menuUrlItem(string $token, string $label, string $url, bool $newWindow = false): array
+    {
+        return [
+            '_token' => $token,
+            'label' => $label,
+            'route' => [
+                'external_url' => $url,
+                'new_window' => $newWindow,
+            ],
+            'children' => [],
+        ];
+    }
+
     private function seedLegacyRedirects(Route $teaching, Route $books, Route $articles, Route $current, Route $about): void
     {
         $redirects = [
@@ -653,12 +674,31 @@ final class SiteArchitectureSeeder extends Seeder
             '/articulos-especializados' => '/'.$articles->getFullPath(),
             '/actualidad-y-produccion-academica' => '/'.$current->getFullPath(),
             '/actualidad-y-medios' => '/'.$current->getFullPath(),
+            '/novedades' => '/'.$current->getFullPath(),
             '/trayectoria' => '/'.$about->getFullPath().'#trayectoria-en-cifras',
             '/programas' => '/'.$teaching->getFullPath().'#programas',
         ];
         foreach ($redirects as $old => $new) {
             $this->redirect($old, $new, 'Compatibilidad con la navegación anterior.');
         }
+    }
+
+    private function retireDuplicatePostgraduatePage(Route $teaching): void
+    {
+        $postgraduateRoute = Route::query()
+            ->where('full_slug', 'actividad-academica/posgrados')
+            ->where('routable_type', Page::class)
+            ->first();
+
+        if ($postgraduateRoute) {
+            $postgraduateRoute->update(['status' => Status::Archived]);
+        }
+
+        $this->redirect(
+            '/actividad-academica/posgrados',
+            '/'.$teaching->getFullPath().'#posgrados',
+            'El contenido de posgrados se integró dentro de Docencia.',
+        );
     }
 
     private function cvBlock(?string $anchor = null): array

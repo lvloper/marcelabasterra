@@ -273,4 +273,10 @@
             @endif
         </div>
     </x-block>
+@elseif ($preview ?? false)
+    <x-block-preview-empty
+        :title="$title ?? 'Listado de contenido'"
+        :description="$description ?? null"
+        message="Agregá elementos o elegí una fuente de contenido para completar la vista previa."
+    />
 @endif

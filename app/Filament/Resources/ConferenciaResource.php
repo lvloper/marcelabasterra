@@ -31,6 +31,8 @@ class ConferenciaResource extends ResourceBase
         return 'Actividad académica';
     }
 
+    protected static ?int $navigationSort = 40;
+
     public static function getNavigationIcon(): string
     {
         return 'heroicon-o-video-camera';

@@ -27,10 +27,14 @@ class EventoResource extends ResourceBase
 
     protected static ?string $modelLabel = 'Eventos';
 
+    protected static ?string $navigationLabel = 'Jornadas y congresos';
+
     public static function getNavigationGroup(): ?string
     {
-        return 'Agenda';
+        return 'Actividad académica';
     }
+
+    protected static ?int $navigationSort = 50;
 
     public static function getNavigationIcon(): string
     {

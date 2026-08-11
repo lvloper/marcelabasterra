@@ -23,8 +23,10 @@ class DossierPrensaResource extends ResourceBase
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Prensa';
+        return 'Actualidad';
     }
+
+    protected static ?int $navigationSort = 40;
 
     public static function getNavigationIcon(): string
     {

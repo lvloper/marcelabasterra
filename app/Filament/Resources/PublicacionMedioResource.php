@@ -25,10 +25,14 @@ class PublicacionMedioResource extends ResourceBase
 
     protected static ?string $pluralModelLabel = 'Publicaciones en medios';
 
+    protected static ?string $navigationLabel = 'Prensa';
+
     public static function getNavigationGroup(): ?string
     {
-        return 'Prensa';
+        return 'Actualidad';
     }
+
+    protected static ?int $navigationSort = 20;
 
     public static function getNavigationIcon(): string
     {

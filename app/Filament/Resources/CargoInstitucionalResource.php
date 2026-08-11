@@ -23,8 +23,10 @@ class CargoInstitucionalResource extends ResourceBase
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Trayectoria';
+        return 'Sobre mí';
     }
+
+    protected static ?int $navigationSort = 10;
 
     public static function getNavigationIcon(): string
     {

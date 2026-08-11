@@ -765,12 +765,13 @@ class DatabaseSeeder extends Seeder
                 'content' => '<p>La Legislatura de la Ciudad Autónoma de Buenos Aires declaró a la Dra. Marcela I. Basterra Personalidad Destacada de la Cultura en el ámbito de las Ciencias Jurídicas (Expte. 1774-D-2022).</p>',
                 'cta' => $this->routeAttrs(null),
             ]),
-            // 5. Acceso al CV; los archivos se cargan desde el CMS.
-            $this->block('CVAccess', [
+            // 5. Banner de acceso al CV (la página /cv es el destino de consulta).
+            $this->block('CTA', [
                 'blockAnchor' => 'cv',
                 'title' => 'Currículum vitae',
-                'description' => 'Trayectoria académica, institucional y profesional en dos versiones de consulta.',
-                'documents' => [],
+                'text' => 'Trayectoria académica, institucional y profesional completa, en versión de consulta y descarga.',
+                'button_label' => 'Ver CV',
+                'button_route' => $this->routeAttrs(Route::where('slug', 'cv')->first()),
             ]),
         ];
     }

@@ -7,10 +7,9 @@ use Filament\Forms\Components\Builder;
 
 class DefaultTemplate
 {
-    public static function schema($form): array
+    public static function blocks(): array
     {
-        // Copy here the blocks you want to use in the template
-        $blocks = [
+        return [
             \App\Filament\Blocks\HeroBlock::make(),
             \App\Filament\Blocks\TextBlock::make(),
             \App\Filament\Blocks\MediaBlock::make(),
@@ -23,6 +22,7 @@ class DefaultTemplate
             \App\Filament\Blocks\CVDownloadBlock::make(),
             \App\Filament\Blocks\ContactFormBlock::make(),
             \App\Filament\Blocks\FeaturedResourcesBlock::make(),
+            \App\Filament\Blocks\GalleryBlock::make(),
             \App\Filament\Blocks\PublicationsHighlightBlock::make(),
             \App\Filament\Blocks\InterviewsHighlightBlock::make(),
             \App\Filament\Blocks\EventsHighlightBlock::make(),
@@ -34,6 +34,11 @@ class DefaultTemplate
             \App\Filament\Blocks\IntroBlock::make(),
             \App\Filament\Blocks\RelatedResourcesBlock::make(),
         ];
+    }
+
+    public static function schema($form): array
+    {
+        $blocks = static::blocks();
 
         // foreach ($blocks as $block) {
         //     $block

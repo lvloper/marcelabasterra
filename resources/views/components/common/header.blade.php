@@ -38,7 +38,7 @@
     };
     $navigation = collect($menu?->items ?? [])->sortBy('order')->map($hydrateItem)->filter()->values();
     $featuredNavigation = $navigation
-        ->whereIn('token', ['menu-sobre-mi', 'menu-publicaciones', 'menu-actividad'])
+        ->whereIn('token', ['menu-sobre-mi', 'menu-publicaciones', 'menu-actividad', 'menu-actualidad'])
         ->values();
     $cvNavigation = $navigation->firstWhere('token', 'menu-cv');
     $siteMap = $navigation->reject(fn (array $item): bool => $item['token'] === 'menu-home')->values();
@@ -139,6 +139,8 @@
             }
         },
         openMenu(lockScroll = true) {
+            window.clearTimeout(this.menuCloseTimer);
+            this.menuCloseTimer = null;
             this.menuOpen = true;
             if (!lockScroll) return;
             document.documentElement.style.overflow = 'hidden';
@@ -203,10 +205,9 @@
                 @click="menuOpen ? closeMenu() : openMenu()"
                 class="font-body group inline-flex min-h-11 items-center justify-center gap-3 border-0 text-[15px] text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
                 :aria-expanded="menuOpen.toString()"
-                :aria-label="menuOpen ? 'Cerrar menú' : 'Abrir menú Ver más'"
+                :aria-label="menuOpen ? 'Cerrar menú principal' : 'Abrir menú principal'"
                 aria-controls="site-menu-panel"
             >
-                <span class="hidden sm:inline">Ver más</span>
                 <span class="relative block h-4 w-6" aria-hidden="true">
                     <span class="absolute left-0 top-0 h-px w-6 bg-current transition-transform duration-200 motion-reduce:transition-none" :class="menuOpen ? 'translate-y-[7px] rotate-45' : ''"></span>
                     <span class="absolute left-0 top-[7px] h-px w-6 bg-current transition-opacity duration-200 motion-reduce:transition-none" :class="menuOpen ? 'opacity-0' : ''"></span>
@@ -295,7 +296,7 @@
                         <li class="archive-menu-item border-t border-primary/30 pt-2" style="--menu-index: {{ $index }}">
                             <x-link
                                 allowWireNavitage
-                                class="font-sans inline-flex min-h-9 items-center text-[19px] leading-tight text-primary transition-colors duration-200 hover:text-gray focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent {{ $section['route']?->isActive() ? 'font-bold' : '' }}"
+                                class="font-sans inline-flex min-h-9 items-center text-[19px] font-normal leading-tight text-primary transition-colors duration-200 hover:text-gray focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                                 :attrs="$section['attrs']"
                             >
                                 {{ $section['label'] }}

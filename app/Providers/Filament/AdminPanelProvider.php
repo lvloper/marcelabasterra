@@ -2,13 +2,17 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\BySocies;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -16,85 +20,98 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
-use Filament\Navigation\MenuItem;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
-
-use Illuminate\Support\HtmlString;
 
 class AdminPanelProvider extends PanelProvider
 {
-  public function boot(): void
-  {
-    app()->setLocale('es');
-  }
+    public function boot(): void
+    {
+        app()->setLocale('es');
+    }
 
-  public function panel(Panel $panel): Panel
-  {
-    return $panel
-      ->default()
-      ->id('admin')
-      ->path('admin')
-      ->login()
-      ->colors([
-        'primary' => Color::Emerald,
-        'secondary' => Color::Red,
-      ])
-      ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-      ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
-      ->pages([
-        Pages\Dashboard::class,
-      ])
-      ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-      ->widgets([
-        \App\Filament\Widgets\BySocies::class,
-        Widgets\AccountWidget::class,
-      ])
-      ->middleware([
-        EncryptCookies::class,
-        AddQueuedCookiesToResponse::class,
-        StartSession::class,
-        AuthenticateSession::class,
-        ShareErrorsFromSession::class,
-        VerifyCsrfToken::class,
-        SubstituteBindings::class,
-        DisableBladeIconComponents::class,
-        DispatchServingFilamentEvent::class,
-      ])
-      ->authMiddleware([
-        Authenticate::class,
-      ])
-      // ->renderHook('panels::body.end', fn (): string => Blade::render("@vite('resources/js/app.js')"))
-      ->plugins(
-        [
-          \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
-          FilamentEditProfilePlugin::make()
-            ->slug('edit-profile') //Set Manual
-            ->shouldRegisterNavigation(false)
-            ->shouldShowAvatarForm(false),
-          // FilamentLaravelLogPlugin::make()
-          //   ->navigationGroup('Settings')
-          //   ->navigationLabel('Logs')
-          //   ->navigationIcon('heroicon-o-bug-ant')
-          //   ->navigationSort(1)
-          //   ->slug('logs')
-        ]
-      )
-      ->userMenuItems([
-        'profile' => MenuItem::make()
-          ->label(fn() => auth()->user()->name)
-          ->url(fn(): string => EditProfilePage::getUrl())
-          ->icon('heroicon-m-user-circle')
-          //If you are using tenancy need to check with the visible method where ->company() is the relation between the user and tenancy model as you called
-          ->visible(function (): bool {
-            return auth()->user()->exists();
-          }),
-      ])
+    public function panel(Panel $panel): Panel
+    {
+        return $panel
+            ->default()
+            ->id('admin')
+            ->path('admin')
+            ->renderHook(
+                PanelsRenderHook::STYLES_AFTER,
+                fn (): string => Blade::render("@vite('resources/css/filament/admin/editor.css')"),
+            )
+            ->login()
+            ->colors([
+                'primary' => Color::Emerald,
+                'secondary' => Color::Red,
+            ])
+            ->navigationGroups([
+                'Sobre mí',
+                'Publicaciones',
+                'Actividad académica',
+                'Actualidad',
+                'Sitio',
+                'Configuración',
+                'Usuarios',
+                'Filament Shield',
+            ])
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->pages([
+                Pages\Dashboard::class,
+            ])
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->widgets([
+                BySocies::class,
+                Widgets\AccountWidget::class,
+            ])
+            ->middleware([
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+                AuthenticateSession::class,
+                ShareErrorsFromSession::class,
+                VerifyCsrfToken::class,
+                SubstituteBindings::class,
+                DisableBladeIconComponents::class,
+                DispatchServingFilamentEvent::class,
+            ])
+            ->authMiddleware([
+                Authenticate::class,
+            ])
+          // ->renderHook('panels::body.end', fn (): string => Blade::render("@vite('resources/js/app.js')"))
+            ->plugins(
+                [
+                    FilamentShieldPlugin::make(),
+                    FilamentEditProfilePlugin::make()
+                        ->slug('edit-profile') // Set Manual
+                        ->shouldRegisterNavigation(false)
+                        ->shouldShowAvatarForm(false),
+                    // FilamentLaravelLogPlugin::make()
+                    //   ->navigationGroup('Settings')
+                    //   ->navigationLabel('Logs')
+                    //   ->navigationIcon('heroicon-o-bug-ant')
+                    //   ->navigationSort(1)
+                    //   ->slug('logs')
+                ]
+            )
+            ->userMenuItems([
+                'profile' => MenuItem::make()
+                    ->label(fn () => auth()->user()->name)
+                    ->url(fn (): string => EditProfilePage::getUrl())
+                    ->icon('heroicon-m-user-circle')
+                  // If you are using tenancy need to check with the visible method where ->company() is the relation between the user and tenancy model as you called
+                    ->visible(function (): bool {
+                        return auth()->user()->exists();
+                    }),
+            ])
 
-        ->databaseNotifications()
-        ->databaseNotificationsPolling('5s')
-      ->brandLogo(fn() => new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 601 101">
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('5s')
+            ->brandLogo(fn () => new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 601 101">
   <g id="Grupo_73" data-name="Grupo 73" transform="translate(0.5 0.5)">
     <circle id="Elipse_27" data-name="Elipse 27" cx="50" cy="50" r="50" transform="translate(200)" fill="#ffc700" stroke="#707070" stroke-width="1"/>
     <circle id="Elipse_28" data-name="Elipse 28" cx="50" cy="50" r="50" transform="translate(300)" fill="#ff4d61" stroke="#707070" stroke-width="1"/>
@@ -136,7 +153,6 @@ class AdminPanelProvider extends PanelProvider
 </svg>
 
 '))
-      ->brandLogoHeight('1.625rem')
-    ;
-  }
+            ->brandLogoHeight('1.625rem');
+    }
 }

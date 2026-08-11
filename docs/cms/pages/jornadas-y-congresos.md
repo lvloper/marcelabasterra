@@ -10,4 +10,4 @@
 2. `EventsHighlight`: consulta automática del próximo evento o del realizado más reciente.
 3. `EventsListing`: agenda y archivo unificados, con filtros combinables por estado, año, país y tipo.
 
-Los contenidos de actividades no se duplican dentro de la página: provienen de los recursos ruteables `Evento` y `Conferencia` mediante `App\Support\EventCatalog`.
+Los contenidos no se duplican dentro de la página: la agenda proviene de `Evento`, el archivo histórico consulta directamente las crónicas `Blog` etiquetadas como `Jornadas & Congresos`, y `Conferencia` se mantiene como archivo audiovisual independiente. La vista los normaliza mediante `App\Support\EventCatalog`.

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use App\Models\Blog;
 use App\Models\Conferencia;
 use App\Models\Evento;
 use Illuminate\Support\Carbon;
@@ -20,9 +21,13 @@ final class EventCatalog
         'exposicion' => 'Exposición',
         'panel' => 'Panel',
         'clase' => 'Clase magistral',
+        'curso' => 'Curso',
+        'encuentro' => 'Encuentro',
+        'foro' => 'Foro',
         'presentacion' => 'Presentación',
         'taller' => 'Taller',
         'entrevista' => 'Entrevista',
+        'archivo' => 'Archivo histórico',
         'otro' => 'Actividad',
     ];
 
@@ -35,6 +40,7 @@ final class EventCatalog
         ?Collection $eventIds = null,
         ?Collection $conferenceIds = null,
         bool $includeConferences = true,
+        bool $includeLegacyArchive = false,
     ): Collection {
         $today = now(config('app.timezone', 'America/Argentina/Buenos_Aires'))->startOfDay();
         $events = Evento::query()
@@ -54,8 +60,19 @@ final class EventCatalog
                 ->map(fn (Conferencia $conference): array => $this->fromConference($conference, $today));
         }
 
+        $legacyArchive = collect();
+        if ($includeLegacyArchive) {
+            $legacyArchive = Blog::query()
+                ->with(['route', 'tags'])
+                ->isPublished()
+                ->withAnyTags(['Jornadas & Congresos'])
+                ->get()
+                ->map(fn (Blog $post): array => $this->fromLegacyPost($post, $today));
+        }
+
         return $events
             ->concat($conferences)
+            ->concat($legacyArchive)
             ->unique('key')
             ->sort(function (array $left, array $right): int {
                 if ($left['is_upcoming'] !== $right['is_upcoming']) {
@@ -163,6 +180,50 @@ final class EventCatalog
     }
 
     /** @return array<string, mixed> */
+    private function fromLegacyPost(Blog $post, Carbon $today): array
+    {
+        $item = $this->item(
+            key: "legacy:{$post->id}",
+            title: $post->title,
+            type: $this->legacyType($post->title),
+            date: $post->published_at?->toDateString(),
+            institution: null,
+            venue: null,
+            city: null,
+            country: null,
+            topic: null,
+            summary: $post->description,
+            image: $post->image ?: $post->route?->image,
+            url: $post->url,
+            external: false,
+            today: $today,
+        );
+
+        $item['date_kind'] = 'published';
+        $item['is_upcoming'] = false;
+
+        return $item;
+    }
+
+    private function legacyType(string $title): string
+    {
+        $normalized = Str::lower(Str::ascii($title));
+
+        return match (true) {
+            Str::contains($normalized, 'congreso') => 'congreso',
+            Str::contains($normalized, 'jornada') => 'jornada',
+            Str::contains($normalized, 'seminario') => 'seminario',
+            Str::contains($normalized, 'conferencia') => 'conferencia',
+            Str::contains($normalized, 'encuentro') => 'encuentro',
+            Str::contains($normalized, 'presentacion') => 'presentacion',
+            Str::contains($normalized, 'panel') => 'panel',
+            Str::contains($normalized, 'curso') => 'curso',
+            Str::contains($normalized, 'foro') => 'foro',
+            default => 'archivo',
+        };
+    }
+
+    /** @return array<string, mixed> */
     private function item(
         string $key,
         string $title,
@@ -199,6 +260,7 @@ final class EventCatalog
             'url' => $url,
             'external' => $external,
             'is_upcoming' => $date ? Carbon::parse($date, config('app.timezone'))->greaterThanOrEqualTo($today) : false,
+            'date_kind' => 'event',
         ];
     }
 }

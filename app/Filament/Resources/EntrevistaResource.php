@@ -23,8 +23,10 @@ class EntrevistaResource extends ResourceBase
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Prensa';
+        return 'Actualidad';
     }
+
+    protected static ?int $navigationSort = 30;
 
     public static function getNavigationIcon(): string
     {

@@ -10,7 +10,7 @@ class CTABlock extends PageBlock
 
     protected const CATEGORY = 'Interacción';
 
-    protected const LABEL = 'Call to Action';
+    protected const LABEL = 'Llamado a la acción';
 
     protected static function fields(): array
     {

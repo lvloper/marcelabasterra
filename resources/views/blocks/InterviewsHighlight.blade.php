@@ -55,4 +55,10 @@
         </div>
     </div>
 </x-block>
+@elseif ($preview ?? false)
+    <x-block-preview-empty
+        :title="$title ?? 'Entrevistas destacadas'"
+        :description="$description ?? null"
+        message="Seleccioná entrevistas para completar la vista previa."
+    />
 @endif

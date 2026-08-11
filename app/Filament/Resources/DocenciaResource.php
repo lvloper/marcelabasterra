@@ -25,8 +25,10 @@ class DocenciaResource extends ResourceBase
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Docencia';
+        return 'Actividad académica';
     }
+
+    protected static ?int $navigationSort = 10;
 
     public static function getNavigationIcon(): string
     {

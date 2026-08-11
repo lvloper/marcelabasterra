@@ -29,6 +29,10 @@ class BannerResource extends Resource
     protected static ?string $modelLabel = 'Banner';
     protected static ?string $pluralLabel = 'Banners';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Sitio';
+
+    protected static ?int $navigationSort = 30;
+
 
     public static function form(Schema $schema): Schema
     {

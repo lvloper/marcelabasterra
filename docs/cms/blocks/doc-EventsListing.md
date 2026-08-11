@@ -8,6 +8,7 @@
 | `description` | textarea | no | — | Introducción de la sección. |
 | `display_mode` | select | sí | `activities` | `activities` para cronología o `videos` para galería. |
 | `include_conferences` | toggle | sí | `true` | Incorpora el recurso `Conferencia` a la agenda. |
+| `include_legacy_archive` | toggle | no | `false` | Incorpora crónicas de Actualidad etiquetadas como `Jornadas & Congresos`, sin duplicarlas como `Evento`. |
 | `conferencias` | select multiple | no | `[]` | IDs del recurso `Conferencia`; vacío consulta automáticamente las destacadas. |
 | `manual_items` | repeater legado | no | `[]` | Compatibilidad temporal con páginas guardadas antes de crear el recurso. |
 | `status` | select | sí | `upcoming` | Consulta automática: `upcoming`, `past` o `all`. |
@@ -62,5 +63,6 @@ Además de los campos existentes, cada actividad puede incluir `institucion`, `r
 - La variante `activities` muestra próximas actividades primero y luego el archivo por fecha descendente.
 - Los filtros públicos operan sobre el conjunto consultado y permiten combinar estado, año, país y tipo de actividad sin duplicar registros en la página.
 - `Evento` aporta `ciudad`, `pais` y `tema`; `Conferencia` aporta `ciudad`, `pais` y `tematica` para normalizar metadatos y filtros.
+- Cuando `include_legacy_archive` está activo, las crónicas se consultan directamente desde `Blog`, siempre se consideran realizadas y muestran su fecha como fecha de publicación.
 - La variante `videos` consulta conferencias, entrevistas y eventos con video y nunca reproduce automáticamente.
 - Si el resultado está vacío, el bloque no renderiza contenido salvo que `show_empty_fallback` esté activo y haya un enlace alternativo configurado.

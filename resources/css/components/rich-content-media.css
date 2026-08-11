@@ -1,0 +1,34 @@
+.rich-content-media {
+    width: 100%;
+    margin-block: 2.5rem;
+}
+
+.rich-content-media :where(img, video) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    background-color: var(--color-gray-3);
+    box-shadow: none;
+}
+
+.rich-content-media figcaption {
+    margin-top: 0.75rem;
+    border-inline-start: 2px solid var(--color-accent);
+    padding-inline-start: 0.875rem;
+    color: var(--color-gray);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-style: normal;
+    line-height: 1.5;
+}
+
+.rich-content-media--preview {
+    margin-block: 0;
+}
+
+.rich-content-media--preview :where(img, video) {
+    max-height: 24rem;
+    object-fit: contain;
+}

@@ -22,8 +22,10 @@ class ProgramaAcademicoResource extends ResourceBase
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Programas';
+        return 'Actividad académica';
     }
+
+    protected static ?int $navigationSort = 30;
 
     public static function getNavigationIcon(): string
     {

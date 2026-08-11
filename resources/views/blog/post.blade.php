@@ -9,6 +9,14 @@
         );
     }
 
+    $contentHtml = \Filament\Forms\Components\RichEditor\RichContentRenderer::make($contentHtml)
+        ->customBlocks([
+            \App\Filament\Forms\Components\RichEditor\RichContentCustomBlocks\MediaBlock::class,
+        ])
+        ->fileAttachmentsDisk(config('admin.contentMedia.disk'))
+        ->fileAttachmentsVisibility(config('admin.contentMedia.visibility'))
+        ->toHtml();
+
     $primaryTag = $blog->tags->first();
     $previous = $blog->previous();
     $next = $blog->next();

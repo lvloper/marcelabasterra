@@ -135,20 +135,29 @@ class CheckBlockImages extends Command
     
     private function searchBlockInData($data, $blockName)
     {
+        if ($data instanceof \Illuminate\Support\Collection) {
+            $data = $data->all();
+        }
+
         if (!is_array($data)) {
             return false;
         }
         
         foreach ($data as $item) {
+            if ($item instanceof \Illuminate\Support\Collection) {
+                $item = $item->all();
+            }
+
+            if (! is_array($item)) {
+                continue;
+            }
+
             if (isset($item['type']) && $item['type'] === $blockName) {
                 return true;
             }
-            
-            // Recursively search in nested structures
-            foreach ($item as $value) {
-                if (is_array($value) && $this->searchBlockInData($value, $blockName)) {
-                    return true;
-                }
+
+            if ($this->searchBlockInData($item, $blockName)) {
+                return true;
             }
         }
         

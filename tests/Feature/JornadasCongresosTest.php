@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Enums\Status;
+use App\Models\Blog;
 use App\Models\Conferencia;
 use App\Models\Evento;
 use App\Models\Page;
@@ -40,11 +41,48 @@ final class JornadasCongresosTest extends TestCase
         Carbon::setTestNow();
     }
 
+    public function test_catalog_reads_the_legacy_archive_without_copying_posts_into_events(): void
+    {
+        $post = Blog::query()->create([
+            'content' => '<p>Crónica histórica de una actividad académica.</p>',
+            'description' => 'Crónica histórica de una actividad académica.',
+            'published_at' => '2018-06-28 12:00:00',
+        ]);
+        $post->route()->create([
+            'title' => 'Jornada histórica sobre acceso a la información',
+            'slug' => 'jornada-historica-acceso-informacion',
+            'full_slug' => 'actualidad/jornada-historica-acceso-informacion',
+            'status' => Status::Published,
+        ]);
+        $post->attachTag('Jornadas & Congresos');
+
+        $items = app(EventCatalog::class)->all(null, null, false, true);
+
+        $this->assertCount(1, $items);
+        $this->assertSame('legacy:'.$post->id, $items->first()['key']);
+        $this->assertSame('published', $items->first()['date_kind']);
+        $this->assertFalse($items->first()['is_upcoming']);
+        $this->assertDatabaseCount('eventos', 0);
+    }
+
     public function test_seeder_builds_the_nested_page_filters_and_legacy_redirects(): void
     {
         $this->pageRoute('Actividad Académica', 'actividad-academica');
         $this->pageRoute('Jornadas y Congresos', 'jornadas-y-congresos');
         $this->event('Congreso constitucional', '2025-09-10');
+
+        $post = Blog::query()->create([
+            'content' => '<p>Crónica preservada en Actualidad.</p>',
+            'description' => 'Crónica preservada en Actualidad.',
+            'published_at' => '2018-06-28 12:00:00',
+        ]);
+        $post->route()->create([
+            'title' => 'Jornada histórica preservada',
+            'slug' => 'jornada-historica-preservada',
+            'full_slug' => 'actualidad/jornada-historica-preservada',
+            'status' => Status::Published,
+        ]);
+        $post->attachTag('Jornadas & Congresos');
 
         $this->seed(JornadasCongresosSeeder::class);
 
@@ -55,6 +93,8 @@ final class JornadasCongresosTest extends TestCase
             ->assertSee('Agenda y archivo de eventos')
             ->assertSee('Próximos')
             ->assertSee('Realizados')
+            ->assertSee('Jornada histórica preservada')
+            ->assertSee('Publicado el 28 de junio de 2018')
             ->assertSee('Todos los países')
             ->assertSee('Tipo de actividad');
 

@@ -27,6 +27,8 @@ class ArticuloAcademicoResource extends ResourceBase
         return 'Publicaciones';
     }
 
+    protected static ?int $navigationSort = 20;
+
     public static function getNavigationIcon(): string
     {
         return 'heroicon-o-document-text';

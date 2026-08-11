@@ -3,6 +3,8 @@
 namespace App\Filament\Blocks;
 
 use App\Filament\Forms\Components\Field;
+use App\Filament\Forms\Components\Gallery;
+use Filament\Schemas\Components\Grid;
 
 class BookPresentationBlock extends PageBlock
 {
@@ -26,6 +28,12 @@ class BookPresentationBlock extends PageBlock
                 ->columns(1)
                 ->defaultItems(3)
                 ->maxItems(3),
+            Gallery::make('gallery', 'Galería del evento', 'images/presentaciones'),
+            Grid::make(2)
+                ->schema([
+                    Field::text('external_url', 'URL externa (editorial)'),
+                    Field::text('external_label', 'Texto del botón externo')->default('Ver obra en la editorial'),
+                ]),
         ];
     }
 }

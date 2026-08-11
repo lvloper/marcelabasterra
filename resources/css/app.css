@@ -1,31 +1,16 @@
 @import "fonts.css";
+@import "design-tokens.css";
 @import "./components/embla.css";
 @import "./components/line-title.css";
 @import "./components/text-wysiwyg.css";
+@import "./components/rich-content-media.css";
 @import "./components/gallery.css";
-@import "./blocks/marquee.css";
 @import "./blocks/carousel.css";
 
 @import "./view-transition.css";
 
 :root,
 :host {
-  --color-primary: #2a3461;
-  --color-primary-hover: #1f2748;
-  --color-secondary: #9499b0;
-  --color-secondary-hover: #7a80a0;
-  --color-secondary-light: #c4c7d4;
-  --color-accent: #45bfe3;
-  --color-accent-hover: #3aaed2;
-
-  --color-black: #000000;
-  --color-white: #FFFFFF;
-  --color-gray: #5c6b73;
-  --color-gray-2: #bec4c7;
-  --color-gray-3: #f3f4f4;
-  --font-display: 'Bellota Text', serif;
-  --font-body: 'Work Sans', sans-serif;
-  --font-editorial: 'Source Serif 4', serif;
   --scrollbar-color: var(--color-secondary);
   --header-height: 64px;
   --side-bar-width: 260px;
@@ -66,7 +51,7 @@
 }
 
 .archive-menu-panel {
-  max-height: min(500px, calc(100dvh - var(--header-height)));
+  max-height: calc(100dvh - var(--header-height));
 }
 
 @keyframes archive-menu-reveal {

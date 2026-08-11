@@ -159,10 +159,13 @@
 @else
     @php
         $searchTerm = '';
-        $segments = array_filter(explode('/', request()->path()));
-        $lastSegment = end($segments);
-        if ($lastSegment && $lastSegment !== '/' && strlen($lastSegment) > 2) {
-            $searchTerm = str_replace(['-', '_'], ' ', $lastSegment);
+        $isPreview = (bool) ($preview ?? false);
+        if (! $isPreview) {
+            $segments = array_filter(explode('/', request()->path()));
+            $lastSegment = end($segments);
+            if ($lastSegment && $lastSegment !== '/' && strlen($lastSegment) > 2) {
+                $searchTerm = str_replace(['-', '_'], ' ', $lastSegment);
+            }
         }
     @endphp
 
@@ -175,7 +178,7 @@
                 <p class="mt-5 font-[var(--font-editorial)] text-xl leading-relaxed text-gray">{{ $description }}</p>
             @endif
             <div class="mt-8">
-                <livewire:search-component :isFullPage="true" :autoSearch="!empty($searchTerm)" :initialSearch="$searchTerm" />
+                <livewire:search-component :isFullPage="true" :autoSearch="! $isPreview && ! empty($searchTerm)" :initialSearch="$searchTerm" />
             </div>
         </div>
     </x-block>

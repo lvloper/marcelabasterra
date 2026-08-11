@@ -24,7 +24,7 @@
     "src": "public/fonts/WorkSans-SemiBold.ttf"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BNtUAhKG.css",
+    "file": "assets/app-Rst7DPeg.css",
     "name": "app",
     "names": [
       "app.css"
@@ -40,8 +40,25 @@
       "assets/WorkSans-SemiBold-Bidiy3ee.ttf"
     ]
   },
+  "resources/css/filament/admin/editor.css": {
+    "file": "assets/editor-JY2lOYRi.css",
+    "name": "editor",
+    "names": [
+      "editor.css"
+    ],
+    "src": "resources/css/filament/admin/editor.css",
+    "isEntry": true,
+    "assets": [
+      "assets/BellotaText-Regular-CubwNl87.ttf",
+      "assets/BellotaText-Bold-ZNBj0bsn.ttf",
+      "assets/SourceSerif4_18pt-Medium-BF65EO5x.ttf",
+      "assets/WorkSans-Light-B3R6l1vV.ttf",
+      "assets/WorkSans-Regular-CEuwBnaA.ttf",
+      "assets/WorkSans-SemiBold-Bidiy3ee.ttf"
+    ]
+  },
   "resources/js/app.js": {
-    "file": "assets/app-MiLpUmRe.js",
+    "file": "assets/app-B9sRhsk_.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -50,7 +67,7 @@
     ]
   },
   "resources/js/hot-reload.js": {
-    "file": "assets/hot-reload-m--vgylm.js",
+    "file": "assets/hot-reload-P93YVGkv.js",
     "name": "hot-reload",
     "src": "resources/js/hot-reload.js",
     "isEntry": true

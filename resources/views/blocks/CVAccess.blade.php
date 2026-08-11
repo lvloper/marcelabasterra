@@ -1,6 +1,19 @@
 @php
+    $normalizeFile = static function ($file) {
+        if (is_array($file)) {
+            $file = reset($file);
+        }
+
+        return is_string($file) ? $file : null;
+    };
+
     $documents = collect($documents ?? [])
-        ->filter(fn ($document) => is_array($document) && filled($document['file'] ?? null))
+        ->filter(fn ($document) => is_array($document) && filled($normalizeFile($document['file'] ?? null)))
+        ->map(function ($document) use ($normalizeFile) {
+            $document['file'] = $normalizeFile($document['file'] ?? null);
+
+            return $document;
+        })
         ->values();
 
     $resolveFileUrl = static function ($file): ?string {

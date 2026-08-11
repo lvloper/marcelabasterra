@@ -18,8 +18,37 @@ Route::get('/search-block', function () {
     }
 });
 
-Route::get('/preview-blocks', function () {
-    return view('components.blockLayout', ['slot' => '', 'hideFooter' => true, 'hideHeader' => true]);
+Route::get('/preview-blocks/{type?}', function (?string $type = null) {
+    abort_unless(app()->isLocal(), 404);
+
+    if (app()->bound('debugbar')) {
+        app('debugbar')->disable();
+    }
+
+    if (blank($type)) {
+        return view('components.blockLayout-minimal', ['slot' => '']);
+    }
+
+    $availableBlocks = collect(\App\Filament\Templates\DefaultTemplate::blocks())
+        ->keyBy(fn ($block) => $block->getName());
+
+    abort_unless($availableBlocks->has($type), 404);
+
+    $storedBlock = \App\Models\Page::query()
+        ->get(['blocks'])
+        ->flatMap(fn (\App\Models\Page $page) => $page->blocks ?? collect())
+        ->first(fn ($block) => ($block['type'] ?? null) === $type);
+
+    $data = $storedBlock['data'] ?? [];
+    $data['id'] = 'preview-' . \Illuminate\Support\Str::slug($type);
+    $data['preview'] = true;
+
+    $html = view('blocks.' . $type, $data)->render();
+    $slot = new \Illuminate\Support\HtmlString(
+        '<div class="block block-' . e($type) . '">' . $html . '</div>'
+    );
+
+    return view('components.blockLayout-minimal', compact('slot'));
 })
 ->name('preview.blocks');
 

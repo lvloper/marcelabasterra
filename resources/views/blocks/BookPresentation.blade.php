@@ -64,6 +64,21 @@
                 @endforeach
             </div>
         @endif
+
+        @if (!empty($gallery))
+            <div class="mt-24">
+                @include('blocks.Gallery', ['images' => $gallery, 'style' => 'full'])
+            </div>
+        @endif
+
+        @if ($external_url ?? null)
+            <div class="mt-24 flex justify-center">
+                <a href="{{ $external_url }}" target="_blank" rel="noopener noreferrer"
+                    class="group inline-flex min-h-12 items-center justify-center border border-white bg-white px-6 py-3 font-body text-base font-medium text-primary transition-colors duration-300 hover:bg-primary hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none">
+                    {{ $external_label ?? 'Ver obra en la editorial' }} <span class="ml-3 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden="true">→</span>
+                </a>
+            </div>
+        @endif
     </div>
 </x-block>
 

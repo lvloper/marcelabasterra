@@ -1,7 +1,7 @@
 @php
     $mediaType = $media_type ?? 'image';
-$image = is_array($image ?? null) ? ($image[0] ?? null) : $image;
-$video_file = is_array($video_file ?? null) ? ($video_file[0] ?? null) : $video_file;
+    $image = is_array($image ?? null) ? ($image[0] ?? null) : ($image ?? null);
+    $video_file = is_array($video_file ?? null) ? ($video_file[0] ?? null) : ($video_file ?? null);
 @endphp
 
 <x-block class="py-12 md:py-16">
@@ -36,6 +36,11 @@ $video_file = is_array($video_file ?? null) ? ($video_file[0] ?? null) : $video_
                         class="h-full w-full object-cover"
                     >
                 </div>
+            @elseif ($preview ?? false)
+                <x-block-preview-empty
+                    title="Multimedia"
+                    message="Seleccioná una imagen o un video para completar la vista previa."
+                />
             @endif
 
             @if ($caption ?? null)

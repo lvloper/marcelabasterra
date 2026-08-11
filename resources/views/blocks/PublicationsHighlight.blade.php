@@ -111,4 +111,10 @@
         </div>
     </div>
 </x-block>
+@elseif ($preview ?? false)
+    <x-block-preview-empty
+        :title="$title ?? 'Publicación destacada'"
+        :description="$description ?? null"
+        message="Seleccioná una publicación con portada para completar la vista previa."
+    />
 @endif

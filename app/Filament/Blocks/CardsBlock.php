@@ -8,7 +8,9 @@ class CardsBlock extends PageBlock
 {
     protected const NAME = 'Cards';
 
-    protected const LABEL = 'Cards';
+    protected const CATEGORY = 'Listados';
+
+    protected const LABEL = 'Tarjetas de contenido';
 
     protected static function fields(): array
     {

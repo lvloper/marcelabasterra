@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Models\Blog;
 use App\Models\Evento;
 use App\Models\Page;
 use App\Models\Redirection;
@@ -30,6 +31,8 @@ final class JornadasCongresosSeeder extends Seeder
             if (! $page instanceof Page) {
                 return;
             }
+
+            $this->synchronizeLegacyArchiveTags();
 
             $oldSectionPath = '/'.ltrim($route->getRawOriginal('full_slug') ?: $route->slug, '/');
             $newSectionPath = '/actividad-academica/jornadas-y-congresos';
@@ -78,6 +81,7 @@ final class JornadasCongresosSeeder extends Seeder
                         'description' => 'Próximas actividades e historial reunidos en un único listado cronológico para recorrer por año, país y tipo de participación.',
                         'display_mode' => 'activities',
                         'include_conferences' => false,
+                        'include_legacy_archive' => true,
                         'conferencias' => [],
                         'status' => 'all',
                         'event_types' => [],
@@ -101,6 +105,31 @@ final class JornadasCongresosSeeder extends Seeder
             }
             $this->redirect('/agenda', $newSectionPath.'#agenda-y-archivo', 'Agenda unificada dentro de Jornadas y Congresos.');
         });
+    }
+
+    private function synchronizeLegacyArchiveTags(): void
+    {
+        $sourcePath = storage_path('app/imports/wordpress-posts.json');
+        if (! is_file($sourcePath)) {
+            return;
+        }
+
+        $posts = json_decode((string) file_get_contents($sourcePath), true)['posts'] ?? [];
+        $slugs = collect($posts)
+            ->filter(fn (array $post): bool => in_array('Jornadas & Congresos', $post['categories'] ?? [], true))
+            ->pluck('slug')
+            ->filter()
+            ->values();
+
+        Blog::query()
+            ->with(['route', 'tags'])
+            ->whereHas('route', fn ($query) => $query->whereIn('slug', $slugs))
+            ->get()
+            ->each(function (Blog $post): void {
+                if (! $post->tags->contains('name', 'Jornadas & Congresos')) {
+                    $post->attachTag('Jornadas & Congresos');
+                }
+            });
     }
 
     private function moveDetailRoutes(string $modelClass, Route $parent, string $sectionPath): void

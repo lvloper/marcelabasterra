@@ -83,6 +83,26 @@
         $availableTopics = $records->pluck('tematica')->filter()->unique()->sort()->values();
     }
 
+    $activeType = in_array($requestedType, $configuredTypes, true) ? $requestedType : '';
+    $archiveAnchor = $id ?? 'archivo';
+    $typeFilterLabels = [
+        'noticias' => 'Noticias',
+        'entrevistas' => 'Entrevistas',
+        'prensa' => 'Prensa',
+        'articulo' => 'Artículos en medios',
+        'entrevista' => 'Entrevistas',
+        'noticia' => 'Noticias',
+    ];
+    $typeFilterQuery = request()->except(['tipo', 'noticias']);
+    $typeFilterUrl = static function (?string $type) use ($typeFilterQuery, $archiveAnchor): string {
+        $query = $typeFilterQuery;
+        if (filled($type)) {
+            $query['tipo'] = $type;
+        }
+
+        return url()->current().($query ? '?'.http_build_query($query) : '').'#'.$archiveAnchor;
+    };
+
     if ($searchTerm !== '') {
         $needle = Str::lower($searchTerm);
         $items = $items->filter(fn (array $item): bool => Str::contains(
@@ -121,7 +141,7 @@
     $imageUrl = static fn (?string $image): ?string => blank($image)
         ? null
         : (filter_var($image, FILTER_VALIDATE_URL) ? $image : Storage::url($image));
-    $hasActiveFilters = $searchTerm !== '' || $requestedType !== '' || $requestedMedia !== '' || $requestedTopic !== '';
+    $hasActiveFilters = $searchTerm !== '' || $activeType !== '' || $requestedMedia !== '' || $requestedTopic !== '';
 @endphp
 
 @if ($layoutMode === 'archive')
@@ -160,15 +180,30 @@
                         </label>
                     @endif
                     @if ($show_filters ?? false)
-                        <label class="grid gap-2 font-body text-[15px] font-semibold text-primary">
-                            Tipo
-                            <select name="tipo" class="min-h-12 border border-gray-2 bg-white px-3 font-body text-[16px] font-normal text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
-                                <option value="">Noticias, prensa y entrevistas</option>
+                        <div class="grid gap-2 md:col-span-2 xl:col-span-4">
+                            <p id="press-type-label-{{ $archiveAnchor }}" class="font-body text-[15px] font-semibold text-primary">Tipo</p>
+                            <nav class="flex flex-wrap gap-2" aria-labelledby="press-type-label-{{ $archiveAnchor }}">
+                                <a
+                                    href="{{ $typeFilterUrl(null) }}"
+                                    @if ($activeType === '') aria-current="page" @endif
+                                    class="inline-flex min-h-11 items-center justify-center border border-primary px-5 font-body text-[15px] font-semibold transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent {{ $activeType === '' ? 'bg-primary text-white' : 'bg-white text-primary hover:bg-primary hover:text-white' }}"
+                                >
+                                    Todos
+                                </a>
                                 @foreach ($configuredTypes as $type)
-                                    <option value="{{ $type }}" @selected($requestedType === $type)>{{ $typeLabels[$type] }}</option>
+                                    <a
+                                        href="{{ $typeFilterUrl($type) }}"
+                                        @if ($activeType === $type) aria-current="page" @endif
+                                        class="inline-flex min-h-11 items-center justify-center border border-primary px-5 font-body text-[15px] font-semibold transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent {{ $activeType === $type ? 'bg-primary text-white' : 'bg-white text-primary hover:bg-primary hover:text-white' }}"
+                                    >
+                                        {{ $typeFilterLabels[$type] ?? $typeLabels[$type] ?? $type }}
+                                    </a>
                                 @endforeach
-                            </select>
-                        </label>
+                            </nav>
+                        </div>
+                        @if ($activeType !== '')
+                            <input type="hidden" name="tipo" value="{{ $activeType }}">
+                        @endif
                         <label class="grid gap-2 font-body text-[15px] font-semibold text-primary">
                             Tema histórico
                             <select name="tema" class="min-h-12 border border-gray-2 bg-white px-3 font-body text-[16px] font-normal text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
@@ -344,7 +379,7 @@
                     {{-- Featured — sticky, 9 cols --}}
                     @php $cardImage = ($show_image ?? true) ? $imageUrl($first['image']) : null; @endphp
                     <div class="lg:col-span-9 lg:sticky lg:top-16 lg:self-start">
-                        <article class="group relative border border-primary bg-white transition-colors duration-500 group-hover:bg-primary">
+                        <article class="group relative border border-primary bg-white transition-colors duration-500 hover:bg-primary">
                             <div class="flex items-baseline justify-between gap-4 border-b border-primary px-5 py-3 transition-colors duration-500 group-hover:border-white/40">
                                 @if ($first['date'])
                                     <time datetime="{{ $first['date']->toDateString() }}" class="font-source text-xs text-gray transition-colors duration-500 group-hover:text-gray-3">{{ $first['date']->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</time>
@@ -381,7 +416,7 @@
                             @foreach ($items->skip(1) as $item)
                                 @php $cardImage = ($show_image ?? true) ? $imageUrl($item['image']) : null; @endphp
                                 <li>
-                                    <article class="group relative flex h-full flex-col border border-primary bg-white transition-colors duration-500 group-hover:bg-primary">
+                                    <article class="group relative flex h-full flex-col border border-primary bg-white transition-colors duration-500 hover:bg-primary">
                                         <div class="flex items-baseline justify-between gap-4 border-b border-primary px-5 py-3 transition-colors duration-500 group-hover:border-white/40">
                                             @if ($item['date'])
                                                 <time datetime="{{ $item['date']->toDateString() }}" class="font-source text-xs text-gray transition-colors duration-500 group-hover:text-gray-3">{{ $item['date']->locale('es')->translatedFormat('d M Y') }}</time>

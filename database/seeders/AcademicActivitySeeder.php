@@ -197,11 +197,11 @@ class AcademicActivitySeeder extends Seeder
                     'show_description' => true,
                     'show_institutions' => true,
                     'student_resources' => [
-                        ['label' => 'Facultad de Derecho – UBA', 'url' => 'https://www.derecho.uba.ar/'],
-                        ['label' => 'UCES', 'url' => 'https://www.uces.edu.ar/'],
-                        ['label' => 'FUNDESI', 'url' => 'https://www.fundesi.com.ar/'],
-                        ['label' => 'Corte Interamericana de Derechos Humanos', 'url' => 'https://www.corteidh.or.cr/'],
                         ['label' => 'Infoleg', 'url' => 'https://servicios.infoleg.gob.ar/'],
+                        ['label' => 'Universidad de Buenos Aires / Facultad de Derecho', 'url' => 'https://www.derecho.uba.ar/'],
+                        ['label' => 'Corte Interamericana de Derechos Humanos', 'url' => 'https://www.corteidh.or.cr/'],
+                        ['label' => 'AADC – renovación de autoridades', 'url' => 'https://aadconst.org.ar/la-asociacion-argentina-de-derecho-constitucional-renovo-sus-autoridades/'],
+                        ['label' => 'Autoridades Facultad de Derecho UBA', 'url' => 'https://www.derecho.uba.ar/institucional/autoridades-derecho.php'],
                     ],
                 ]),
                 $this->block('ContentList', [
