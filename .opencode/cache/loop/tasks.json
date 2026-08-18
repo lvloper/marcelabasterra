@@ -1,23 +1,6 @@
 {
   "version": 1,
-  "tasks": [
-    {
-      "id": "1dtnf579",
-      "prompt": "revisa entrando a todas las paginas tipo http://127.0.0.1:8082/admin/pages/21/edit que no alla errores y ve arreglandolos si los hay",
-      "mode": "adaptive",
-      "adaptiveMinMs": 60000,
-      "adaptiveMaxMs": 3600000,
-      "createdAt": 1786399888205,
-      "lastFiredAt": 1786458979408,
-      "nextDueAt": 1786462815435,
-      "source": "user",
-      "directory": "/media/leveloper/Proyectos/Dev/marcelabasterra",
-      "sessionID": "ses_01244ee0cffeU8XmCjIwkKBpoH",
-      "paused": false,
-      "ownerPid": 1331761,
-      "ownerStartedAt": 1786397145507.6504
-    }
-  ],
-  "pid": 1331761,
-  "startedAt": 1786397145507.6504
+  "tasks": [],
+  "pid": 667243,
+  "startedAt": 1787075496228.154
 }

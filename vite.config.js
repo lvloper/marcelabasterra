@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/css/filament/admin/editor.css',
                 'resources/js/app.js',
+                'resources/js/filament/admin/rich-editor-enter-fix.js',
                 'resources/js/hot-reload.js',
             ],
             refresh: [
@@ -32,5 +33,10 @@ export default defineConfig({
         watch: {
             ignored: ['**/vendor/**']
         }
-    }
+    },
+    build: {
+        rollupOptions: {
+            preserveEntrySignatures: 'strict',
+        },
+    },
 });

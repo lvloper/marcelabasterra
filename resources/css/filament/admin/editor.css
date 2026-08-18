@@ -11,6 +11,56 @@
     background-color: var(--color-white);
 }
 
+.editorial-rich-editor .fi-fo-rich-editor-panels,
+.editorial-rich-editor .fi-fo-rich-editor-panel,
+.editorial-rich-editor .fi-fo-rich-editor-custom-blocks-ctn {
+    border-color: color-mix(in srgb, var(--color-white) 24%, transparent) !important;
+    background-color: var(--color-primary) !important;
+    color: var(--color-white) !important;
+}
+
+.editorial-rich-editor .fi-fo-rich-editor-panel {
+    --tw-divide-opacity: 1;
+    --tw-divide-color: color-mix(in srgb, var(--color-white) 20%, transparent);
+}
+
+.editorial-rich-editor .fi-fo-rich-editor-panel-heading,
+.editorial-rich-editor .fi-fo-rich-editor-custom-blocks-group-header {
+    color: var(--color-white) !important;
+}
+
+.editorial-rich-editor .fi-fo-rich-editor-panel-close-btn-ctn .fi-btn {
+    color: var(--color-white) !important;
+}
+
+.editorial-rich-editor .fi-fo-rich-editor-custom-blocks-group-header {
+    border-color: color-mix(in srgb, var(--color-white) 20%, transparent) !important;
+    background-color: var(--color-primary-hover) !important;
+}
+
+.editorial-rich-editor .fi-fo-rich-editor-custom-blocks-list,
+.editorial-rich-editor:has(.fi-fo-rich-editor-custom-blocks-group-header) .fi-fo-rich-editor-custom-blocks-list {
+    background-color: var(--color-primary) !important;
+}
+
+.editorial-rich-editor .fi-fo-rich-editor-custom-block-btn {
+    min-height: 2.75rem;
+    align-items: center;
+    border: 1px solid color-mix(in srgb, var(--color-white) 28%, transparent);
+    border-radius: 0 !important;
+    background-color: var(--color-primary-hover) !important;
+    color: var(--color-white) !important;
+    box-shadow: none !important;
+}
+
+.editorial-rich-editor .fi-fo-rich-editor-custom-block-btn:hover,
+.editorial-rich-editor .fi-fo-rich-editor-custom-block-btn:focus-visible {
+    border-color: var(--color-accent) !important;
+    background-color: color-mix(in srgb, var(--color-primary-hover) 82%, var(--color-white)) !important;
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
 .editorial-rich-editor .fi-fo-rich-editor-content {
     --prose-color: var(--color-gray);
     --prose-heading-color: var(--color-primary);

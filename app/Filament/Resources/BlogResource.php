@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Forms\Components\Image;
+use App\Filament\Forms\Components\RichEditor\Plugins\DocumentEndParagraphPlugin;
 use App\Filament\Resources\Bases\ResourceBase;
 use App\Filament\Resources\BlogResource\Pages;
 use App\Models\Blog;
@@ -73,6 +74,9 @@ class BlogResource extends ResourceBase
 
             RichEditor::make('content')
                 ->label('Contenido')
+                ->plugins([
+                    new DocumentEndParagraphPlugin,
+                ])
                 ->toolbarButtons(config('admin.richEditor.advanced', config('admin.richEditor.basic')))
                 ->fileAttachmentsDisk(config('admin.contentMedia.disk'))
                 ->fileAttachmentsDirectory(config('admin.contentMedia.imageDirectory'))

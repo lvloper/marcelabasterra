@@ -41,7 +41,7 @@
     ]
   },
   "resources/css/filament/admin/editor.css": {
-    "file": "assets/editor-JY2lOYRi.css",
+    "file": "assets/editor-BIcUE5Il.css",
     "name": "editor",
     "names": [
       "editor.css"
@@ -66,8 +66,14 @@
       "assets/app-CSvobdiw.css"
     ]
   },
+  "resources/js/filament/admin/rich-editor-enter-fix.js": {
+    "file": "assets/rich-editor-enter-fix-BvtSTiNi.js",
+    "name": "rich-editor-enter-fix",
+    "src": "resources/js/filament/admin/rich-editor-enter-fix.js",
+    "isEntry": true
+  },
   "resources/js/hot-reload.js": {
-    "file": "assets/hot-reload-P93YVGkv.js",
+    "file": "assets/hot-reload-UVetKcvU.js",
     "name": "hot-reload",
     "src": "resources/js/hot-reload.js",
     "isEntry": true
