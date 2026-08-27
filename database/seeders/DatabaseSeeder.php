@@ -7,8 +7,8 @@ use App\Models\Blog;
 use App\Models\CargoInstitucional;
 use App\Models\Conferencia;
 use App\Models\Configuration;
-use App\Models\Menu;
 use App\Models\Libro;
+use App\Models\Menu;
 use App\Models\Page;
 use App\Models\PublicacionMedio;
 use App\Models\Route;
@@ -17,6 +17,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -165,7 +166,7 @@ class DatabaseSeeder extends Seeder
             'routable_type' => Libro::class,
             'slug' => 'teoria-general-derechos-economicos-sociales-culturales-ambientales',
         ]);
-        $book = $bookRoute->routable instanceof Libro ? $bookRoute->routable : new Libro();
+        $book = $bookRoute->routable instanceof Libro ? $bookRoute->routable : new Libro;
         $book->fill([
             'autoria' => 'Marcela I. Basterra',
             'descripcion' => '<p>Obra integral dedicada a la teoría general y al desarrollo particular de los Derechos Económicos, Sociales, Culturales y Ambientales.</p>',
@@ -195,39 +196,41 @@ class DatabaseSeeder extends Seeder
             ? (json_decode((string) file_get_contents($importPath), true)['posts'] ?? [])
             : [];
         foreach ($posts as $post) {
-            if (! in_array('Medios', $post['categories'] ?? [], true)) continue;
+            if (! in_array('Medios', $post['categories'] ?? [], true)) {
+                continue;
+            }
             $titleParts = array_map('trim', preg_split('~/~u', (string) ($post['title'] ?? ''), 2));
             $title = $titleParts[0] ?: 'Publicación en medios';
             $medium = $titleParts[1] ?? 'Medios';
             $externalUrl = collect($post['external_links'] ?? [])->first() ?: ($post['url'] ?? null);
             $type = preg_match('/entrevista|conversaciones|radio|programa/i', $title) ? 'entrevista' : 'articulo';
 
-            $press = PublicacionMedio::query()->where('enlace_externo', $externalUrl)->first() ?: new PublicacionMedio();
+            $press = PublicacionMedio::query()->where('enlace_externo', $externalUrl)->first() ?: new PublicacionMedio;
             $press->fill([
                 'tipo' => $type,
                 'medio' => $medium,
                 'fecha' => substr((string) ($post['date'] ?? ''), 0, 10) ?: null,
-                'resumen' => '<p>'.e(\Illuminate\Support\Str::limit((string) ($post['plain_text'] ?? ''), 420)).'</p>',
+                'resumen' => '<p>'.e(Str::limit((string) ($post['plain_text'] ?? ''), 420)).'</p>',
                 'enlace_externo' => $externalUrl,
                 'autoria' => 'Marcela I. Basterra',
                 'destacado' => false,
             ])->save();
-            $slug = 'prensa-'.($post['slug'] ?? \Illuminate\Support\Str::slug($title));
-            $route = $press->route ?: new Route();
+            $slug = 'prensa-'.($post['slug'] ?? Str::slug($title));
+            $route = $press->route ?: new Route;
             $route->fill([
                 'title' => $title,
                 'slug' => $slug,
                 'layout' => 'default',
                 'status' => Status::Published,
                 'parent_id' => Route::where('slug', 'prensa')->value('id'),
-                'description' => \Illuminate\Support\Str::limit((string) ($post['plain_text'] ?? ''), 155),
+                'description' => Str::limit((string) ($post['plain_text'] ?? ''), 155),
             ]);
             $route->routable()->associate($press);
             $route->save();
         }
 
         foreach ($this->homeConferenceItems() as $position => $item) {
-            $conference = Conferencia::query()->where('external_url', $item['url'])->first() ?: new Conferencia();
+            $conference = Conferencia::query()->where('external_url', $item['url'])->first() ?: new Conferencia;
             $conferenceImage = $conference->imagen ?: $this->downloadYoutubeThumbnail($item['url']);
             $conference->fill([
                 'tipo' => $item['type'],
@@ -239,10 +242,10 @@ class DatabaseSeeder extends Seeder
                 'link_label' => $item['link_label'],
                 'destacado' => true,
             ])->save();
-            $route = $conference->route ?: new Route();
+            $route = $conference->route ?: new Route;
             $route->fill([
                 'title' => $item['title'],
-                'slug' => \Illuminate\Support\Str::slug($item['title']),
+                'slug' => Str::slug($item['title']),
                 'layout' => 'default',
                 'status' => Status::Published,
                 'parent_id' => config('cms-routes.agenda_parent_id'),
@@ -285,13 +288,13 @@ class DatabaseSeeder extends Seeder
             $position = CargoInstitucional::query()
                 ->whereIn('institutional_url', [$data['institutional_url'], $legacyUrl])
                 ->orWhere('institucion', $data['institucion'])
-                ->first() ?: new CargoInstitucional();
+                ->first() ?: new CargoInstitucional;
             $position->fill($data)->save();
 
-            $route = $position->route ?: new Route();
+            $route = $position->route ?: new Route;
             $route->fill([
                 'title' => $position->cargo.' · '.$position->institucion,
-                'slug' => \Illuminate\Support\Str::slug($position->cargo.'-'.$position->institucion),
+                'slug' => Str::slug($position->cargo.'-'.$position->institucion),
                 'layout' => 'default',
                 'status' => Status::Published,
                 'parent_id' => config('cms-routes.trayectoria_parent_id'),
@@ -318,6 +321,7 @@ class DatabaseSeeder extends Seeder
             $response = Http::timeout(15)->retry(2, 250)->get($thumbnailUrl);
             if ($response->successful() && strlen($response->body()) > 10_000) {
                 Storage::disk('public')->put($path, $response->body());
+
                 return $path;
             }
         }
@@ -335,6 +339,19 @@ class DatabaseSeeder extends Seeder
             'download_name' => null,
             'anchor' => null,
             'new_window' => false,
+        ];
+    }
+
+    private function externalRouteAttrs(string $url, ?string $label = null): array
+    {
+        return [
+            'btn_label' => $label,
+            'route_id' => '0',
+            'external_url' => $url,
+            'file' => null,
+            'download_name' => null,
+            'anchor' => null,
+            'new_window' => true,
         ];
     }
 
@@ -385,7 +402,7 @@ class DatabaseSeeder extends Seeder
                     'content' => '<p>'.$post['description'].'</p>',
                     'image' => null,
                 ]);
-                $route = new Route();
+                $route = new Route;
                 $route->routable()->associate($blog);
             }
 
@@ -621,7 +638,7 @@ class DatabaseSeeder extends Seeder
 
     private function homeBlocks(): array
     {
-        $featuredPositions = \App\Models\CargoInstitucional::query()->where('featured', true)->orderBy('id')->pluck('id')->all();
+        $featuredPositions = CargoInstitucional::query()->where('featured', true)->orderBy('id')->pluck('id')->all();
 
         return [
             // 1. Hero editorial
@@ -781,26 +798,16 @@ class DatabaseSeeder extends Seeder
     private function contactoBlocks(): array
     {
         return [
-            // 1. Formulario de contacto
-            $this->block('ContactForm', [
-                'title' => 'Contacto',
-                'description' => 'Completa el formulario y te respondere a la brevedad.',
-                'recipient_email' => 'contacto@marcelabasterra.com',
-                'success_message' => 'Mensaje enviado correctamente',
-                'show_phone' => true,
-                'show_subject' => true,
-            ]),
-            // 2. Informacion de contacto (Cards)
+            // 1. Redes sociales
             $this->block('Cards', [
-                'title' => 'Informacion de contacto',
+                'title' => 'Redes sociales',
                 'description' => '',
                 'items' => [
-                    ['title' => 'Email', 'description' => 'contacto@marcelabasterra.com', 'image' => null, 'route' => []],
-                    ['title' => 'LinkedIn', 'description' => 'Perfil profesional', 'image' => null, 'route' => []],
-                    ['title' => 'Twitter', 'description' => '@marcelabasterra', 'image' => null, 'route' => []],
+                    ['title' => 'X (Twitter)', 'description' => '@marcelabasterra', 'image' => null, 'route' => $this->externalRouteAttrs('https://x.com/marcelabasterra', 'Seguir')],
+                    ['title' => 'Instagram', 'description' => '@marcelabasterra', 'image' => null, 'route' => $this->externalRouteAttrs('https://www.instagram.com/marcelabasterra/', 'Seguir')],
                 ],
             ]),
-            // 3. CTA invitaciones
+            // 2. CTA invitaciones
             $this->block('CTA', [
                 'title' => 'Invitaciones y conferencias',
                 'text' => 'Si queres invitarme a participar en un evento, congreso o conferencia, no dudes en contactarme.',
@@ -905,14 +912,6 @@ class DatabaseSeeder extends Seeder
                     ['label' => 'entrevista', 'title' => 'Debate público', 'description' => 'Participación en conversaciones de actualidad.', 'image' => null, 'route' => []],
                     ['label' => 'libro', 'title' => 'Investigación académica', 'description' => 'Producción y divulgación de conocimiento.', 'image' => null, 'route' => []],
                 ],
-            ]),
-            $this->block('ContactForm', [
-                'title' => 'Escribinos',
-                'description' => 'Formulario ficticio para consultas generales y propuestas de colaboración.',
-                'recipient_email' => 'muestra@example.com',
-                'success_message' => 'Mensaje de muestra enviado correctamente.',
-                'show_phone' => true,
-                'show_subject' => true,
             ]),
             $this->block('EventsHighlight', [
                 'title' => 'Próximas actividades',

@@ -1,19 +1,23 @@
 <?php
 
+use App\Filament\Templates\DefaultTemplate;
+use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SitemapController;
-use App\Http\Controllers\PublicationController;
+use App\Models\Page;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 
 Route::get('/search-block', function () {
     $block = request('block');
 
-    $pages = \App\Models\Page::where('blocks', 'like', "%{$block}%")->with('route')->get();
+    $pages = Page::where('blocks', 'like', "%{$block}%")->with('route')->get();
 
     foreach ($pages as $page) {
         if ($page->route) {
-            echo "<a href='" . $page->route->getFullPath() . "'>" . $page->route->title . "</a><br>";
+            echo "<a href='".$page->route->getFullPath()."'>".$page->route->title.'</a><br>';
         }
     }
 });
@@ -29,33 +33,33 @@ Route::get('/preview-blocks/{type?}', function (?string $type = null) {
         return view('components.blockLayout-minimal', ['slot' => '']);
     }
 
-    $availableBlocks = collect(\App\Filament\Templates\DefaultTemplate::blocks())
+    $availableBlocks = collect(DefaultTemplate::blocks())
         ->keyBy(fn ($block) => $block->getName());
 
     abort_unless($availableBlocks->has($type), 404);
 
-    $storedBlock = \App\Models\Page::query()
+    $storedBlock = Page::query()
         ->get(['blocks'])
-        ->flatMap(fn (\App\Models\Page $page) => $page->blocks ?? collect())
+        ->flatMap(fn (Page $page) => $page->blocks ?? collect())
         ->first(fn ($block) => ($block['type'] ?? null) === $type);
 
     $data = $storedBlock['data'] ?? [];
-    $data['id'] = 'preview-' . \Illuminate\Support\Str::slug($type);
+    $data['id'] = 'preview-'.Str::slug($type);
     $data['preview'] = true;
 
-    $html = view('blocks.' . $type, $data)->render();
-    $slot = new \Illuminate\Support\HtmlString(
-        '<div class="block block-' . e($type) . '">' . $html . '</div>'
+    $html = view('blocks.'.$type, $data)->render();
+    $slot = new HtmlString(
+        '<div class="block block-'.e($type).'">'.$html.'</div>'
     );
 
     return view('components.blockLayout-minimal', compact('slot'));
 })
-->name('preview.blocks');
+    ->name('preview.blocks');
 
 Route::get('/preview-blocks-minimal', function () {
     return view('components.blockLayout-minimal', ['slot' => '']);
 })
-->name('preview.blocks.minimal');
+    ->name('preview.blocks.minimal');
 
 Route::redirect('/login', '/admin/login')->name('login');
 
@@ -70,31 +74,6 @@ Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 Route::get('/publicaciones', [PublicationController::class, 'index'])->name('publications.index');
 Route::get('/publicaciones/libros', [PublicationController::class, 'books'])->name('publications.books');
 Route::get('/publicaciones/articulos-academicos', [PublicationController::class, 'articles'])->name('publications.articles');
-
-Route::post('/contact/send', function (\Illuminate\Http\Request $request) {
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255',
-        'phone' => 'nullable|string|max:50',
-        'subject' => 'nullable|string|max:255',
-        'message' => 'required|string|max:5000',
-        'recipient' => 'required|email',
-    ]);
-
-    \Illuminate\Support\Facades\Mail::raw(
-        "Nombre: {$validated['name']}\nEmail: {$validated['email']}\n"
-        . ($validated['phone'] ? "Telefono: {$validated['phone']}\n" : '')
-        . ($validated['subject'] ? "Asunto: {$validated['subject']}\n" : '')
-        . "\nMensaje:\n{$validated['message']}",
-        function ($message) use ($validated) {
-            $message->to($validated['recipient'])
-                    ->replyTo($validated['email'], $validated['name'])
-                    ->subject('Contacto web: ' . ($validated['subject'] ?? 'Sin asunto'));
-        }
-    );
-
-    return response()->json(['ok' => true]);
-})->name('contact.send');
 
 Route::get('/{slug?}', [RouteController::class, 'show'])
     ->where('slug', '.*')

@@ -29,7 +29,7 @@ class AcademicActivitySeeder extends Seeder
     private function seedInstitutions(Route $parent): array
     {
         $definitions = [
-            'uba' => ['Universidad de Buenos Aires', 'UBA', 'Argentina', 'nacional', 'https://www.uba.ar/', 'https://www.uba.ar/imgs/logoheader40anios.png'],
+            'uba' => ['Universidad de Buenos Aires', 'UBA', 'Argentina', 'nacional', 'https://www.derecho.uba.ar/', 'https://www.uba.ar/imgs/logoheader40anios.png'],
             'up' => ['Universidad de Palermo', 'UP', 'Argentina', 'nacional', 'https://www.palermo.edu/', 'https://www.palermo.edu/images/header/logo.png'],
             'uca' => ['Pontificia Universidad Católica Argentina', 'UCA', 'Argentina', 'nacional', 'https://uca.edu.ar/', 'https://uca.edu.ar/assets/img/UCA-Logo-1.png'],
             'austral' => ['Universidad Austral', 'UA', 'Argentina', 'nacional', 'https://www.austral.edu.ar/', 'https://www.austral.edu.ar/wp-content/uploads/2022/09/logo-md-austral-1.png'],
@@ -49,7 +49,7 @@ class AcademicActivitySeeder extends Seeder
                 ->first();
             $institution = $institutionRoute?->routable instanceof InstitucionAcademica
                 ? $institutionRoute->routable
-                : new InstitucionAcademica();
+                : new InstitucionAcademica;
             $institution->fill([
                 'sigla' => $acronym,
                 'pais' => $country,
@@ -66,7 +66,7 @@ class AcademicActivitySeeder extends Seeder
                 ])],
             ])->save();
 
-            $institutionRoute ??= new Route();
+            $institutionRoute ??= new Route;
             $institutionRoute->fill([
                 'title' => $name,
                 'slug' => $slug,
@@ -85,7 +85,7 @@ class AcademicActivitySeeder extends Seeder
     }
 
     /** @param array<string, InstitucionAcademica> $institutions
-     *  @return array<int>
+     * @return array<int>
      */
     private function seedTeaching(Route $parent, array $institutions): array
     {
@@ -113,7 +113,7 @@ class AcademicActivitySeeder extends Seeder
                 ->where('institucion_academica_id', $institution->id)
                 ->where('programa', $program)
                 ->where('materia', $subject)
-                ->first() ?: new Docencia();
+                ->first() ?: new Docencia;
             $teaching->fill([
                 'institucion_academica_id' => $institution->id,
                 'institucion' => $institution->title,
@@ -133,7 +133,7 @@ class AcademicActivitySeeder extends Seeder
             ])->save();
 
             $slug = 'docencia-'.Str::slug($institution->sigla.'-'.$program.'-'.$subject);
-            $teachingRoute = $teaching->route ?: new Route();
+            $teachingRoute = $teaching->route ?: new Route;
             $teachingRoute->fill([
                 'title' => $program.' · '.$institution->sigla,
                 'slug' => Str::limit($slug, 190, ''),

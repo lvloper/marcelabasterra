@@ -2,13 +2,15 @@
 
 return [
     'networks' => [
-        'x.com' => [
-            'url' => env('SOCIAL_TWITTER', 'https://x.com/'),
+        'x' => [
+            'label' => 'X (Twitter)',
+            'url' => env('SOCIAL_TWITTER', 'https://x.com/marcelabasterra'),
             'icon' => 'fab-x-twitter',
         ],
-        'linkedin' => [
-            'url' => env('SOCIAL_LINKEDIN', 'https://www.linkedin.com/'),
-            'icon' => 'fab-linkedin-in',
+        'instagram' => [
+            'label' => 'Instagram',
+            'url' => env('SOCIAL_INSTAGRAM', 'https://www.instagram.com/marcelabasterra/'),
+            'icon' => 'fab-instagram',
         ],
-    ]
-]; 
+    ],
+];

@@ -75,7 +75,8 @@ final class SiteArchitectureTest extends TestCase
             'id' => $conference->route->id,
             'full_slug' => 'actividad-academica/conferencias/conferencia-constitucional',
         ]);
-        $this->assertDatabaseCount('docencias', 4);
+        $this->assertDatabaseCount('docencias', 2);
+        $this->assertDatabaseMissing('instituciones_academicas', ['sigla' => 'UCES']);
 
         $items = collect(Menu::query()->where('slug', 'header')->firstOrFail()->items);
         $aboutItem = $items->firstWhere('_token', 'menu-sobre-mi');

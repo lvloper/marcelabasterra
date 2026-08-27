@@ -2,37 +2,59 @@
 
 namespace App\Filament\Templates;
 
+use App\Filament\Blocks\BookPresentationBlock;
+use App\Filament\Blocks\CardsBlock;
+use App\Filament\Blocks\ContentListBlock;
+use App\Filament\Blocks\CTABlock;
+use App\Filament\Blocks\CVAccessBlock;
+use App\Filament\Blocks\CVDownloadBlock;
+use App\Filament\Blocks\EventsHighlightBlock;
+use App\Filament\Blocks\EventsListingBlock;
+use App\Filament\Blocks\FeaturedResourcesBlock;
+use App\Filament\Blocks\GalleryBlock;
+use App\Filament\Blocks\HeroBlock;
+use App\Filament\Blocks\InterviewsHighlightBlock;
+use App\Filament\Blocks\IntroBlock;
+use App\Filament\Blocks\MediaBlock;
+use App\Filament\Blocks\MediaTextBlock;
+use App\Filament\Blocks\PressFeedBlock;
+use App\Filament\Blocks\PublicationsHighlightBlock;
+use App\Filament\Blocks\RelatedResourcesBlock;
+use App\Filament\Blocks\SearchBlock;
+use App\Filament\Blocks\TeachingListingBlock;
+use App\Filament\Blocks\TextBlock;
+use App\Filament\Blocks\TimelineBlock;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\Hidden;
 
 class DefaultTemplate
 {
     public static function blocks(): array
     {
         return [
-            \App\Filament\Blocks\HeroBlock::make(),
-            \App\Filament\Blocks\TextBlock::make(),
-            \App\Filament\Blocks\MediaBlock::make(),
-            \App\Filament\Blocks\MediaTextBlock::make(),
-            \App\Filament\Blocks\CardsBlock::make(),
-            \App\Filament\Blocks\SearchBlock::make(),
-            \App\Filament\Blocks\BookPresentationBlock::make(),
-            \App\Filament\Blocks\CTABlock::make(),
-            \App\Filament\Blocks\TimelineBlock::make(),
-            \App\Filament\Blocks\CVDownloadBlock::make(),
-            \App\Filament\Blocks\ContactFormBlock::make(),
-            \App\Filament\Blocks\FeaturedResourcesBlock::make(),
-            \App\Filament\Blocks\GalleryBlock::make(),
-            \App\Filament\Blocks\PublicationsHighlightBlock::make(),
-            \App\Filament\Blocks\InterviewsHighlightBlock::make(),
-            \App\Filament\Blocks\EventsHighlightBlock::make(),
-            \App\Filament\Blocks\EventsListingBlock::make(),
-            \App\Filament\Blocks\ContentListBlock::make(),
-            \App\Filament\Blocks\TeachingListingBlock::make(),
-            \App\Filament\Blocks\PressFeedBlock::make(),
-            \App\Filament\Blocks\CVAccessBlock::make(),
-            \App\Filament\Blocks\IntroBlock::make(),
-            \App\Filament\Blocks\RelatedResourcesBlock::make(),
+            HeroBlock::make(),
+            TextBlock::make(),
+            MediaBlock::make(),
+            MediaTextBlock::make(),
+            CardsBlock::make(),
+            SearchBlock::make(),
+            BookPresentationBlock::make(),
+            CTABlock::make(),
+            TimelineBlock::make(),
+            CVDownloadBlock::make(),
+            FeaturedResourcesBlock::make(),
+            GalleryBlock::make(),
+            PublicationsHighlightBlock::make(),
+            InterviewsHighlightBlock::make(),
+            EventsHighlightBlock::make(),
+            EventsListingBlock::make(),
+            ContentListBlock::make(),
+            TeachingListingBlock::make(),
+            PressFeedBlock::make(),
+            CVAccessBlock::make(),
+            IntroBlock::make(),
+            RelatedResourcesBlock::make(),
         ];
     }
 
@@ -69,14 +91,14 @@ class DefaultTemplate
                 ->reorderableWithButtons()
                 ->cloneable()
                 ->editAction(
-                    fn(Action $action) => $action
+                    fn (Action $action) => $action
                         ->closeModalByClickingAway(false)
                         ->modalSubmitActionLabel('Actualizar cambios')
                 )
                 ->view('filament-forms::components.editor'),
-            
+
             // Hidden input for paste functionality
-            \Filament\Forms\Components\Hidden::make('blocks_pastable')
+            Hidden::make('blocks_pastable')
                 ->default('')
                 ->dehydrated(false),
         ];

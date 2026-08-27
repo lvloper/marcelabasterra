@@ -99,7 +99,7 @@ final class SiteArchitectureSeeder extends Seeder
 
         if (! $route) {
             $page = Page::query()->create(['name' => $title, 'blocks' => []]);
-            $route = new Route();
+            $route = new Route;
             $route->routable()->associate($page);
         }
 
@@ -161,37 +161,10 @@ final class SiteArchitectureSeeder extends Seeder
     {
         $uba = InstitucionAcademica::query()->where('sigla', 'UBA')->with('route')->firstOrFail();
         $uca = InstitucionAcademica::query()->where('sigla', 'UCA')->with('route')->firstOrFail();
-        $uces = InstitucionAcademica::query()->where('sigla', 'UCES')->with('route')->first();
-
-        if (! $uces) {
-            $uces = InstitucionAcademica::query()->create([
-                'sigla' => 'UCES',
-                'pais' => 'Argentina',
-                'alcance' => 'nacional',
-                'sitio_web' => 'https://www.uces.edu.ar/',
-                'destacada' => true,
-                'orden' => 8,
-                'blocks' => [],
-            ]);
-            $ucesRoute = new Route([
-                'title' => 'Universidad de Ciencias Empresariales y Sociales',
-                'slug' => 'institucion-uces',
-                'layout' => 'default',
-                'status' => Status::Published,
-                'parent_id' => $parent->id,
-                'full_slug' => $parent->getFullPath().'/institucion-uces',
-                'description' => 'Actividad académica en la Universidad de Ciencias Empresariales y Sociales.',
-            ]);
-            $ucesRoute->routable()->associate($uces);
-            $ucesRoute->save();
-            $uces->load('route');
-        }
 
         $definitions = [
             [$uba, 'Facultad de Derecho', 'Abogacía', 'Bases Constitucionales del Derecho Privado', 'Adjunta regular', 'Programa 2020', 'https://marcelabasterra.com.ar/wp-content/uploads/2020/08/UBA.-PROGRAMA.-Bases-constitucionales-del-derecho-privado.-2020-FINAL.docx.pdf'],
             [$uca, 'Facultad de Ciencias Sociales', 'Comunicación Periodística', 'Régimen Jurídico de la Información', 'Titular regular', 'Programa 2016', 'https://marcelabasterra.com.ar/wp-content/uploads/2016/07/Régimen-Jurídico-de-la-Informacion-BASTERRA-TARULLA-Lic-Per-mañana-y-noche-Final.pdf'],
-            [$uces, 'Facultad de Ciencias Jurídicas y Políticas', 'Abogacía', 'Derecho Constitucional (I) Político', 'Titular regular', 'Programa 2020', 'https://marcelabasterra.com.ar/wp-content/uploads/2020/03/Programa-Derecho-Constitucional-Politico-Abogacia-UCES.-2020..pdf'],
-            [$uces, 'Facultad de Ciencias Jurídicas y Políticas', 'Ciencia Política y Gobierno', 'Derecho Constitucional Político', 'Titular regular', 'Programa 2020', 'https://marcelabasterra.com.ar/wp-content/uploads/2020/03/UCES.-Cs.-Poliìticas.-Programa-Derecho-Constitucional-2020.pdf'],
         ];
 
         $ids = [];
@@ -218,7 +191,7 @@ final class SiteArchitectureSeeder extends Seeder
                 ],
             );
             $slug = 'docencia-grado-'.Str::slug($institution->sigla.'-'.$subject);
-            $detail = $teaching->route ?: new Route();
+            $detail = $teaching->route ?: new Route;
             $detail->fill([
                 'title' => $subject.' · '.$institution->sigla,
                 'slug' => $slug,
@@ -370,8 +343,6 @@ final class SiteArchitectureSeeder extends Seeder
                 'items' => [
                     ['meta' => 'UBA', 'title' => 'Bases Constitucionales del Derecho Privado', 'text' => 'Abogacía · Facultad de Derecho · programa 2020.', 'url' => 'https://marcelabasterra.com.ar/wp-content/uploads/2020/08/UBA.-PROGRAMA.-Bases-constitucionales-del-derecho-privado.-2020-FINAL.docx.pdf', 'link_label' => 'Consultar programa'],
                     ['meta' => 'UCA', 'title' => 'Régimen Jurídico de la Información', 'text' => 'Comunicación Periodística · programa 2016.', 'url' => 'https://marcelabasterra.com.ar/wp-content/uploads/2016/07/Régimen-Jurídico-de-la-Informacion-BASTERRA-TARULLA-Lic-Per-mañana-y-noche-Final.pdf', 'link_label' => 'Consultar programa'],
-                    ['meta' => 'UCES', 'title' => 'Derecho Constitucional (I) Político', 'text' => 'Abogacía · programa 2020.', 'url' => 'https://marcelabasterra.com.ar/wp-content/uploads/2020/03/Programa-Derecho-Constitucional-Politico-Abogacia-UCES.-2020..pdf', 'link_label' => 'Consultar programa'],
-                    ['meta' => 'UCES', 'title' => 'Derecho Constitucional Político', 'text' => 'Ciencia Política y Gobierno · programa 2020.', 'url' => 'https://marcelabasterra.com.ar/wp-content/uploads/2020/03/UCES.-Cs.-Poliìticas.-Programa-Derecho-Constitucional-2020.pdf', 'link_label' => 'Consultar programa'],
                 ],
             ], 'programas'),
             $this->block('ContentList', [

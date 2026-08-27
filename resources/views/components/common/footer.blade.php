@@ -54,7 +54,7 @@
                                 rel="noopener noreferrer"
                                 class="font-body inline-flex min-h-10 items-center text-[15px] capitalize text-gray transition-colors duration-200 hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
                             >
-                                {{ $network }} <span class="ml-1.5" aria-hidden="true">↗</span>
+                                {{ $data['label'] ?? $network }} <span class="ml-1.5" aria-hidden="true">↗</span>
                             </a>
                         </li>
                     @endforeach
