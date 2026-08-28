@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Status;
 use App\Filament\Templates\DefaultTemplate;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\RouteController;
@@ -39,6 +40,7 @@ Route::get('/preview-blocks/{type?}', function (?string $type = null) {
     abort_unless($availableBlocks->has($type), 404);
 
     $storedBlock = Page::query()
+        ->whereHas('route', fn ($route) => $route->where('status', Status::Published))
         ->get(['blocks'])
         ->flatMap(fn (Page $page) => $page->blocks ?? collect())
         ->first(fn ($block) => ($block['type'] ?? null) === $type);

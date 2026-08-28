@@ -8,6 +8,7 @@ use App\Models\ProgramaAcademico;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
@@ -27,6 +28,11 @@ class ProgramaAcademicoResource extends ResourceBase
 
     protected static ?int $navigationSort = 30;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public static function getNavigationIcon(): string
     {
         return 'heroicon-o-academic-cap';
@@ -40,8 +46,12 @@ class ProgramaAcademicoResource extends ResourceBase
                 ->required()
                 ->live(onBlur: true)
                 ->afterStateUpdated(function (Get $get, Set $set, ?string $operation, ?string $old, ?string $state, ?Model $record) {
-                    if ($operation === 'edit' && $record?->isPublished()) return;
-                    if (($get('route.slug') ?? '') !== Str::slug($old)) return;
+                    if ($operation === 'edit' && $record?->isPublished()) {
+                        return;
+                    }
+                    if (($get('route.slug') ?? '') !== Str::slug($old)) {
+                        return;
+                    }
                     $set('route.slug', Str::slug($state));
                 }),
 
@@ -49,7 +59,7 @@ class ProgramaAcademicoResource extends ResourceBase
                 ->label('Descripción')
                 ->toolbarButtons(config('admin.richEditor.minimal', config('admin.richEditor.basic'))),
 
-            \Filament\Schemas\Components\Grid::make(3)
+            Grid::make(3)
                 ->schema([
                     TextInput::make('institucion')->label('Institución'),
                     DatePicker::make('fecha_inicio')->label('Fecha de inicio'),

@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\Bases\ResourceBase;
 use App\Filament\Resources\PageResource\Pages;
 use App\Models\Page;
-use App\Filament\Resources\Bases\ResourceBase;
-
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Text;
+use Filament\Schemas\Schema;
 
 class PageResource extends ResourceBase
 {
@@ -18,6 +20,29 @@ class PageResource extends ResourceBase
     protected static string|\UnitEnum|null $navigationGroup = 'Sitio';
 
     protected static ?int $navigationSort = 10;
+
+    protected static function mainTab(Schema $schema): array
+    {
+        $record = $schema->getRecord();
+        $specializedRoutes = [
+            'publicaciones',
+            'publicaciones/libros',
+            'publicaciones/articulos-academicos',
+        ];
+
+        if ($record instanceof Page && in_array($record->route?->full_slug, $specializedRoutes, true)) {
+            return [
+                Section::make('Contenido administrado desde Publicaciones')
+                    ->description('Esta URL usa una vista especializada y no renderiza bloques de página.')
+                    ->icon('heroicon-o-information-circle')
+                    ->schema([
+                        Text::make('Gestioná el contenido desde Libros y Artículos académicos. En esta pantalla sólo corresponde editar la configuración de página y el SEO.'),
+                    ]),
+            ];
+        }
+
+        return parent::mainTab($schema);
+    }
 
     public static function getRelations(): array
     {

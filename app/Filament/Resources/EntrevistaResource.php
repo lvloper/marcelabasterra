@@ -9,6 +9,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
@@ -28,6 +29,11 @@ class EntrevistaResource extends ResourceBase
 
     protected static ?int $navigationSort = 30;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public static function getNavigationIcon(): string
     {
         return 'heroicon-o-microphone';
@@ -41,18 +47,22 @@ class EntrevistaResource extends ResourceBase
                 ->required()
                 ->live(onBlur: true)
                 ->afterStateUpdated(function (Get $get, Set $set, ?string $operation, ?string $old, ?string $state, ?Model $record) {
-                    if ($operation === 'edit' && $record?->isPublished()) return;
-                    if (($get('route.slug') ?? '') !== Str::slug($old)) return;
+                    if ($operation === 'edit' && $record?->isPublished()) {
+                        return;
+                    }
+                    if (($get('route.slug') ?? '') !== Str::slug($old)) {
+                        return;
+                    }
                     $set('route.slug', Str::slug($state));
                 }),
 
-            \Filament\Schemas\Components\Grid::make(2)
+            Grid::make(2)
                 ->schema([
                     TextInput::make('medio')->label('Medio'),
                     DatePicker::make('fecha')->label('Fecha'),
                 ]),
 
-            \Filament\Schemas\Components\Grid::make(2)
+            Grid::make(2)
                 ->schema([
                     TextInput::make('enlace')->label('Enlace')->url(),
                     TextInput::make('video')->label('Video (YouTube/Vimeo)')->url(),

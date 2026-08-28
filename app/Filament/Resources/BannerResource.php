@@ -2,23 +2,20 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\BannerLocation;
+use App\Enums\Status;
+use App\Filament\Forms\Components\RoutePicker;
 use App\Filament\Resources\BannerResource\Pages;
-use App\Filament\Resources\BannerResource\RelationManagers;
 use App\Models\Banner;
 use Filament\Actions;
 use Filament\Forms;
-use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;;
-use App\Enums\BannerLocation;
-use App\Enums\Status;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Utilities\Get;
-use App\Filament\Forms\Components\RoutePicker;
-
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class BannerResource extends Resource
 {
@@ -27,12 +24,17 @@ class BannerResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $modelLabel = 'Banner';
+
     protected static ?string $pluralLabel = 'Banners';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Sitio';
 
     protected static ?int $navigationSort = 30;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -57,7 +59,7 @@ class BannerResource extends Resource
                             ->schema([
                                 Forms\Components\FileUpload::make('image')
                                     ->label('Imagen')
-                                                            ->image()
+                                    ->image()
                                     ->imageEditor()
                                     ->imageEditorMode(2)
                                     ->preserveFilenames()
@@ -69,15 +71,15 @@ class BannerResource extends Resource
                                     ->multiple(false)
                                     ->required()
                                     ->reactive()
-                                    ->helperText(fn (Get $get): string => $get('location') ? "Tamaño recomendado: " . BannerLocation::from($get('location'))->getWidth() . " x " . BannerLocation::from($get('location'))->getHeight() : '')
-                                    ->visibility('public')
+                                    ->helperText(fn (Get $get): string => $get('location') ? 'Tamaño recomendado: '.BannerLocation::from($get('location'))->getWidth().' x '.BannerLocation::from($get('location'))->getHeight() : '')
+                                    ->visibility('public'),
                             ])
                             ->icon('heroicon-o-computer-desktop'),
                         Tabs\Tab::make('Mobile')
                             ->schema([
                                 Forms\Components\FileUpload::make('image_mobile')
                                     ->label('Imagen')
-                                                            ->image()
+                                    ->image()
                                     ->imageEditor()
                                     ->imageEditorMode(2)
                                     ->preserveFilenames()
@@ -87,7 +89,7 @@ class BannerResource extends Resource
                                     ->multiple(false)
                                     ->orientImagesFromExif()
                                     ->directory('banners')
-                                    ->visibility('public')
+                                    ->visibility('public'),
                             ])
                             ->icon('heroicon-o-device-phone-mobile'),
                     ])
@@ -98,11 +100,10 @@ class BannerResource extends Resource
                     ->reactive()
                     ->required(),
 
-
                 RoutePicker::make('route')
-                ->required()
-                ->label('Enlace de destino')
-                ->columnSpanFull(),
+                    ->required()
+                    ->label('Enlace de destino')
+                    ->columnSpanFull(),
 
             ]);
     }
@@ -112,7 +113,7 @@ class BannerResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('image')
-                ->label('Imagen'),
+                    ->label('Imagen'),
                 TextColumn::make('title')
                     ->label('Título'),
                 TextColumn::make('status')

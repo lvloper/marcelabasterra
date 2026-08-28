@@ -28,6 +28,11 @@ class DossierPrensaResource extends ResourceBase
 
     protected static ?int $navigationSort = 40;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public static function getNavigationIcon(): string
     {
         return 'heroicon-o-folder-open';
@@ -41,8 +46,12 @@ class DossierPrensaResource extends ResourceBase
                 ->required()
                 ->live(onBlur: true)
                 ->afterStateUpdated(function (Get $get, Set $set, ?string $operation, ?string $old, ?string $state, ?Model $record) {
-                    if ($operation === 'edit' && $record?->isPublished()) return;
-                    if (($get('route.slug') ?? '') !== Str::slug($old)) return;
+                    if ($operation === 'edit' && $record?->isPublished()) {
+                        return;
+                    }
+                    if (($get('route.slug') ?? '') !== Str::slug($old)) {
+                        return;
+                    }
                     $set('route.slug', Str::slug($state));
                 }),
 

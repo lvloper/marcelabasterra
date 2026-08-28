@@ -11,7 +11,8 @@
 
     $rawImage = $image ?? $libro?->portada;
     if (is_array($rawImage)) {
-        $rawImage = $rawImage[0] ?? null;
+        // Filament hidrata FileUpload como un array asociativo en el editor.
+        $rawImage = collect($rawImage)->first(fn ($value) => filled($value));
     }
 
     $imageUrl = $rawImage ? Storage::url($rawImage) : null;
